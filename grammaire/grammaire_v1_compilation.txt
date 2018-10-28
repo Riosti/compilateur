@@ -1,0 +1,148 @@
+programme             -> PROG corps
+
+corps                 -> liste_declarations liste_instructions
+corps                 -> liste_instructions
+
+liste_declarations    -> declaration 
+liste_declarations    -> liste_declarations POINT_VIRGULE declaration
+
+liste_instructions    -> DEBUT suite_liste_inst FIN
+
+suite_liste_inst      -> instruction
+suite_liste_inst      -> suite_liste_inst POINT_VIRGULE instruction
+
+declaration           -> declaration_pf
+declaration           -> declaration_procedure
+declaration           -> declaration_fonction
+
+declaration_type      -> TYPE IDF DEUX_POINTS suite_declaration_type
+
+suite_declaration_type -> STRUCT liste_champs FSTRUCT
+suite_declaration_type -> TABLEAU dimension DE nom_type
+
+dimension             -> CROCHET_OUVRANT liste_dimensions CROCHET_FERMANT
+
+liste_dimensions      -> une_dimension
+liste_dimensions      -> liste_dimensions VIRGULE une_dimension
+
+une_dimension         -> expression POINT POINT expression
+
+liste_champs          -> un_champ
+liste_champs          -> liste_champs POINT_VIRGULE un_champ
+
+un_champ              -> IDF DEUX_POINTS nom_type
+
+nom_type              -> type_simple
+nom_type              -> IDF
+
+type_simple           -> ENTIER
+type_simple           -> REEL
+type_simple           -> BOOLEEN
+type_simple           -> CARACTERE
+type_simple           -> CHAINE CROCHET_OUVRANT CSTE_ENTIERE CROCHET_FERMANT
+
+declaration_variable  -> VARIABLE IDF DEUX_POINTS nom_type
+
+declaration_procedure -> PROCEDURE IDF liste_parametres corps_pf
+
+declaration_fonction  -> FONCTION IDF liste_parametres RETOURNE type_simple corps_pf
+
+corps_pf              -> liste_declarations_pf liste_instructions
+corps_pf              -> liste_instructions
+
+liste_declarations_pf -> declaration_pf 
+liste_declarations_pf -> liste_declarations_pf POINT_VIRGULE declaration_pf
+
+declaration_pf        -> declaration_type
+declaration_pf        -> declaration_variable
+
+liste_parametres      ->
+liste_parametres      -> PARENTHESE_OUVRANTE liste_param PARENTHESE_FERMANTE
+
+liste_param           -> un_param
+liste_param           -> liste_param POINT_VIRGULE un_param
+
+un_param              -> IDF DEUX_POINTS type_simple
+
+instruction           -> affectation
+instruction           -> condition
+instruction           -> tant_que
+instruction           -> appel
+instruction           -> VIDE
+instruction           -> RETOURNE resultat_retourne
+
+resultat_retourne     ->
+resultat_retourne     -> expression
+
+appel                 -> IDF liste_arguments
+
+liste_arguments       ->
+liste_arguments       ->  PARENTHESE_OUVRANTE liste_args PARENTHESE_FERMANTE
+
+liste_args            -> un_arg
+liste_args            -> liste_args VIRGULE un_arg
+
+un_arg                -> expression
+
+condition             -> SI exp_l
+                         ALORS liste_instructions
+                         SINON liste_instructions
+
+tant_que              -> TANT_QUE exp_l FAIRE liste_instructions
+
+affectation           -> variable OPAFF expression
+
+variable              -> IDF
+
+expression            -> exp_str
+expression            -> exp_a
+expression            -> exp_l
+
+exp_str               -> CHAINE_CARACT
+exp_str               -> exp_str PLUS CHAINE_CARACT
+
+exp_a                 -> exp_a PLUS e1
+exp_a                 -> exp_a MOINS e1
+exp_a                 -> e1
+
+e1                    -> e2
+e1                    -> e1 MULT e2
+e1                    -> e1 DIV e2
+
+e2                    -> PO exp_a PF
+e2                    -> CSTE_ENTIERE
+e2                    -> CSTE_REEL
+e2                    -> appel
+e2                    -> variable
+
+
+exp_l                 -> bool1 ET exp_l
+exp_l                 -> bool1 OU exp_l
+exp_l                 -> bool1
+
+bool1                 -> opbool
+bool1                 -> bool 
+
+bool                  -> bool opcomp exp_a
+bool                  -> PO exp_l PF
+bool                  -> bool opcomp exp_str
+
+
+bool_f                -> exp_a
+bool_f                -> exp_str
+
+opbool                -> VRAI
+opbool                -> FAUX
+
+
+opcomp                -> INF
+opcomp                -> SUP
+opcomp                -> EGAL
+opcomp                -> INFEGAL
+opcomp                -> SUPEGAL
+
+
+
+
+
+MrAntotoal
