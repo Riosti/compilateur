@@ -1,0 +1,9 @@
+petit soucie dans la grammaire pour definire uen exp logique mais voila normalemnt c'est bon
+la j'essaye avec des exemple voir si tous marche et losque j'ai un soucie je corige le lex (pour le reel par exmple j'avais mal definie)
+
+
+25/09/18: arbre fait , mais une question pour les reel on le stock directment dans les arbres comme les reel ou les num lexico ?
+si oui il faut que je change la structure des arbre car il faut que j ajoute un champ en plus du noeud int il faut un num_r float 
+
+
+28/09/18 : grammaire ambigue donc on va la refaire de zero pour repartir sur une bonne basse
