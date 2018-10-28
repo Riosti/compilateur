@@ -66,6 +66,14 @@ void ajoute_variable(int lexem,int type){
   Tab_dec[index].execution=taille_type(type);/*je sais pas*/
 }
 
-void ajoute_tableau()
+
+/*il faut regarder pour les deux tab et struct car j'utilise la file de donner donc il faut voir l'ordre et tout et l'implementer */
+void ajoute_tableau(){
+  
+}
+
+void ajoute_struct(){
+
+}
 
 

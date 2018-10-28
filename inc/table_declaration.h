@@ -27,3 +27,5 @@ void init_table_decla();
 void ajoute_type_base(int lexem);
 int test_place_libre();
 int taille_type(int type);
+void ajoute_tableau();
+void ajoute_struct();
