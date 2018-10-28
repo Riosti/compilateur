@@ -1,9 +1,9 @@
 %{
-  #include "stdio.h"
-  #include "stdlib.h"
-  #include "hash.h"
-  #include "define_const.h"
-  #include "sauv.h"
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include "inc/hash.h"
+  #include "inc/define_const.h"
+  #include "inc/sauv.h"
   extern int Num_lignes;
   extern int Num_inst;
   int yylex();
@@ -22,7 +22,7 @@
 %token<type_float> CSTE_REEL
 
 
-%type<arbre> plus_moins variable variable_idf tableau liste_param_tab param_du_tab expression_chaine expression expression_et expression_ou expression_neg expression_bcn cste_bool expression_cmp opcomp expression_num e1 e2 e3 e4 e5 appel liste_arguments un_arg liste_args corps liste_instructions suite_liste_inst instruction resultat_retourne condition tant_que affectation programme declaration_procedure liste_parametres un_param liste_param corps_pf nom_type type_simple declaration_fonction
+%type<arbre> plus_moins variable variable_idf tableau liste_param_tab param_du_tab expression_chaine expression expression_et expression_ou expression_neg expression_bcn cste_bool expression_cmp opcomp expression_num e1 e2 e3 e4 e5 appel liste_arguments un_arg liste_args corps liste_instructions suite_liste_inst instruction resultat_retourne condition tant_que affectation programme declaration_procedure liste_parametres un_param liste_param nom_type type_simple declaration_fonction
  
 %%
 all : programme {sauvegarder_arbre($1,"test_sauv");supprime_arbre($1);}
@@ -34,21 +34,33 @@ corps : liste_declarations liste_instructions {$$=$2;}
       | liste_instructions {$$=$1;}
       ;
 
-liste_declarations : declaration POINT_VIRGULE
-                   | liste_declarations declaration POINT_VIRGULE
+liste_declarations : dec1
                    ;
 
 liste_instructions : DEBUT {nouvelle_region();} suite_liste_inst FIN {$$=$3;ajoue_arbre_table_region($3);fin_region();}
                    ;
 
 suite_liste_inst : instruction POINT_VIRGULE{$$=$1;}
-| suite_liste_inst instruction POINT_VIRGULE {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;a=a->fils;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_LIST,-1),$2));;$$=$1;} 
+                 | suite_liste_inst instruction POINT_VIRGULE {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;a=a->fils;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_LIST,-1),$2));;$$=$1;} 
                  ;
 
-declaration : declaration_pf
-            | declaration_procedure {sauvegarder_arbre($1,"test_sauv");supprime_arbre($1);}
-            | declaration_fonction {sauvegarder_arbre($1,"test_sauv");supprime_arbre($1);}
-            ;
+/*g30.sncf.com*/
+
+dec1: declaration_type POINT_VIRGULE
+    | declaration_type POINT_VIRGULE dec1
+    | dec2
+    ;
+
+dec2: declaration_variable POINT_VIRGULE
+    | declaration_variable POINT_VIRGULE dec2
+    | dec3
+    ;
+
+dec3: declaration_procedure POINT_VIRGULE{sauvegarder_arbre($1,"test_sauv");supprime_arbre($1);}
+    | declaration_fonction  POINT_VIRGULE{sauvegarder_arbre($1,"test_sauv");supprime_arbre($1);}
+    | declaration_procedure POINT_VIRGULE{sauvegarder_arbre($1,"test_sauv");supprime_arbre($1);} dec3
+    | declaration_fonction  POINT_VIRGULE{sauvegarder_arbre($1,"test_sauv");supprime_arbre($1);} dec3
+    ;
 
 declaration_type : TYPE IDF DEUX_POINTS suite_declaration_type
                  ;
@@ -88,22 +100,12 @@ type_simple : ENTIER {$$=cree_noeud(A_INT,-1);}
 declaration_variable : VARIABLE IDF DEUX_POINTS nom_type
                      ;
 
-declaration_procedure : PROCEDURE IDF liste_parametres corps_pf {$$=concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_PROC,$2),concat_pere_frere($3,concat_pere_fils(cree_noeud(A_LIST,-1),$4))));}
+declaration_procedure : PROCEDURE IDF liste_parametres corps {$$=concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_PROC,$2),concat_pere_frere($3,concat_pere_fils(cree_noeud(A_LIST,-1),$4))));}
                       ;
 
-declaration_fonction : FONCTION IDF liste_parametres RETOURNE nom_type corps_pf {$$=concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_FONCTION,$2),concat_pere_frere($3,concat_pere_frere(concat_pere_fils(cree_noeud(A_RETURN,-1),$5),concat_pere_fils(cree_noeud(A_LIST,-1),$6)))));}/*nom type nan?*/
+declaration_fonction : FONCTION IDF liste_parametres RETOURNE nom_type corps {$$=concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_FONCTION,$2),concat_pere_frere($3,concat_pere_frere(concat_pere_fils(cree_noeud(A_RETURN,-1),$5),concat_pere_fils(cree_noeud(A_LIST,-1),$6)))));}/*nom type nan?*/
                      ;
-corps_pf : liste_declarations_pf liste_instructions {$$=$2;} 
-         | liste_instructions {$$=$1;}
-         ;
 
-liste_declarations_pf : declaration_pf POINT_VIRGULE
-                      | liste_declarations_pf declaration_pf POINT_VIRGULE
-                      ;
-
-declaration_pf : declaration_type
-               | declaration_variable
-               ;
 
 liste_parametres : {$$=cree_noeud(A_VIDE,-1);}
                  | PO liste_param PF {$$=$2;}
