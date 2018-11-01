@@ -1,13 +1,10 @@
 %{
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include "inc/hash.h"
-  #include "inc/define_const.h"
   #include "inc/sauv.h"
   extern int Num_lignes;
   extern int Num_inst;
   int yylex();
   int yyerror();
+  
 %}
 
 %union{
@@ -16,16 +13,16 @@
   float type_float;
   }
 
-%token DEBUT_PROG DEBUT FIN POINT_VIRGULE TYPE DEUX_POINTS STRUCT FSTRUCT TABLEAU CO CF VIRGULE POINT BOOLEEN VARIABLE PROCEDURE FONCTION PO PF VIDE TANT_QUE FAIRE OPAFF PLUS MOINS DIV MULT VRAI FAUX INF SUP INFEGAL SUPEGAL EGAL DIFF RETOURNE SI ALORS SINON ET OU DE ENTIER REEL CARACTERE CHAINE  INCREMENTE DECREMENTE DIEZ NON
+%token DEBUT_PROG DEBUT FIN POINT_VIRGULE TYPE DEUX_POINTS STRUCT FSTRUCT TABLEAU CO CF VIRGULE POINT VARIABLE PROCEDURE FONCTION PO PF VIDE TANT_QUE FAIRE OPAFF PLUS MOINS DIV MULT VRAI FAUX INF SUP INFEGAL SUPEGAL EGAL DIFF RETOURNE SI ALORS SINON ET OU DE  INCREMENTE DECREMENTE DIEZ NON
 
-%token<type_int> CSTE_ENTIERE IDF CSTE_CARACTERE CSTE_CHAINE
+%token<type_int> CSTE_ENTIERE IDF CSTE_CARACTERE CSTE_CHAINE ENTIER REEL CHAINE BOOLEEN CARACTERE
 %token<type_float> CSTE_REEL
 
 
 %type<arbre> plus_moins variable variable_idf tableau liste_param_tab param_du_tab expression_chaine expression expression_et expression_ou expression_neg expression_bcn cste_bool expression_cmp opcomp expression_num e1 e2 e3 e4 e5 appel liste_arguments un_arg liste_args corps liste_instructions suite_liste_inst instruction resultat_retourne condition tant_que affectation programme declaration_procedure liste_parametres un_param liste_param nom_type type_simple declaration_fonction
  
 %%
-all : programme {sauvegarder_arbre($1,"test_sauv");supprime_arbre($1);}
+all : programme {sauvegarder_arbre($1,"test_sauv");sauvegarde_tables("test_tables");supprime_arbre($1);}
 
 programme : DEBUT_PROG corps {printf("prog \n");$$=concat_pere_fils(cree_noeud(A_LIST,-1),$2);afficher_arbre($2);}
          ;
@@ -37,7 +34,7 @@ corps : liste_declarations liste_instructions {$$=$2;}
 liste_declarations : dec1
                    ;
 
-liste_instructions : DEBUT {nouvelle_region();} suite_liste_inst FIN {$$=$3;ajoue_arbre_table_region($3);fin_region();}
+liste_instructions : DEBUT suite_liste_inst FIN {$$=$2;ajoue_arbre_table_region($2);}
                    ;
 
 suite_liste_inst : instruction POINT_VIRGULE{$$=$1;}
@@ -62,42 +59,49 @@ dec3: declaration_procedure POINT_VIRGULE{sauvegarder_arbre($1,"test_sauv");supp
     | declaration_fonction  POINT_VIRGULE{sauvegarder_arbre($1,"test_sauv");supprime_arbre($1);} dec3
     ;
 
-declaration_type : TYPE IDF DEUX_POINTS suite_declaration_type
+declaration_type : TYPE IDF DEUX_POINTS suite_declaration_type_t {ajoute_tableau($2);}
+                 | TYPE IDF DEUX_POINTS suite_declaration_type_s {ajoute_struct($2);}
                  ;
 
-suite_declaration_type : STRUCT liste_champs FSTRUCT
-                       | TABLEAU dimension DE nom_type
+suite_declaration_type_s : STRUCT liste_champs FSTRUCT 
                        ;
 
-dimension : CO liste_dimensions CF
+suite_declaration_type_t: TABLEAU dimension DE nom_type {enfile($4->noeud);}
+                        ;
+
+dimension : CO liste_dimensions CF 
           ;
 
-liste_dimensions : une_dimension
+liste_dimensions : une_dimension 
                  | liste_dimensions VIRGULE une_dimension
                  ;
 
-une_dimension : CSTE_ENTIERE DIEZ CSTE_ENTIERE 
+une_dimension : const_entier DIEZ const_entier 
               ;
 
-liste_champs : un_champ
-             | liste_champs POINT_VIRGULE un_champ
+const_entier : CSTE_ENTIERE {enfile($1);}
+             | MOINS CSTE_ENTIERE {enfile(-1*$2);}
              ;
 
-un_champ : IDF DEUX_POINTS nom_type
+liste_champs : un_champ 
+             | liste_champs un_champ
+             ;
+
+un_champ : IDF DEUX_POINTS nom_type POINT_VIRGULE {enfile($1);enfile($3->noeud);}
          ;
 
 nom_type : type_simple {$$=$1;}
          | IDF {$$=cree_noeud(A_IDF,$1);}
          ;
 
-type_simple : ENTIER {$$=cree_noeud(A_INT,-1);}
-            | REEL {$$=cree_noeud(A_FLOAT,-1);}  
-            | BOOLEEN {$$=cree_noeud(A_BOOL,-1);}
-            | CARACTERE{$$=cree_noeud(A_CHAR,-1);}
-            | CHAINE CO CSTE_ENTIERE CF {$$=cree_noeud(A_CHAINE,$3);}
+type_simple : ENTIER {$$=cree_noeud(A_INT,$1);}
+            | REEL {$$=cree_noeud(A_FLOAT,$1);}  
+            | BOOLEEN {$$=cree_noeud(A_BOOL,$1);}
+            | CARACTERE{$$=cree_noeud(A_CHAR,$1);}
+            | CHAINE CO CSTE_ENTIERE CF {$$=concat_pere_fils(cree_noeud(A_CHAINE,$1),cree_noeud(A_CSTE_E,$3));}
             ;
 
-declaration_variable : VARIABLE IDF DEUX_POINTS nom_type
+declaration_variable : VARIABLE IDF DEUX_POINTS nom_type {ajoute_variable($2,$4->noeud);}
                      ;
 
 declaration_procedure : PROCEDURE IDF liste_parametres corps {$$=concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_PROC,$2),concat_pere_frere($3,concat_pere_fils(cree_noeud(A_LIST,-1),$4))));}
@@ -264,6 +268,15 @@ int yyerror(){ printf("Erreur ligne %d instruction %d\n",Num_lignes,Num_inst);}
 
 int main(){
   init_table_hash();
+  init_table_decla();
+  init_table_rep_type();
+  init_file();
+  nouvelle_region();
+  ajoute_type_base(ajoute_lexem("Int"));
+  ajoute_type_base(ajoute_lexem("Float"));
+  ajoute_type_base(ajoute_lexem("Char"));
+  ajoute_type_base(ajoute_lexem("Bool"));
+  ajoute_type_base(ajoute_lexem("String"));
   yyparse();
 }
 

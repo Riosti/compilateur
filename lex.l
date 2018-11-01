@@ -1,6 +1,6 @@
 %{
 #include "y.tab.h"
-#include "hash.h"
+#include "inc/hash.h"
 int Num_lignes=1;
 int Num_inst=0;
 %}
@@ -19,11 +19,11 @@ int Num_inst=0;
 "]" {return(CF);}
 "," {return(VIRGULE);}
 "." {  return(POINT);}
-"Int" {return(ENTIER);}
-"Float" {return(REEL);}
-"Bool" {return(BOOLEEN);}
-"Char" {return(CARACTERE);}
-"String" {return(CHAINE);}
+"Int" {yylval.type_int=ajoute_lexem(yytext);return(ENTIER);}
+"Float" {yylval.type_int=ajoute_lexem(yytext);return(REEL);}
+"Bool" {yylval.type_int=ajoute_lexem(yytext);return(BOOLEEN);}
+"Char" {yylval.type_int=ajoute_lexem(yytext);return(CARACTERE);}
+"String" {yylval.type_int=ajoute_lexem(yytext);return(CHAINE);}
 "Var" { return(VARIABLE);}
 "Procedure" {return(PROCEDURE);}
 "Fonction" {return(FONCTION);}
