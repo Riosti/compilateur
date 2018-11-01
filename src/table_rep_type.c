@@ -6,7 +6,7 @@ void init_table_rep_type(){
   Index_table_rep_type=0;
 }
 
-void ajoute_tableau(){/*ici on va utiliser la pile et on sais que la pile a ete corectement utiliser par le yacc */
+void rp_ajoute_tableau(){/*ici on va utiliser la pile et on sais que la pile a ete corectement utiliser par le yacc */
   int index_actuel=Index_table_rep_type+2;
   int num;
   while(!file_vide()){
@@ -23,7 +23,7 @@ void ajoute_tableau(){/*ici on va utiliser la pile et on sais que la pile a ete 
   Index_table_rep_type=index_actuel;
 }
 
-void ajoute_struct(){
+void rp_ajoute_struct(){
   int index_actuel=Index_table_rep_type+1;
   int num;
   while(!file_vide()){
@@ -42,7 +42,7 @@ void ajoute_struct(){
   Index_table_rep_type=index_actuel;
 }
 
-void ajoute_proc(){
+void rp_ajoute_proc(){
   int index_actuel=Index_table_rep_type+1;
   int num;
   while(!file_vide()){
@@ -61,7 +61,7 @@ void ajoute_proc(){
   Index_table_rep_type=index_actuel;
 }
 
-void ajoute_fonction(){
+void rp_ajoute_fonction(){
   int index_actuel=Index_table_rep_type+2;
   int num;
   while(!file_vide()){

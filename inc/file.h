@@ -1,5 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef DEFINE_FILE_H
+#define DEFINE_FILE_H
+#include "pile.h"
 
 typedef struct file{
   int num;
@@ -13,3 +14,5 @@ int file_vide();
 void enfile(int num);
 int sommet_file();
 int defile();
+
+#endif

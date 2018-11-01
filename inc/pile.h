@@ -1,5 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef DEFINE_PILE
+#define DEFINE_PILE
+#include "erreur.h"
 
 
 typedef struct pile{
@@ -16,3 +17,5 @@ void empile(int num);
 int sommet_pile();
 int depile();
 int taille_pile();
+
+#endif

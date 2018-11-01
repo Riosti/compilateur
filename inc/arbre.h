@@ -1,6 +1,6 @@
-
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef DEFINE_ARBRE_H
+#define DEFINE_ARBRE_H
+#include "file.h"
 
 
 typedef struct arbre{
@@ -20,3 +20,5 @@ type_arbre * concat_pere_frere(type_arbre *p,type_arbre *f);/*prend 2 adresse d'
 void supprime_noeud(type_arbre * a);/*supprime un noeud*/
 void supprime_arbre(type_arbre * a);/*supprime un arbre privilegier cette utilisation*/
 void afficher_arbre(type_arbre * a);
+
+#endif

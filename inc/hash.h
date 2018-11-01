@@ -1,6 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#ifndef DEFINE_HASH_H
+#define DEFINE_HASH_H
+#include "arbre.h"
 #include <math.h>
 
 #define TAILLE_TAB_HASH 500 /* taille de la table de structure list_lexem donc nombre max de lexem unique stockable */
@@ -31,3 +31,4 @@ int ajoute_lexem(char *lexem);/*ajoute un lexeme dans la table de hash et retour
 char * get_lexeme(int num);/*retourn le lexem a l'indice indiquer*/
   
   
+#endif

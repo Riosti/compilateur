@@ -11,7 +11,7 @@ void nouvelle_region(){
 }
 
 int region_actu(){
-  return index_table_region;
+  return sommet_pile(); /*avant c etait index_table_region;*/
 }
 
 void fin_region(){

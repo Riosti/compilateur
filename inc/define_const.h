@@ -1,3 +1,7 @@
+#ifndef DEFINE_CONST_H
+#define DEFINE_CONST_H
+#include <stdio.h>
+#include <stdlib.h>
 #define A_LIST 0
 #define A_CSTE_E 1
 #define A_CSTE_R 2
@@ -43,4 +47,4 @@
 #define A_INT 41
 #define A_FLOAT 42
 #define A_CHAR 43
-
+#endif

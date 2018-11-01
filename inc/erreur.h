@@ -1,5 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef DEFINE_ERREUR_H
+#define DEFINE_ERREUR_H
+#include "define_const.h"
 #include <string.h>
 
 #define KNRM  "\x1B[0m"
@@ -17,3 +18,5 @@ void change_color(char * color);
 void ajoute_chaine_color(char *final,char *msg,char * color);
 void print(char *m);
 void sous_chaine_color(char *final,char *msg,char *color,int begin,int end);
+
+#endif

@@ -1,7 +1,6 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include "pile.h"
-#include "arbre.h"
+#ifndef _TABLE_REGION
+#define _TABLE_REGION
+#include "table_rep_type.h"
 #define TAILLE_TABLE_REGION 500
 
 typedef struct{
@@ -19,3 +18,5 @@ int ajoue_arbre_table_region(type_arbre *a );
 void nouvelle_region();
 int region_actu();
 void fin_region();
+
+#endif
