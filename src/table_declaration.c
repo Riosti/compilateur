@@ -4,6 +4,7 @@
 void init_table_decla(){
   int i;
   prochaine_place_libre=TAILLE_TAB_HASH;
+  decalage_bc=0;
   for(i=0;i<TAILLE_TABLE_DECLARATION;i++){
     Tab_dec[i].nature=-1;
     Tab_dec[i].suivant=-1;
@@ -60,7 +61,8 @@ void ajoute_variable(int lexem,int type){
   Tab_dec[index].suivant=-1;
   Tab_dec[index].region=region_actu();
   Tab_dec[index].description=type;
-  Tab_dec[index].execution=taille_type(type);/*c'est pas sa car c'est la decalage en fonction de BC*/
+  Tab_dec[index].execution=taille_type(type)+decalage_bc;
+  decalage_bc+=taille_type(type);/*c'est pas sa car c'est la decalage en fonction de BC*/
 }
 
 
@@ -124,6 +126,7 @@ void ajoute_fonction(int lexem){
   rp_ajoute_fonction();
   nouvelle_region();
   Tab_dec[index].execution=region_actu();
+  decalage_bc=0;
 }
 
 void ajoute_proc(int lexem){
@@ -135,6 +138,7 @@ void ajoute_proc(int lexem){
   rp_ajoute_fonction();
   nouvelle_region();
   Tab_dec[index].execution=region_actu();
+  decalage_bc=0;
 }
 
 

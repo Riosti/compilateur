@@ -19,6 +19,7 @@ typedef struct{
 
 table_des_declaration Tab_dec[TAILLE_TABLE_DECLARATION];
 int prochaine_place_libre;
+int decalage_bc;
 
 
 void init_table_decla();
