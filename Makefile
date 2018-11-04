@@ -1,11 +1,12 @@
-all: lex.l yacc.y arbre.o hash.o sauv.o pile.o table_region.o bin obj
+all: lex.l yacc.y arbre.o hash.o sauv.o pile.o table_region.o table_declaration.o table_rep_type.o file.o bin obj clean_gch
 	yacc -d -v yacc.y
 	lex lex.l
 	gcc -c lex.yy.c
-	gcc -o bin/exec y.tab.c lex.yy.o obj/arbre.o obj/sauv.o obj/hash.o obj/pile.o obj/table_region.o  -ly -ll
+	gcc -o bin/exec y.tab.c lex.yy.o obj/arbre.o obj/sauv.o obj/hash.o obj/pile.o obj/table_region.o obj/table_declaration.o obj/table_rep_type.o obj/file.o -ly -ll
 	mv y.* obj/
 	mv *.o obj/
 	mv lex.yy.c obj/
+
 
 all.o: arbre.o sauv.o file.o hash.o table_rep_type.o erreur.o table_region.o table_declaration.o
 
@@ -42,6 +43,9 @@ obj:
 
 bin:
 	mkdir bin
+
+clean_gch:
+	rm inc/*.gch
 
 clean_obj:
 	rm -rf obj

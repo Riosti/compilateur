@@ -104,10 +104,10 @@ type_simple : ENTIER {$$=cree_noeud(A_INT,$1);}
 declaration_variable : VARIABLE IDF DEUX_POINTS nom_type {ajoute_variable($2,$4->noeud);}
                      ;
 
-declaration_procedure : PROCEDURE IDF liste_parametres corps {$$=concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_PROC,$2),concat_pere_frere($3,concat_pere_fils(cree_noeud(A_LIST,-1),$4))));}
+declaration_procedure : PROCEDURE  IDF liste_parametres corps {$$=concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_PROC,$2),concat_pere_frere($3,concat_pere_fils(cree_noeud(A_LIST,-1),$4))));ajoute_proc($2);}
                       ;
 
-declaration_fonction : FONCTION IDF liste_parametres RETOURNE nom_type corps {$$=concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_FONCTION,$2),concat_pere_frere($3,concat_pere_frere(concat_pere_fils(cree_noeud(A_RETURN,-1),$5),concat_pere_fils(cree_noeud(A_LIST,-1),$6)))));}/*nom type nan?*/
+declaration_fonction : FONCTION IDF liste_parametres RETOURNE nom_type corps {$$=concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_FONCTION,$2),concat_pere_frere($3,concat_pere_frere(concat_pere_fils(cree_noeud(A_RETURN,-1),$5),concat_pere_fils(cree_noeud(A_LIST,-1),$6)))));enfile($5->noeud);ajoute_fonction($2);}/*nom type nan?*/
                      ;
 
 
@@ -119,7 +119,7 @@ liste_param : un_param {$$=$1;}
             | liste_param POINT_VIRGULE un_param {$$=concat_pere_fils(cree_noeud(A_PARAM,-1),$3);};
             ;
 
-un_param : IDF DEUX_POINTS nom_type {$$=cree_noeud(A_IDF,$1);}/*nom type nan ?*/
+un_param : IDF DEUX_POINTS nom_type {$$=cree_noeud(A_IDF,$1);enfile($1);enfile($3->noeud);}/*nom type nan ?*/
          ;
 
 instruction : affectation {$$=$1;}
