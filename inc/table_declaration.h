@@ -31,5 +31,7 @@ void ajoute_tableau(int lexem);
 void ajoute_struct(int lexem);
 void ajoute_fonction(int lexem);
 void ajoute_proc(int lexem);
+void fin_proc_fonc_region(type_arbre * a);
+void taille_de_la_region();
 
 #endif

@@ -61,7 +61,7 @@ void ajoute_variable(int lexem,int type){
   Tab_dec[index].suivant=-1;
   Tab_dec[index].region=region_actu();
   Tab_dec[index].description=type;
-  Tab_dec[index].execution=taille_type(type)+decalage_bc;
+  Tab_dec[index].execution=decalage_bc;
   decalage_bc+=taille_type(type);/*c'est pas sa car c'est la decalage en fonction de BC*/
 }
 
@@ -100,6 +100,7 @@ int calcule_taille_struct(int index){/*probleme ici pour le calcule du champ exe
   int i;
   index+=2;
   for(i=0;i<nbr_var;i++){
+    Table_rep_type[index+1]=res;
     res+=taille_type(Table_rep_type[index]);
     index+=3;
   }
@@ -117,6 +118,24 @@ void ajoute_struct(int lexem){
 }
 /*jen suis ici pour le yacc il faut verif*/
 
+int taille_arg(int index , int nbr){
+  int i;
+  int res=0;
+  for(i=0;i<nbr;i++){
+    res+=taille_type(Table_rep_type[index+1]);
+    index+=2;
+  }
+  return res;
+}
+
+void declare_arg(int index, int nbr){
+  int i;
+  for(i=0;i<nbr;i++){
+    ajoute_variable(Table_rep_type[index],Table_rep_type[index+1]);
+    index+=2;
+  }
+}
+
 void ajoute_fonction(int lexem){
   int index=indice_pour_lexem(lexem);
   Tab_dec[index].nature=FUNC;
@@ -127,6 +146,7 @@ void ajoute_fonction(int lexem){
   nouvelle_region();
   Tab_dec[index].execution=region_actu();
   decalage_bc=0;
+  declare_arg(Tab_dec[index].description+2,Table_rep_type[Tab_dec[index].description]);
 }
 
 void ajoute_proc(int lexem){
@@ -135,10 +155,20 @@ void ajoute_proc(int lexem){
   Tab_dec[index].suivant=-1;
   Tab_dec[index].region=region_actu();
   Tab_dec[index].description= Index_table_rep_type;
-  rp_ajoute_fonction();
+  rp_ajoute_proc();
   nouvelle_region();
   Tab_dec[index].execution=region_actu();
   decalage_bc=0;
+  declare_arg(Tab_dec[index].description+1,Table_rep_type[Tab_dec[index].description]);
+}
+
+void taille_de_la_region(){
+  ajoute_taille_region(decalage_bc);
+}
+
+void fin_proc_fonc_region(type_arbre * a){
+  ajoute_arbre_table_region(a);
+  fin_region();
 }
 
 

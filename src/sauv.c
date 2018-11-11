@@ -2,11 +2,15 @@
 
 void ecrire_noeud(FILE *f,type_arbre *a ){
   if(!arbre_vide(a)){
-    fprintf(f,"%d %d %f",a->type,a->noeud,a->noeudf);
-    fprintf(f,"fils:\n");
+    fprintf(f," debut ");
+    fprintf(f," %d %d %f ",a->type,a->noeud,a->noeudf);
+    fprintf(f," fils: ");
     ecrire_noeud(f,a->fils);
-    fprintf(f,"frere:\n");
+    fprintf(f," frere: ");
     ecrire_noeud(f,a->frere);
+  }
+  else {
+    fprintf(f," vide ");
   }
 }
 
@@ -29,7 +33,7 @@ void ecrire_tables(FILE *f1){
   int i;
   fprintf(f1,"hash:\n");
   for(i=0;i<Table[0];i++){
-    fprintf(f1,"%s %d %d\n",List[i].chaine,List[i].len,List[i].suivant);
+    fprintf(f1,"%d %s %d %d\n",i,List[i].chaine,List[i].len,List[i].suivant);
   }
 
   fprintf(f1,"\ntable_dec:\n");
@@ -42,6 +46,13 @@ void ecrire_tables(FILE *f1){
   fprintf(f1,"\ntable_rep_type\n");
   for(i=0;i<Index_table_rep_type;i++){
     fprintf(f1,"%d ",Table_rep_type[i]);
+  }
+
+  fprintf(f1,"\ntable_region\n");
+  for(i=0;i<=index_table_region;i++){
+    fprintf(f1,"%d %d %d",i,table_region[i].taille,table_region[i].nis);
+    ecrire_noeud(f1,table_region[i].a);
+    fprintf(f1,"\n");
   }
 }
 

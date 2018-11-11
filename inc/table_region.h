@@ -14,9 +14,10 @@ int index_table_region;
 
 
 void init_table_region();
-int ajoue_arbre_table_region(type_arbre *a );
+int ajoute_arbre_table_region(type_arbre *a );
 void nouvelle_region();
 int region_actu();
 void fin_region();
+void ajoute_taille_region(int bc);
 
 #endif

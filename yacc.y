@@ -19,22 +19,22 @@
 %token<type_float> CSTE_REEL
 
 
-%type<arbre> plus_moins variable variable_idf tableau liste_param_tab param_du_tab expression_chaine expression expression_et expression_ou expression_neg expression_bcn cste_bool expression_cmp opcomp expression_num e1 e2 e3 e4 e5 appel liste_arguments un_arg liste_args corps liste_instructions suite_liste_inst instruction resultat_retourne condition tant_que affectation programme declaration_procedure liste_parametres un_param liste_param nom_type type_simple declaration_fonction
+%type<arbre> plus_moins variable variable_idf tableau liste_param_tab param_du_tab expression_chaine expression expression_et expression_ou expression_neg expression_bcn cste_bool expression_cmp opcomp expression_num e1 e2 e3 e4 e5 appel liste_arguments un_arg liste_args corps liste_instructions suite_liste_inst instruction resultat_retourne condition tant_que affectation liste_parametres un_param liste_param nom_type type_simple 
  
 %%
-all : programme {sauvegarder_arbre($1,"test_sauv");sauvegarde_tables("test_tables");supprime_arbre($1);}
+all : programme{sauvegarde_tables("table_prog");} ;
 
-programme : DEBUT_PROG corps {printf("prog \n");$$=concat_pere_fils(cree_noeud(A_LIST,-1),$2);afficher_arbre($2);}
+programme : DEBUT_PROG corps {printf("prog \n");fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),$2));}
          ;
 
-corps : liste_declarations liste_instructions {$$=$2;}
+corps : liste_declarations  liste_instructions {$$=$2;}
       | liste_instructions {$$=$1;}
       ;
 
 liste_declarations : dec1
                    ;
 
-liste_instructions : DEBUT suite_liste_inst FIN {$$=$2;ajoue_arbre_table_region($2);}
+liste_instructions : DEBUT suite_liste_inst FIN {$$=$2;}
                    ;
 
 suite_liste_inst : instruction POINT_VIRGULE{$$=$1;}
@@ -48,15 +48,15 @@ dec1: declaration_type POINT_VIRGULE
     | dec2
     ;
 
-dec2: declaration_variable POINT_VIRGULE
-    | declaration_variable POINT_VIRGULE dec2
+dec2: declaration_variable  POINT_VIRGULE
+    | declaration_variable  POINT_VIRGULE dec2
     | dec3
     ;
 
-dec3: declaration_procedure POINT_VIRGULE{sauvegarder_arbre($1,"test_sauv");supprime_arbre($1);}
-    | declaration_fonction  POINT_VIRGULE{sauvegarder_arbre($1,"test_sauv");supprime_arbre($1);}
-    | declaration_procedure POINT_VIRGULE{sauvegarder_arbre($1,"test_sauv");supprime_arbre($1);} dec3
-    | declaration_fonction  POINT_VIRGULE{sauvegarder_arbre($1,"test_sauv");supprime_arbre($1);} dec3
+dec3: declaration_procedure POINT_VIRGULE
+    | declaration_fonction  POINT_VIRGULE
+    | declaration_procedure POINT_VIRGULE dec3
+    | declaration_fonction  POINT_VIRGULE dec3
     ;
 
 declaration_type : TYPE IDF DEUX_POINTS suite_declaration_type_t {ajoute_tableau($2);}
@@ -87,7 +87,7 @@ liste_champs : un_champ
              | liste_champs un_champ
              ;
 
-un_champ : IDF DEUX_POINTS nom_type POINT_VIRGULE {enfile($1);enfile($3->noeud);}
+un_champ : IDF DEUX_POINTS nom_type POINT_VIRGULE {enfile($1);enfile($3->noeud);enfile(taille_type($3->noeud));}
          ;
 
 nom_type : type_simple {$$=$1;}
@@ -101,13 +101,13 @@ type_simple : ENTIER {$$=cree_noeud(A_INT,$1);}
             | CHAINE CO CSTE_ENTIERE CF {$$=concat_pere_fils(cree_noeud(A_CHAINE,$1),cree_noeud(A_CSTE_E,$3));}
             ;
 
-declaration_variable : VARIABLE IDF DEUX_POINTS nom_type {ajoute_variable($2,$4->noeud);}
+declaration_variable : VARIABLE IDF DEUX_POINTS nom_type {ajoute_variable($2,$4->noeud);{taille_de_la_region();}}
                      ;
 
-declaration_procedure : PROCEDURE  IDF liste_parametres {ajoute_proc($2);} corps {$$=concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_PROC,$2),concat_pere_frere($3,concat_pere_fils(cree_noeud(A_LIST,-1),$5))));}
+declaration_procedure : PROCEDURE  IDF liste_parametres {ajoute_proc($2);} corps {fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_PROC,$2),concat_pere_frere($3,concat_pere_fils(cree_noeud(A_LIST,-1),$5)))));}
                       ;
 
-declaration_fonction : FONCTION IDF liste_parametres RETOURNE nom_type {enfile($5->noeud);ajoute_fonction($2);} corps {$$=concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_FONCTION,$2),concat_pere_frere($3,concat_pere_frere(concat_pere_fils(cree_noeud(A_RETURN,-1),$5),concat_pere_fils(cree_noeud(A_LIST,-1),$7)))));}/*nom type nan?*/
+declaration_fonction : FONCTION IDF liste_parametres RETOURNE nom_type {enfile($5->noeud);ajoute_fonction($2);} corps {fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_FONCTION,$2),concat_pere_frere($3,concat_pere_frere(concat_pere_fils(cree_noeud(A_RETURN,-1),$5),concat_pere_fils(cree_noeud(A_LIST,-1),$7))))));}/*nom type nan?*/
                      ;
 
 
@@ -270,6 +270,7 @@ int main(){
   init_table_hash();
   init_table_decla();
   init_table_rep_type();
+  init_table_region();
   init_file();
   nouvelle_region();
   ajoute_type_base(ajoute_lexem("Int"));

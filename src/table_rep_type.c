@@ -32,6 +32,8 @@ void rp_ajoute_struct(){
       Table_rep_type[index_actuel]=num;
       num=defile();
       Table_rep_type[index_actuel+1]=num;
+      num=defile();
+      Table_rep_type[index_actuel+2]=num;
       index_actuel+=3;
     }
     else{
@@ -57,7 +59,7 @@ void rp_ajoute_proc(){
       fprintf(stdout,"erreur formatage de la file \n");
     }
   }
-  Table_rep_type[Index_table_rep_type]=(index_actuel-(Index_table_rep_type))/2;
+  Table_rep_type[Index_table_rep_type]=(index_actuel-(Index_table_rep_type+1))/2;
   Index_table_rep_type=index_actuel;
 }
 
@@ -76,7 +78,7 @@ void rp_ajoute_fonction(){
       Table_rep_type[Index_table_rep_type+1]=num;
     }
   }
-  Table_rep_type[Index_table_rep_type]=(index_actuel-(Index_table_rep_type+1))/2;
+  Table_rep_type[Index_table_rep_type]=(index_actuel-(Index_table_rep_type+2))/2;
   Index_table_rep_type=index_actuel;
 }
 
