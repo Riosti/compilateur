@@ -8,7 +8,12 @@ all: lex.l yacc.y arbre.o hash.o sauv.o pile.o table_region.o table_declaration.
 	mv lex.yy.c obj/
 
 
-all.o: arbre.o sauv.o file.o hash.o table_rep_type.o erreur.o table_region.o table_declaration.o
+all.o: arbre.o sauv.o file.o hash.o table_rep_type.o erreur.o table_region.o table_declaration.o pile_exec.o
+
+pile_exec.o: src/pile_exec.c inc/pile_exec.h
+	gcc -Wall src/pile_exec.c inc/pile_exec.h
+	mv pile_exec.o obj/
+
 
 arbre.o: src/arbre.c inc/arbre.h obj
 	gcc -Wall src/arbre.c inc/arbre.h -c
