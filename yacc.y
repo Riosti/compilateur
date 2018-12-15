@@ -90,23 +90,23 @@ un_champ : IDF DEUX_POINTS nom_type POINT_VIRGULE {enfile($1);enfile($3->noeud);
          ;
 
 nom_type : type_simple {$$=$1;}
-         | IDF {$$=cree_noeud(A_IDF,$1);}
+| IDF {type_arbre *a ;a=cree_noeud(A_IDF,$1);ajoute_type_final(a,type_var(num_dec($1)));$$=a;}
          ;
 
-type_simple : ENTIER {$$=cree_noeud(A_INT,$1);}
-            | REEL {$$=cree_noeud(A_FLOAT,$1);}  
-            | BOOLEEN {$$=cree_noeud(A_BOOL,$1);}
-            | CARACTERE{$$=cree_noeud(A_CHAR,$1);}
-            | CHAINE CO CSTE_ENTIERE CF {$$=concat_pere_fils(cree_noeud(A_CHAINE,$1),cree_noeud(A_CSTE_E,$3));}
+type_simple : ENTIER {type_arbre *a;a=cree_noeud(A_INT,$1); ajoute_type_final(a,0);$$=a;}
+            | REEL {type_arbre *a;a=cree_noeud(A_FLOAT,$1);ajoute_type_final(a,1);$$=a;}  
+            | BOOLEEN {type_arbre *a;a=cree_noeud(A_BOOL,$1);ajoute_type_final(a,3);$$=a;}
+            | CARACTERE{type_arbre *a;a=cree_noeud(A_CHAR,$1);ajoute_type_final(a,2);$$=a;}
+            | CHAINE CO CSTE_ENTIERE CF {type_arbre *a;a=concat_pere_fils(cree_noeud(A_CHAINE,$1),cree_noeud(A_CSTE_E,$3));ajoute_type_final(a,4);$$=a;}
             ;
 
 declaration_variable : VARIABLE IDF DEUX_POINTS nom_type {ajoute_variable($2,$4->noeud);{taille_de_la_region();}}
                      ;
 
-declaration_procedure : PROCEDURE  IDF liste_parametres {ajoute_proc($2);} corps {fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_PROC,$2),concat_pere_frere($3,concat_pere_fils(cree_noeud(A_LIST,-1),$5)))));}
+declaration_procedure : PROCEDURE  IDF liste_parametres {ajoute_proc($2);} corps {test_corp_procedure($5);fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_PROC,$2),concat_pere_frere($3,concat_pere_fils(cree_noeud(A_LIST,-1),$5)))));}
                       ;
 
-declaration_fonction : FONCTION IDF liste_parametres RETOURNE nom_type {enfile($5->noeud);ajoute_fonction($2);} corps {fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_FONCTION,$2),concat_pere_frere($3,concat_pere_frere(concat_pere_fils(cree_noeud(A_RETURN,-1),$5),concat_pere_fils(cree_noeud(A_LIST,-1),$7))))));}/*nom type nan?*/
+declaration_fonction : FONCTION IDF liste_parametres RETOURNE nom_type {enfile($5->noeud);ajoute_fonction($2);} corps {test_corp_fonction(num_dec($2),$7);fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_FONCTION,$2),concat_pere_frere($3,concat_pere_frere(concat_pere_fils(cree_noeud(A_RETURN,-1),$5),concat_pere_fils(cree_noeud(A_LIST,-1),$7))))));}/*nom type nan?*/
                      ;
 
 
@@ -114,11 +114,15 @@ liste_parametres : {$$=cree_noeud(A_VIDE,-1);}
                  | PO liste_param PF {$$=$2;}
 		 ;
 
-liste_param : un_param {$$=$1;}
-            | liste_param POINT_VIRGULE un_param {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_PARAM,-1),$3));;$$=$1;}
+liste_param : un_param {type_arbre *a ;
+   a=concat_pere_fils(cree_noeud(A_PARAM,-1),$1);
+   ajoute_type_final(a,donne_type_final($1));
+   $$=a;
+ }
+| liste_param POINT_VIRGULE un_param {type_arbre * a,*b;a=$1;b=concat_pere_fils(cree_noeud(A_PARAM,-1),$3);while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,b);$$=a;ajoute_type_final(b,donne_type_final($3));}
             ;
 
-un_param : IDF DEUX_POINTS nom_type {$$=cree_noeud(A_IDF,$1);enfile($1);enfile($3->noeud);}/*nom type nan ?*/
+un_param : IDF DEUX_POINTS nom_type {type_arbre *a;a=cree_noeud(A_IDF,$1);enfile($1);enfile($3->noeud);ajoute_type_final(a,donne_type_final($3));$$=a;}/*nom type nan ?*/
          ;
 
 instruction : affectation {$$=$1;}
@@ -126,15 +130,15 @@ instruction : affectation {$$=$1;}
             | tant_que {$$=$1;}
             | appel  {$$=$1;}
             | VIDE {$$=cree_noeud(A_VIDE,-1);}
-            | RETOURNE resultat_retourne {$$=concat_pere_fils(cree_noeud(A_RETURN,-1),$2);}
+| RETOURNE resultat_retourne {type_arbre *a;a=concat_pere_fils(cree_noeud(A_RETURN,-1),$2);ajoute_type_final(a,donne_type_final($2));$$=a;fprintf(stderr,"return \n");}
             | lire {$$=$1;}
             | ecrire {$$=$1;}
             ;
 
-lire : READ PO type_simple PF {$$ =concat_pere_fils(cree_noeud(A_LIRE,-1),$3);}
+lire : READ PO type_simple PF {$$ =concat_pere_fils(cree_noeud(A_LIRE,-1),$3);}/*type*/
 
 
-ecrire : WRITE PO IDF PF {$$ = concat_pere_fils(cree_noeud(A_LIRE,-1),cree_noeud(A_IDF,$3));} 
+ecrire : WRITE PO IDF PF {$$ = concat_pere_fils(cree_noeud(A_LIRE,-1),cree_noeud(A_IDF,$3));} /*expression*/
 
 
 resultat_retourne : {$$=cree_noeud(A_VIDE,-1);}
@@ -142,15 +146,33 @@ resultat_retourne : {$$=cree_noeud(A_VIDE,-1);}
                   | expression_chaine {$$=$1;}
 		  ;
 
-appel : IDF liste_arguments {$$=concat_pere_fils(cree_noeud(A_APPEL,-1),concat_pere_frere(cree_noeud(A_IDF,$1),$2));} 
+appel : IDF liste_arguments {type_arbre *a;
+   if(est_une_fonction(num_dec($1))){
+     a=concat_pere_fils(cree_noeud(A_APPEL_F,-1),concat_pere_frere(cree_noeud(A_IDF,$1),$2));ajoute_type_final(a,donne_type_fonction(num_dec($1)));verif_arg_fonction(num_dec($1),$2);$$=a;
+   }
+   else{
+     if(est_une_procedure(num_dec($1))){
+       a=concat_pere_fils(cree_noeud(A_APPEL_P,-1),concat_pere_frere(cree_noeud(A_IDF,$1),$2));verif_arg_procedure(num_dec($1),$2);$$=a;
+     }
+     else{
+       fprintf(stderr,"%s n'est pas une fonction ou une procedure donc appelle impossible\n",get_lexeme($1));
+       exit(-1);
+     }
+   }
+ } 
       ;
 
 liste_arguments :PO PF {$$=NULL;}
                 |PO liste_args PF {$$=$2;}
 		;
 
-liste_args : un_arg {$$=concat_pere_fils(cree_noeud(A_ARG,-1),$1);}
-| liste_args VIRGULE un_arg {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_ARG,-1),$3));;$$=$1;}
+liste_args : un_arg {type_arbre *a;a=concat_pere_fils(cree_noeud(A_ARG,-1),$1);ajoute_type_final(a,donne_type_final($1));$$=a;}
+| liste_args VIRGULE un_arg {type_arbre * a, *b;
+   a=$1;
+   b=concat_pere_fils(cree_noeud(A_ARG,-1),$3);
+   ajoute_type_final(b,donne_type_final($3));
+   while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,b);
+   $$=$1;}
            ;
 
 un_arg : expression {$$=$1;}
@@ -158,25 +180,70 @@ un_arg : expression {$$=$1;}
 
 condition : SI expression
            ALORS liste_instructions 
-SINON liste_instructions {$$=concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(concat_pere_fils(cree_noeud(A_SI,-1),$2),concat_pere_frere(concat_pere_fils(cree_noeud(A_ALORS,-1),$4),concat_pere_fils(cree_noeud(A_SINON,-1),$6))));}
+SINON liste_instructions {
+  if(test_type($2,3)){
+    $$=concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(concat_pere_fils(cree_noeud(A_SI,-1),$2),concat_pere_frere(concat_pere_fils(cree_noeud(A_ALORS,-1),$4),concat_pere_fils(cree_noeud(A_SINON,-1),$6))));
+  }
+  else{
+    fprintf(stderr,"apres un il il faut une expression boolean \n");
+    exit(-1);
+  }}
           ;
 
-tant_que : TANT_QUE expression FAIRE liste_instructions {printf("voila\n");$$=concat_pere_fils(cree_noeud(A_TQ,-1),concat_pere_frere($2,$4));}
+tant_que : TANT_QUE expression FAIRE liste_instructions {
+  if(test_type($2,3)){
+    $$=concat_pere_fils(cree_noeud(A_TQ,-1),concat_pere_frere($2,$4));
+  }
+  else{
+    fprintf(stderr,"apres un tant que le type de l'expression dois etre un boolean \n");
+    exit(-1);
+  }
+}
          ;
 
-affectation : variable OPAFF expression {$$=concat_pere_fils(cree_noeud(A_OPAFF,-1),concat_pere_frere($1,$3));}
-            | variable OPAFF expression_chaine {$$=concat_pere_fils(cree_noeud(A_OPAFF,-1),concat_pere_frere($1,$3));}
-            | variable plus_moins {$$=concat_pere_fils($2,$1);}
+affectation : variable OPAFF expression {
+  if(test_des_types_arbre($1,$3)){
+     $$=concat_pere_fils(cree_noeud(A_OPAFF,-1),concat_pere_frere($1,$3));
+   }
+   else{
+     fprintf(stderr,"affectaion de impossible types diffents \n");
+     exit(-1);
+   }
+ }
+            | variable OPAFF expression_chaine {
+	      if(test_des_types_arbre($1,$3)){
+		$$=concat_pere_fils(cree_noeud(A_OPAFF,-1),concat_pere_frere($1,$3));
+	      }
+	      else{
+		fprintf(stderr,"affectaion de impossible types diffents \n");
+		exit(-1);
+	      }
+ }
+            | variable plus_moins {
+	      type_arbre *a ;
+	      a=concat_pere_fils(cree_noeud(A_OPAFF,-1),concat_pere_fils($2,concat_pere_frere($1,cree_noeud(A_CSTE_E,1))));
+	      if(test_type($1,0) || test_type($1,1) || test_type($1,2)){
+		ajoute_type_final(a,donne_type_final($1));
+	      }
+	      else{
+		fprintf(stderr,"erreur type pour le ++ ou -- n'est pas respecter \n");
+		exit(-1);
+	      }
+	      $$=a;}
             ;
 
 variable : variable_idf {$$=$1;
-   ajoute_type_var($1,type_var(donne_num_hash_arbre($1)));
-   ajoute_type_final($1,type_var(donne_num_hash_arbre($1)));}
+   ajoute_type_var($1,type_var(num_dec(donne_num_hash_arbre($1))));
+   ajoute_type_final($1,type_var(num_dec(donne_num_hash_arbre($1))));
+   ajoute_num_dec($1,num_dec(donne_num_hash_arbre($1)));
+ }
 
 
 
 | tableau {$$=$1;
-   ajoute_type_final($1,type_dun_tab(type_var(donne_num_hash_arbre($1->fils))));}
+   ajoute_type_final($1,type_dun_tab(type_var(num_dec(donne_num_hash_arbre($1->fils)))));
+   ajoute_num_dec($1,num_dec(donne_num_hash_arbre($1->fils)));
+  }
 
 
 
@@ -205,7 +272,15 @@ tableau : IDF liste_param_tab {type_arbre *a ; a=concat_pere_fils(cree_noeud(A_T
 liste_param_tab : CO param_du_tab CF {$$=$2;}
                 | liste_param_tab CO param_du_tab CF {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_PARAM,-1),$3));;$$=$1;}/*ici je sais pas si ca serais pas inutile*/
 
-param_du_tab : expression {$$=$1;}
+param_du_tab : expression {type_arbre *a;
+   if(test_type($1,0)){
+     $$=$1;
+   }
+   else{
+     fprintf(stderr,"un tableau ne peux prendre que des entier en parametre\n");
+     exit(-1);
+   }
+ }
              | param_du_tab VIRGULE expression {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_VIRGULE,-1),$3));;$$=$1;}
              ;
 
@@ -396,7 +471,7 @@ e4 : PO expression PF {$$=$2;}
 e5 : variable {$$=$1;}
 | variable plus_moins {
    type_arbre *a ;
-   a=concat_pere_fils(cree_noeud(A_OPAFF,-1),concat_pere_frere($1,concat_pere_frere($2,concat_pere_frere($1,cree_noeud(A_CSTE_E,1)))));
+   a=concat_pere_fils($2,concat_pere_frere($1,cree_noeud(A_CSTE_E,1)));
    if(test_type($1,0) || test_type($1,1) || test_type($1,2)){
        ajoute_type_final(a,donne_type_final($1));
      }
@@ -407,8 +482,8 @@ e5 : variable {$$=$1;}
      $$=a;}
    ;
 
-plus_moins : INCREMENTE {$$=cree_noeud(A_PLUS,-1);}
-           | DECREMENTE {$$=cree_noeud(A_MOINS,-1);}
+plus_moins : INCREMENTE {$$=cree_noeud(A_INCR,-1);}
+           | DECREMENTE {$$=cree_noeud(A_DEC,-1);}
            ;
 
 
