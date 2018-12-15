@@ -14,13 +14,17 @@ function toggle(a) {
 }
 
 function plier(a) {
+    console.log("p " + a);
     if (document.getElementById(a) == null) {
     } else {
         document.getElementById(a).setAttribute("hid", "1")
+        console.log(a);
+
     }
 }
 
 function deplier(a) {
+    console.log("dp " + a);
     if (document.getElementById(a) == null) {
     } else {
         document.getElementById(a).setAttribute("hid", "0")
@@ -28,18 +32,21 @@ function deplier(a) {
 
 }
 
-function toutPlier() {
-    var n = document.getElementById("acc").value
+function toutPlier(a) {
+    console.log("tp " + a);
+    var n = document.getElementById("acc" + a).value
 
-    for (let i = 1; i < n; i++) {
-        plier(i)
+    for (let i = 2; i < n; i++) {
+        plier("a" + a + "a" + i)
     }
 }
 
-function toutDePlier() {
-    var n = document.getElementById("acc").value
+function toutDePlier(a) {
+    console.log("tdp " + a);
+
+    var n = document.getElementById("acc" + a).value
 
     for (let i = 1; i < n; i++) {
-        deplier(i)
+        deplier("a" + a + "a" + i)
     }
 }

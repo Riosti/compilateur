@@ -1,0 +1,6 @@
+Prog
+
+{
+    a=1+1;
+    Return a;
+}
