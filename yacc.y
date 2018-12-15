@@ -169,23 +169,44 @@ affectation : variable OPAFF expression {$$=concat_pere_fils(cree_noeud(A_OPAFF,
             | variable plus_moins {$$=concat_pere_fils($2,$1);}
             ;
 
-variable : variable_idf {$$=$1;}
-         | tableau {$$==$1;}
-         | variable POINT tableau {$$=concat_pere_fils(cree_noeud(A_STRUCT,-1),concat_pere_frere($1,$3));} 
-         | variable POINT variable_idf {$$=concat_pere_fils(cree_noeud(A_STRUCT,-1),concat_pere_frere($1,$3));} 
+variable : variable_idf {$$=$1;
+   ajoute_type_var($1,type_var(donne_num_hash_arbre($1)));
+   ajoute_type_final($1,type_var(donne_num_hash_arbre($1)));}
+
+
+
+| tableau {$$=$1;
+   ajoute_type_final($1,type_dun_tab(type_var(donne_num_hash_arbre($1->fils))));}
+
+
+
+
+| variable POINT tableau {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_STRUCT,-1),$3));
+   ajoute_type_var($3,type_dun_tab(type_dun_struct(donne_type_arbre(a),donne_num_hash_arbre($3->fils))));
+   ajoute_type_final($1,donne_type_arbre($3->fils));
+   $$=$1;}
+
+
+
+| variable POINT variable_idf {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_STRUCT,-1),$3));
+
+   ajoute_type_var($3,type_dun_struct(donne_type_final($1),donne_num_hash_arbre($3)));
+
+   ajoute_type_final($1,donne_type_arbre($3));
+   $$=$1; }
          ;
 
 variable_idf : IDF {$$=cree_noeud(A_IDF,$1);}
              ;
 
-tableau : IDF liste_param_tab {$$=concat_pere_fils(cree_noeud(A_TABLEAU,-1),concat_pere_frere(cree_noeud(A_IDF,$1),$2));}
+tableau : IDF liste_param_tab {type_arbre *a ; a=concat_pere_fils(cree_noeud(A_TABLEAU,-1),concat_pere_frere(cree_noeud(A_IDF,$1),$2));$$=a;}
         ;
 
 liste_param_tab : CO param_du_tab CF {$$=$2;}
-                | liste_param_tab CO param_du_tab CF {$$=concat_pere_fils(cree_noeud(A_PARAM,-1),concat_pere_frere($1,$3));}/*ici je sais pas si ca serais pas inutile*/
+                | liste_param_tab CO param_du_tab CF {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_PARAM,-1),$3));;$$=$1;}/*ici je sais pas si ca serais pas inutile*/
 
 param_du_tab : expression {$$=$1;}
-             | param_du_tab VIRGULE expression {concat_pere_fils(cree_noeud(A_VIRGULE,-1),concat_pere_frere($1,$3));}
+             | param_du_tab VIRGULE expression {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_VIRGULE,-1),$3));;$$=$1;}
              ;
 
 expression_chaine : expression_chaine PLUS CSTE_CHAINE {concat_pere_fils(cree_noeud(A_PLUS,-1),concat_pere_frere($1,cree_noeud(A_CHAINE,$3)));}
@@ -195,15 +216,47 @@ expression_chaine : expression_chaine PLUS CSTE_CHAINE {concat_pere_fils(cree_no
 expression : expression_et {$$=$1;}
            ;
 
-expression_et : expression_et ET expression_ou {$$=concat_pere_fils(cree_noeud(A_ET,-1),concat_pere_frere($1,$3));}
+expression_et : expression_et ET expression_ou {
+type_arbre *a;
+   if(test_type($3,3) && test_type($1,3)){
+     a=concat_pere_fils(cree_noeud(A_ET,-1),concat_pere_frere($1,$3));
+       ajoute_type_final(a,3);
+       $$=a;
+     }
+   else{
+     fprintf(stderr,"seul les expressions booleen ou les booleans peuvent avoir un et entre elles\n");
+     exit(-1);
+   }
+ }
               | expression_ou {$$=$1;}
               ;
 
-expression_ou : expression_ou OU expression_neg {$$=concat_pere_fils(cree_noeud(A_OU,-1),concat_pere_frere($1,$3));}
+expression_ou : expression_ou OU expression_neg {
+ type_arbre *a;
+   if(test_type($3,3) && test_type($1,3)){
+     a=concat_pere_fils(cree_noeud(A_OU,-1),concat_pere_frere($1,$3));
+       ajoute_type_final(a,3);
+       $$=a;
+     }
+   else{
+     fprintf(stderr,"seul les expressions booleen ou les booleans peuvent avoir un ou entre elles\n");
+     exit(-1);
+   }
+ }
               | expression_neg {$$=$1;}
               ;
 
-expression_neg : NON expression_bcn {concat_pere_fils(cree_noeud(A_NON,-1),$2);}
+expression_neg : NON expression_bcn {
+ type_arbre *a;
+   if(test_type($2,3)){
+     a=concat_pere_fils(cree_noeud(A_NON,-1),$2);
+       ajoute_type_final(a,3);
+       $$=a;
+     }
+   else{
+     fprintf(stderr,"seul les expression booleen ou les boolean peuvente avoir un non davant eux\n");
+     exit(-1);
+   }}
                | expression_bcn {$$=$1;}
                ;
 
@@ -212,11 +265,26 @@ expression_bcn : cste_bool {$$=$1;}
                | expression_num {$$=$1;}
                ;
 
-cste_bool : VRAI {$$=cree_noeud(A_BOOL,1);}
-          | FAUX {$$=cree_noeud(A_BOOL,-1);}
+cste_bool : VRAI {type_arbre *a;a=cree_noeud_type(A_BOOL,1,3); ajoute_type_final(a,3);$$=a;}
+| FAUX {type_arbre *a;a=cree_noeud_type(A_BOOL,-1,3); ajoute_type_final(a,3);$$=a;}
           ;
 
-expression_cmp : expression_num opcomp expression_num {printf("voila\n");$$=concat_pere_fils($2,concat_pere_frere($1,$3));printf("truc\n");}
+expression_cmp : expression_num opcomp expression_num {type_arbre *a;
+   if((test_type($1,0) || test_type($1,1)) && (test_type($3,0) || test_type($3,1))){
+     if(test_des_types_arbre($1,$3)){
+       a=concat_pere_fils($2,concat_pere_frere($1,$3));
+       ajoute_type_final(a,3);
+       $$=a;
+     }
+     else{
+       fprintf(stderr,"les type ne sont pas identique donc imposible de les comparer\n");
+       exit(-1);
+     }
+   }
+   else{
+     fprintf(stderr,"les type ne sont pas des int ou des reels imposible de comparer d'autres types\n");
+     exit(-1);
+   }}
                ;
 
 opcomp : INF {$$=cree_noeud(A_INF,-1);}
@@ -231,33 +299,116 @@ expression_num : e1 {$$==$1;}
                ;
 
 e1 : e2 {$$=$1;}
-   | e1 PLUS e2 {$$=concat_pere_fils(cree_noeud(A_PLUS,-1),concat_pere_frere($1,$3));}
-   | e1 MOINS e2 {$$=concat_pere_fils(cree_noeud(A_MOINS,-1),concat_pere_frere($1,$3));}
+| e1 PLUS e2 {type_arbre *a;
+  if((test_type($1,0) || test_type($1,1)) && (test_type($3,0) || test_type($3,1))){
+     if(test_des_types_arbre($1,$3)){
+       a=concat_pere_fils(cree_noeud(A_PLUS,-1),concat_pere_frere($1,$3));
+       ajoute_type_final(a,donne_type_final($1));
+       $$=a;
+     }
+     else{
+       fprintf(stderr,"les type ne sont pas identique donc + imposible\n");
+       exit(-1);
+     }
+   }
+   else{
+     fprintf(stderr,"les type ne sont pas des int ou des reels + imposible\n");
+     exit(-1);
+   }
+ }
+| e1 MOINS e2 {type_arbre *a;
+     if((test_type($1,0) || test_type($1,1)) && (test_type($3,0) || test_type($3,1))){
+     if(test_des_types_arbre($1,$3)){
+       a=concat_pere_fils(cree_noeud(A_MOINS,-1),concat_pere_frere($1,$3));
+       ajoute_type_final(a,donne_type_final($1));
+       $$=a;
+     }
+     else{
+       fprintf(stderr,"les type ne sont pas identique donc - imposible\n");
+       exit(-1);
+     }
+   }
+   else{
+     fprintf(stderr,"les type ne sont pas des int ou des reels - imposible\n");
+     exit(-1);
+   }
+ }
    ;
 
 e2 : e3 {$$=$1;}
-   | e2 MULT e3 {$$=concat_pere_fils(cree_noeud(A_MULT,-1),concat_pere_frere($1,$3));}
-   | e2 DIV e3 {$$=concat_pere_fils(cree_noeud(A_DIV,-1),concat_pere_frere($1,$3));}
+| e2 MULT e3 {type_arbre *a;
+   if((test_type($1,0) || test_type($1,1)) && (test_type($3,0) || test_type($3,1))){
+     if(test_des_types_arbre($1,$3)){
+       a=concat_pere_fils(cree_noeud(A_MULT,-1),concat_pere_frere($1,$3));
+       ajoute_type_final(a,donne_type_final($1));
+       $$=a;
+     }
+     else{
+       fprintf(stderr,"les type ne sont pas identique donc multiplication imposible\n");
+       exit(-1);
+     }
+   }
+   else{
+     fprintf(stderr,"les type ne sont pas des int ou des reels multiplication imposible\n");
+     exit(-1);
+   }
+ }
+| e2 DIV e3 {type_arbre *a;
+   if((test_type($1,0) || test_type($1,1)) && (test_type($3,0) || test_type($3,1))){
+     if(test_des_types_arbre($1,$3)){
+       a=concat_pere_fils(cree_noeud(A_DIV,-1),concat_pere_frere($1,$3));
+       ajoute_type_final(a,donne_type_final($1));
+       $$=a;
+     }
+     else{
+       fprintf(stderr,"les type ne sont pas identique donc division imposible\n");
+       exit(-1);
+     }
+   }
+   else{
+     fprintf(stderr,"les type ne sont pas des int ou des reels division imposible\n");
+     exit(-1);
+   }}
    ;
 
-e3 : MOINS e4 {$2->noeud*=-1; $2->noeudf*=-1;$$=$2;}
+e3 : MOINS e4 {
+  if(test_type($2,0) || test_type($2,1)){
+  $2->noeud*=-1;
+   $2->noeudf*=-1;
+   $$=$2;
+      }
+      else{
+	fprintf(stderr,"erreur - var mais la variable n'est pas un entier ou un reel \n");
+	exit(-1);
+      }
+      }
    | e4 {$$=$1;}
    ;
 
 e4 : PO expression PF {$$=$2;}
-   | CSTE_ENTIERE {$$=cree_noeud(A_CSTE_E,$1);}
-   | CSTE_REEL {$$=cree_noeud_f(A_CSTE_R,$1);}
-   | CSTE_CARACTERE {$$=cree_noeud(A_CSTE_E,$1);}
-   | appel {$$=$1;}
+   | CSTE_ENTIERE {type_arbre *a; a=cree_noeud_type(A_CSTE_E,$1,0); ajoute_type_final(a,0);$$=a;}
+   | CSTE_REEL { type_arbre *a; a=cree_noeud_f_type(A_CSTE_R,$1,1); ajoute_type_final(a,1); $$=a;}
+   | CSTE_CARACTERE {type_arbre *a;a=cree_noeud_type(A_CSTE_E,$1,2); ajoute_type_final(a,2);$$=a;}
+| appel {$$=$1;}/* ici a faire plus hautr*/
    | e5{$$=$1;}
    ;
 
 e5 : variable {$$=$1;}
-| variable plus_moins {$$=concat_pere_fils(cree_noeud(A_OPAFF,-1),concat_pere_frere($1,concat_pere_frere(cree_noeud(A_PLUS,-1),concat_pere_frere($1,cree_noeud(A_CSTE_E,1)))));}
+| variable plus_moins {
+   type_arbre *a ;
+   a=concat_pere_fils(cree_noeud(A_OPAFF,-1),concat_pere_frere($1,concat_pere_frere($2,concat_pere_frere($1,cree_noeud(A_CSTE_E,1)))));
+   if(test_type($1,0) || test_type($1,1) || test_type($1,2)){
+       ajoute_type_final(a,donne_type_final($1));
+     }
+     else{
+       fprintf(stderr,"erreur type pour le ++ ou -- n'est pas respecter \n");
+       exit(-1);
+     }
+     $$=a;}
    ;
 
-plus_moins : INCREMENTE {$$=cree_noeud(A_INCR,-1);}
-           | DECREMENTE {$$=cree_noeud(A_DEC,-1);}
+plus_moins : INCREMENTE {$$=cree_noeud(A_PLUS,-1);}
+           | DECREMENTE {$$=cree_noeud(A_MOINS,-1);}
            ;
 
 
