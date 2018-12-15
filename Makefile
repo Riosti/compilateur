@@ -3,11 +3,9 @@ all: lex.l yacc.y html.o arbre.o hash.o sauv.o pile.o table_region.o table_decla
 	lex lex.l
 	gcc -c lex.yy.c
 	gcc -o bin/exec y.tab.c lex.yy.o obj/html.o obj/arbre.o obj/sauv.o obj/hash.o obj/pile.o obj/table_region.o obj/table_declaration.o obj/table_rep_type.o obj/file.o -ly -ll
-	gcc src/lecture_sauv.c src/html2.c -o lecture_sauv
 	mv y.* obj/
 	mv *.o obj/
 	mv lex.yy.c obj/
-	mv lecture_sauv bin/
 	
 
 
@@ -46,10 +44,6 @@ pile.o : src/pile.c inc/pile.h
 html.o: inc/html.h src/html.c obj
 	gcc -Wall src/html.c inc/html.h -c
 	mv html.o obj/
-
-lec: src/lecture_sauv.c src/html2.c
-	gcc src/lecture_sauv.c src/html2.c -o lecture_sauv
-	mv lecture_sauv bin/
 
 obj:
 	mkdir obj

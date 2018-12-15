@@ -151,11 +151,11 @@ void new_arbre_html(int t)
         aac = 1;
     }
     fprintf(html,
-        "\t<input class=\"tp\" type=\"button\" value=\"Tout Plier\" onclick=\" toutPlier(%d) \">\n"
+        "\t<input id=\"sec%d\" class=\"tp\" type=\"button\" value=\"Tout Plier\" onclick=\" toutPlier(%d) \">\n"
         "\t<input class=\"tdp\" type=\"button\" value=\"Tout Deplier\" onclick=\" toutDePlier(%d) \">\n"
         "\t<span class=\" titreSection \">%s</span>\n"
-        "\t<section id=\"sec%d\" class=\" arbre \"> <ul id=\"a%da1\" hid=\"0\">",
-        narbre, narbre, titre, narbre, narbre);
+        "\t<section  class=\" arbre \"> <ul id=\"a%da1\" hid=\"0\">",
+        narbre, narbre, narbre, titre, narbre);
 }
 
 void end_html()
