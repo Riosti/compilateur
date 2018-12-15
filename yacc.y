@@ -1,5 +1,6 @@
 %{
   #include "inc/sauv.h"
+  #include "inc/html.h"
   extern int Num_lignes;
   extern int Num_inst;
   int yylex();
@@ -24,7 +25,7 @@
 %%
 all : programme{sauvegarde_tables("table_prog");} ;
 
-programme : DEBUT_PROG corps {printf("prog \n");fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),$2));}
+programme : DEBUT_PROG corps {genere_html($2);printf("prog \n");fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),$2));}
          ;
 
 corps : liste_declarations  liste_instructions {$$=$2;}
@@ -267,6 +268,7 @@ int yyerror(){ printf("Erreur ligne %d instruction %d\n",Num_lignes,Num_inst);}
 
 
 int main(){
+  init_html();
   init_table_hash();
   init_table_decla();
   init_table_rep_type();
@@ -279,6 +281,7 @@ int main(){
   ajoute_type_base(ajoute_lexem("Bool"));
   ajoute_type_base(ajoute_lexem("String"));
   yyparse();
+  end_html();
 }
 
 
