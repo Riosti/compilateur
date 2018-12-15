@@ -4,11 +4,12 @@
 
 
 typedef struct arbre{
-  int noeud;
-  float noeudf;
-  int type;
-  struct arbre *frere;
-  struct arbre *fils;
+    int noeud;
+    float noeudf;
+    int type;
+    int num_dec;
+    struct arbre *frere;
+    struct arbre *fils;
 } type_arbre;/*structure type arbre*/
 
 int arbre_vide(type_arbre * a);/*1 si l'arbre est vide*/
