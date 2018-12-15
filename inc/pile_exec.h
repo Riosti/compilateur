@@ -42,6 +42,7 @@ void evalue_appel(type_arbre *a);
 void evalue_procedure(type_arbre *a);
 //en revanche une fonction peut le faire
 cellule evalue_fonction(type_arbre *a);
+
 int evalue_condition(type_arbre *a);
 void evalue_arbre(type_arbre *a);
 cellule evalue_expression(type_arbre *a);
