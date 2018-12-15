@@ -10,5 +10,9 @@
 void init_html();
 void end_html();
 void genere_html(type_arbre* a);
-void genere_table();
+void new_arbre_html(int t);
+void genere_table_d(int n, int s, int r, int d, int e);
+void genere_table_r(int taille, int nis);
+void genere_table_t(int a, int tt);
+
 #endif

@@ -25,7 +25,7 @@
 %%
 all : programme{sauvegarde_tables("table_prog");} ;
 
-programme : DEBUT_PROG corps {genere_html($2);printf("prog \n");fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),$2));}
+programme : DEBUT_PROG corps {printf("prog \n");fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),$2));}
          ;
 
 corps : liste_declarations  liste_instructions {$$=$2;}

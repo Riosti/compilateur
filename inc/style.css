@@ -4,6 +4,13 @@ header{
     background: wheat;
 }
 
+section{
+  margin-left : 10px;
+  /* margin-top: -10px; */
+  margin-right: 10px;
+  margin-bottom: 20px;
+}
+
 .arbre{
     border: 1px solid black;
     padding: 5px;
@@ -18,8 +25,16 @@ ul[hid="1"]{
   display: none;
 }
 
-#tp{
-  margin: 10px;
+.tp,.tdp{
+  margin-left: 20px;
+  margin-bottom: -10px;
+  margin-right: -10px;
+  margin-top: 20px;
+}
+
+.titreSection{
+  margin-left: 20px;
+  margin-bottom: 20px;
 }
 
 table {
