@@ -13,13 +13,13 @@
   float type_float;
   }
 
-%token DEBUT_PROG DEBUT FIN POINT_VIRGULE TYPE DEUX_POINTS STRUCT FSTRUCT TABLEAU CO CF VIRGULE POINT VARIABLE PROCEDURE FONCTION PO PF VIDE TANT_QUE FAIRE OPAFF PLUS MOINS DIV MULT VRAI FAUX INF SUP INFEGAL SUPEGAL EGAL DIFF RETOURNE SI ALORS SINON ET OU DE  INCREMENTE DECREMENTE DIEZ NON
+%token DEBUT_PROG DEBUT FIN POINT_VIRGULE TYPE DEUX_POINTS STRUCT FSTRUCT TABLEAU CO CF VIRGULE POINT VARIABLE PROCEDURE FONCTION PO PF VIDE TANT_QUE FAIRE OPAFF PLUS MOINS DIV MULT VRAI FAUX INF SUP INFEGAL SUPEGAL EGAL DIFF RETOURNE SI ALORS SINON ET OU DE  INCREMENTE DECREMENTE DIEZ NON READ WRITE
 
 %token<type_int> CSTE_ENTIERE IDF CSTE_CARACTERE CSTE_CHAINE ENTIER REEL CHAINE BOOLEEN CARACTERE
 %token<type_float> CSTE_REEL
 
 
-%type<arbre> plus_moins variable variable_idf tableau liste_param_tab param_du_tab expression_chaine expression expression_et expression_ou expression_neg expression_bcn cste_bool expression_cmp opcomp expression_num e1 e2 e3 e4 e5 appel liste_arguments un_arg liste_args corps liste_instructions suite_liste_inst instruction resultat_retourne condition tant_que affectation liste_parametres un_param liste_param nom_type type_simple 
+%type<arbre> plus_moins variable variable_idf tableau liste_param_tab param_du_tab expression_chaine expression expression_et expression_ou expression_neg expression_bcn cste_bool expression_cmp opcomp expression_num e1 e2 e3 e4 e5 appel liste_arguments un_arg liste_args corps liste_instructions suite_liste_inst instruction resultat_retourne condition tant_que affectation liste_parametres un_param liste_param nom_type type_simple ecrire lire
  
 %%
 all : programme{sauvegarde_tables("table_prog");} ;
@@ -41,7 +41,6 @@ suite_liste_inst : instruction POINT_VIRGULE{$$=$1;}
                  | suite_liste_inst instruction POINT_VIRGULE {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;a=a->fils;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_LIST,-1),$2));;$$=$1;} 
                  ;
 
-/*g30.sncf.com*/
 
 dec1: declaration_type POINT_VIRGULE
     | declaration_type POINT_VIRGULE dec1
@@ -116,7 +115,7 @@ liste_parametres : {$$=cree_noeud(A_VIDE,-1);}
 		 ;
 
 liste_param : un_param {$$=$1;}
-            | liste_param POINT_VIRGULE un_param {$$=concat_pere_fils(cree_noeud(A_PARAM,-1),$3);};
+            | liste_param POINT_VIRGULE un_param {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_PARAM,-1),$3));;$$=$1;}
             ;
 
 un_param : IDF DEUX_POINTS nom_type {$$=cree_noeud(A_IDF,$1);enfile($1);enfile($3->noeud);}/*nom type nan ?*/
@@ -127,8 +126,16 @@ instruction : affectation {$$=$1;}
             | tant_que {$$=$1;}
             | appel  {$$=$1;}
             | VIDE {$$=cree_noeud(A_VIDE,-1);}
-            | RETOURNE resultat_retourne {$$=concat_pere_fils(cree_noeud(A_RETURN,-1),$2);} 
+            | RETOURNE resultat_retourne {$$=concat_pere_fils(cree_noeud(A_RETURN,-1),$2);}
+            | lire {$$=$1;}
+            | ecrire {$$=$1;}
             ;
+
+lire : READ PO type_simple PF {$$ =concat_pere_fils(cree_noeud(A_LIRE,-1),$3);}
+
+
+ecrire : WRITE PO IDF PF {$$ = concat_pere_fils(cree_noeud(A_LIRE,-1),cree_noeud(A_IDF,$3));} 
+
 
 resultat_retourne : {$$=cree_noeud(A_VIDE,-1);}
                   | expression {$$=$1;}
@@ -142,8 +149,8 @@ liste_arguments :PO PF {$$=NULL;}
                 |PO liste_args PF {$$=$2;}
 		;
 
-liste_args : un_arg {$$=$1;}
-           | liste_args VIRGULE un_arg {$$=concat_pere_fils(cree_noeud(A_ARG,-1),$3);}
+liste_args : un_arg {$$=concat_pere_fils(cree_noeud(A_ARG,-1),$1);}
+| liste_args VIRGULE un_arg {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_ARG,-1),$3));;$$=$1;}
            ;
 
 un_arg : expression {$$=$1;}
@@ -165,7 +172,7 @@ affectation : variable OPAFF expression {$$=concat_pere_fils(cree_noeud(A_OPAFF,
 variable : variable_idf {$$=$1;}
          | tableau {$$==$1;}
          | variable POINT tableau {$$=concat_pere_fils(cree_noeud(A_STRUCT,-1),concat_pere_frere($1,$3));} 
-| variable POINT variable_idf {$$=concat_pere_fils(cree_noeud(A_STRUCT,-1),concat_pere_frere($1,$3));printf("voila\n");} 
+         | variable POINT variable_idf {$$=concat_pere_fils(cree_noeud(A_STRUCT,-1),concat_pere_frere($1,$3));} 
          ;
 
 variable_idf : IDF {$$=cree_noeud(A_IDF,$1);}

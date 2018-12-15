@@ -53,3 +53,16 @@ int taille_pile(){
   }
   return i;
 }
+
+int est_dans_pile(int n){
+  pile *p;
+  p=Pile_region;
+  
+  while (p!=NULL){
+    if(p->num==n){
+      return 1;
+    }
+    p=p->suivant;
+  }
+  return 0;
+}
