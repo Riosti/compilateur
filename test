@@ -1,0 +1,5 @@
+Prog
+Var x : Int;
+{
+x = 1;
+}

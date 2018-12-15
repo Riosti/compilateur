@@ -43,6 +43,17 @@ pile.o : src/pile.c inc/pile.h
 	gcc -Wall src/pile.c inc/pile.h -c
 	mv pile.o obj/
 
+chargement: charger.o module.o module
+
+charger.o: src/charger.c inc/charger.h
+	gcc -Wall src/charger.c inc/charger.h -c
+
+module.o: module_chargement.c inc/charger.h
+	gcc -Wall  module_chargement.c inc/charger.h -c
+
+module: module.o charger.o
+	gcc -Wall -o module module_chargement.o charger.o
+
 obj:
 	mkdir obj
 

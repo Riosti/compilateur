@@ -251,6 +251,8 @@ cellule evalue_expression(type_arbre *a){ //
     return rep;
 }
 
-
+int main(int argc, char *argv[]){
+    //initialiser les tables
+    
 
 
