@@ -49,13 +49,15 @@ int Num_inst=0;
 ">=" {return(SUPEGAL);}
 "==" {return(EGAL);}
 "&&" {return(ET);}
-"|" {return(OU);}
+"||" {return(OU);}
 "Of" {return(DE);}
 "++" {return(INCREMENTE);}
 "--" {return(DECREMENTE);}
 "!=" {return(DIFF);}
 "#" {return(DIEZ);}
 "!" {return(NON);}
+"Read" {return (READ);}
+"Write" {return (WRITE);}
 
 
 
