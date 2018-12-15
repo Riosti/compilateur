@@ -1,7 +1,7 @@
 #include "../inc/pile_exec.h"
 
 int BC = 0, indice_libre = 0, NIScourant = 0;
-file *chainage = NULL;
+FileBC chainage = NULL;
 
 void depiler(){
     indice_libre-=1;
@@ -15,54 +15,31 @@ void init_pile(){
     pexec[0].val = -1;
 }
 
-cellule evalue_fonction(type_arbre *a){
-    cellule res;
+void evalue_appel(type_arbre *a){
      int i;
     //Mise à jour de la base courante
     pexec[indice_libre].val = BC; //la region appelante
-    enfile(BC);
-    //enfile(chainage, BC);
+    enfile(BC, chainage);
     BC = indice_libre; //MaJ de la BC
+    indice_libre++;
+    
     //empiler le chainage dynamique
-    file *p = chainage;
-    while(p != NULL){
-	empile(p->num);
+    FileBC p = chainage;
+    while(!est_vide(p)){
+	pexec[indice_libre].val = p->bc;
+	indice_libre++
 	p = p->suivant;
-	indice_libre++;
     }
     //empiler les paramètres
-    for( i = 1; i <= Table_rep_type[Tab_dec[a->num_dec].description]; i++ ){
-	empiler(evalue_expression(a->fils));
-	a = a->frere;
+    type_arbre *b = a;
+    for( i = 1; i <= Table_rep_type[Tab_dec[b->num_dec].description]; i++ ){
+	empiler(evalue_expression(b->fils));
+	b = b->frere;
     }
-    region_courante = Tab_dec[a->num_dec].region;
-    evalue_arbre(table_region[region_courante].a);
-    //!!ATTENTION LA FONCTION RENVOIE QQ CHOSE
-}
-void evalue_procedure(type_arbre *a){
-    int i;
-    //Mise à jour de la base courante
-    pexec[indice_libre].val = BC; //la region appelante
-    enfile(BC);
-    //enfile(chainage, BC);
-    BC = indice_libre; //MaJ de la BC
-    //empiler le chainage dynamique
-    file *p = chainage;
-    while(p != NULL){
-	empile(p->num);
-	p = p->suivant;
-	indice_libre++;
-    }
-    //empiler les paramètres
-    for( i = 1; i <= Table_rep_type[Tab_dec[a->num_dec].description]; i++ ){
-	empiler(evalue_expression(a->fils));
-	a = a->frere;
-    }
-    region_courante = Tab_dec[a->num_dec].region;
-    evalue_arbre(table_region[region_courante].a);
 }
 
-int evalue_condition(type_arbre *a){ //A MODIFIER SI REEL
+
+int evalue_condition(type_arbre *a){ 
     int sol;
     switch(a->type){
     case A_ET:
@@ -124,7 +101,7 @@ int evalue_condition(type_arbre *a){ //A MODIFIER SI REEL
 	    sol = evalue_expression(a->fils).val != evalue_expression(a->fils->frere).val;
 	break;
     case A_BOOL:
-	return a->noeud;
+	sol = a->noeud;
     }
     return sol;
 }
@@ -132,19 +109,13 @@ int evalue_condition(type_arbre *a){ //A MODIFIER SI REEL
 
 void evalue_arbre(type_arbre *a){//on connait la région
     int NISdeclaration, NIScourant = table_region[region_courante].nis;
-    switch(a->type){
+    switch(a->type){	
     case A_LIST:
 	evalue_arbre(a->fils);
 	break;
-    case A_APPEL_P: //afficher la pile
-	evalue_procedure(a);
+    case A_APPEL: //afficher la pile
+	evalue_appel(a);
 	evalue_arbre(a->frere);
-	break;
-
-    case A_RETURN:
-	//recule la BC
-	indice_libre = BC;//corrigé
-	BC = defile(chainage);//FAUX à corriger
 	break;
 	
     case A_TQ:
@@ -186,7 +157,8 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	}
 	evalue_arbre(a->frere);
 	break;
-    case A_DEC://dansevalueexpression
+	
+    case A_DEC:
 	 NIScourant = table_region[region_courante].nis;
 	 NISdeclaration = table_region[Tab_dec[a->num_dec].region].nis;
 	switch(pexec[pexec[BC+NIScourant-NISdeclaration].val +
@@ -206,10 +178,35 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	break;
     }
 }
+cellule evalue_fonction(type_arbre *a){
+    while( a->type != A_RETURN ){
+	evalue_arbre(a);
+	a = a->frere;
+    }
+    //recule la BC
+    indice_libre = BC;//corrigé
+    BC = defile(chainage);//corrigé
+    return evalue_expression(a->fils);
+}
+
+void evalue_procedure(type_arbre *a){
+    while( a->type != A_RETURN ){
+	evalue_arbre(a);
+	a = a->frere;
+    }
+    indice_libre = BC;//corrigé
+    BC = defile(chainage);//corrigé
+}
 
 cellule evalue_expression(type_arbre *a){ //
     cellule rep;
     switch(a->type){
+    case A_APPEL: //il sagit d'une fonction
+	evalue_appel(a);
+	region_courante = Tab_dec[a->num_dec].execution;
+	rep = evalue_fonction(TabReg[region_courante].a);
+	region_courante = Tab_dec[a->num_dec].region;
+	break;
     case A_CSTE_E:
 	rep.type = INT;
 	rep.val = a->noeud;
@@ -254,6 +251,8 @@ cellule evalue_expression(type_arbre *a){ //
     return rep;
 }
 
-
+int main(int argc, char *argv[]){
+    //initialiser les tables
+    
 
 

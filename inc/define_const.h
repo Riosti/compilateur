@@ -47,4 +47,6 @@
 #define A_INT 41
 #define A_FLOAT 42
 #define A_CHAR 43
+#define A_LIRE 44
+#define A_ECRIRE 45
 #endif

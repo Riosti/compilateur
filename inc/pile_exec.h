@@ -7,6 +7,7 @@
 #include "table_declaration.h"
 #include "arbre.h"
 #include "define_const.h"
+#include "fileBC.h"
 /*IMPORTANT le chaine de caractere doivent etre des tableaux de caractère*/
 #define INT 1
 #define BOOL 2
@@ -33,10 +34,15 @@ void empiler( cellule elem );
 void depiler();
 
 
-file *chainage;
+fileBC chainage;
  //fonctions principales
+//gère un appel (fonction ou proecdure cad mise à jour de la BC,...)
+void evalue_appel(type_arbre *a);
+//une procédure ne peut renvoyer une valeur
 void evalue_procedure(type_arbre *a);
+//en revanche une fonction peut le faire
 cellule evalue_fonction(type_arbre *a);
+
 int evalue_condition(type_arbre *a);
 void evalue_arbre(type_arbre *a);
 cellule evalue_expression(type_arbre *a);

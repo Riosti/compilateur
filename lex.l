@@ -56,6 +56,8 @@ int Num_inst=0;
 "!=" {return(DIFF);}
 "#" {return(DIEZ);}
 "!" {return(NON);}
+"Read" {return (READ);}
+"Write" {return (WRITE);}
 
 
 
