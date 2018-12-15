@@ -23,7 +23,6 @@ void rp_ajoute_tableau()
         }
     }
     Index_table_rep_type = index_actuel;
-    genere_table_t(1, num);
 }
 
 void rp_ajoute_struct()
@@ -45,7 +44,6 @@ void rp_ajoute_struct()
     }
     Table_rep_type[Index_table_rep_type] = (index_actuel - (Index_table_rep_type)) / 3;
     Index_table_rep_type = index_actuel;
-    genere_table_t(2, num);
 }
 
 void rp_ajoute_proc()
@@ -65,7 +63,6 @@ void rp_ajoute_proc()
     }
     Table_rep_type[Index_table_rep_type] = (index_actuel - (Index_table_rep_type + 1)) / 2;
     Index_table_rep_type = index_actuel;
-    genere_table_t(3, num);
 }
 
 void rp_ajoute_fonction()
@@ -85,7 +82,6 @@ void rp_ajoute_fonction()
     }
     Table_rep_type[Index_table_rep_type] = (index_actuel - (Index_table_rep_type + 2)) / 2;
     Index_table_rep_type = index_actuel;
-    genere_table_t(4, num);
 }
 
 #endif

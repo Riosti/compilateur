@@ -5,7 +5,8 @@
 #include "../inc/table_rep_type.h"
 #include <string.h>
 
-char* tab[] = { "DEBUT_PROG", "DEBUT", "FIN", "POINT_VIRGULE", "TYPE", "DEUX_POINTS", "STRUCT", "FSTRUCT", "TABLEAU", "CO", "CF", "VIRGULE", "POINT", "VARIABLE", "PROCEDURE", "FONCTION", "PO", "PF", "VIDE", "TANT_QUE", "FAIRE", "OPAFF", "PLUS", "MOINS", "DIV", "MULT", "VRAI", "FAUX", "INF", "SUP", "INFEGAL", "SUPEGAL", "EGAL", "DIFF", "RETOURNE", "SI", "ALORS", "SINON", "ET", "OU", "DE", "INCREMENTE", "DECREMENTE", "DIEZ", "NON", "CSTE_ENTIERE", "IDF", "CSTE_CARACTERE", "CSTE_CHAINE", "ENTIER", "REEL", "CHAINE", "BOOLEEN", "CARACTERE", "CSTE_REEL" };
+char* tab[] = { "A_LIST", "A_CSTE_E", "A_CSTE_R", "A_IDF", "A_CSTE_CARAC", "A_CSTE_CHAINE", "A_BOOL", "A_TQ", "A_APPEL_F", "A_APPEL_P", "A_VARIABLE", "A_TABLEAU", "A_STRUCT", "A_ET", "A_OU", "A_PLUS", "A_MULT", "A_MOINS", "A_DIV", "A_NON", "A_INF", "A_SUP", "A_EGAL", "A_SUPEGAL", "A_INFEGAL", "A_DIFF", "A_OPAFF", "A_SI", "A_ALORS", "A_SINON", "A_PROC", "A_FONCTION", "A_INCR", "A_DEC", "A_CHAINE", "A_VIRGULE", "A_ARG", "A_PARAM", "A_APPEL", "A_VIDE", "A_RETURN", "A_INT", "A_FLOAT", "A_CHAR" };
+
 FILE* html;
 FILE* tabled;
 FILE* tabler;
