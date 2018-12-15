@@ -56,9 +56,7 @@ clean_obj:
 clean_bin:
 	rm -rf bin
 
-clean_html:
-	rm -f *.html
 
-clean: clean_html
+clean:
 	rm -rf bin
 	rm -rf obj

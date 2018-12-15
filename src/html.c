@@ -14,17 +14,17 @@ int aac = 1;
 
 void init_html()
 {
-    html = fopen("aff_arbre.html", "w");
-    tabled = fopen("tablesd.html", "w");
-    tabler = fopen("tablesr.html", "w");
-    tablet = fopen("tablest.html", "w");
+    html = fopen("bin/aff_arbre.html", "w");
+    tabled = fopen("bin/tablesd.html", "w");
+    tabler = fopen("bin/tablesr.html", "w");
+    tablet = fopen("bin/tablest.html", "w");
     fprintf(html, "<html>\n "
                   "\n"
                   "<head>\n"
                   "\t<meta charset=\"UTF8\">\n"
                   "\t<title>Affichage arbre</title>\n"
-                  "\t<LINK href=\" inc/style.css \" rel=\" stylesheet \" type=\" text / css \">\n"
-                  "\t<script src=\"inc/affichage.js\"></script>\n"
+                  "\t<LINK href=\"../inc/style.css \" rel=\" stylesheet \" type=\" text / css \">\n"
+                  "\t<script src=\"../inc/affichage.js\"></script>\n"
                   "</head>\n"
                   "</head>\n"
                   "\n"
@@ -47,7 +47,7 @@ void init_html()
                     "<head>\n"
                     "\t<meta charset=\"UTF8\">\n"
                     "\t<title>Affichage table</title>\n"
-                    "\t<LINK href=\" inc/style.css \" rel=\" stylesheet \" type=\" text / css \">\n"
+                    "\t<LINK href=\"../inc/style.css \" rel=\" stylesheet \" type=\" text / css \">\n"
                     "</head>\n"
                     "\n"
                     "<body>\n"
@@ -75,7 +75,7 @@ void init_html()
                     "<head>\n"
                     "\t<meta charset=\"UTF8\">\n"
                     "\t<title>Affichage table</title>\n"
-                    "\t<LINK href=\" inc/style.css \" rel=\" stylesheet \" type=\" text / css \">\n"
+                    "\t<LINK href=\"../inc/style.css \" rel=\" stylesheet \" type=\" text / css \">\n"
                     "</head>\n"
                     "\n"
                     "<body>\n"
@@ -100,7 +100,7 @@ void init_html()
                     "<head>\n"
                     "\t<meta charset=\"UTF8\">\n"
                     "\t<title>Affichage table</title>\n"
-                    "\t<LINK href=\" inc/style.css \" rel=\" stylesheet \" type=\" text / css \">\n"
+                    "\t<LINK href=\"../inc/style.css \" rel=\" stylesheet \" type=\" text / css \">\n"
                     "</head>\n"
                     "\n"
                     "<body>\n"
