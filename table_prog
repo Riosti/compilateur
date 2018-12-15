@@ -14,7 +14,9 @@ table_dec:
 4 1 -1 0 -1 1
 5 2 -1 0 0 0
 
+
 table_rep_type
 
 table_region
 0 1 0 debut  0 -1 0.000000  fils:  debut  26 -1 0.000000  fils:  debut  3 5 0.000000  fils:  vide  frere:  debut  1 1 0.000000  fils:  vide  frere:  vide  frere:  vide  frere:  vide 
+

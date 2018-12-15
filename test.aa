@@ -1,6 +1,10 @@
 Prog
 
+Var p : Int;
+
 {
     a=1+1;
+    b=2+3.99;
+    
     Return a;
 }

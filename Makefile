@@ -6,7 +6,7 @@ all: lex.l yacc.y html.o arbre.o hash.o sauv.o pile.o table_region.o table_decla
 	mv y.* obj/
 	mv *.o obj/
 	mv lex.yy.c obj/
-
+	
 
 
 all.o: arbre.o html.o sauv.o file.o hash.o table_rep_type.o erreur.o table_region.o table_declaration.o pile_exec.o
@@ -75,3 +75,4 @@ clean_bin:
 clean:
 	rm -rf bin
 	rm -rf obj
+	rm -rf inc/*.gch

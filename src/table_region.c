@@ -39,8 +39,5 @@ int ajoute_arbre_table_region(type_arbre* a)
     }
     table_region[sommet_pile()].nis = taille_pile() - 1;
     table_region[sommet_pile()].a = a;
-    new_arbre_html(table_region[sommet_pile()].nis);
-    genere_html(a);
-    genere_table_r(table_region[sommet_pile()].taille, table_region[sommet_pile()].nis);
     return 1;
 }
