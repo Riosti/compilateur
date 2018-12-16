@@ -3,16 +3,16 @@
 
 void ecrire_noeud(FILE* f, type_arbre* a)
 {
-    if (!arbre_vide(a)) {
-        fprintf(f, " debut ");
-        fprintf(f, " %d %d %f ", a->type, a->noeud, a->noeudf);
-        fprintf(f, " fils: ");
-        ecrire_noeud(f, a->fils);
-        fprintf(f, " frere: ");
-        ecrire_noeud(f, a->frere);
-    } else {
-        fprintf(f, " vide ");
-    }
+  if (!arbre_vide(a)) {
+    fprintf(f, "debut \n");
+    fprintf(f, "%d %d %f\n", a->type, a->noeud, a->noeudf);
+    fprintf(f, "fils: \n");
+    ecrire_noeud(f, a->fils);
+    fprintf(f, "frere: \n");
+    ecrire_noeud(f, a->frere);
+  } else {
+    fprintf(f, "vide \n");
+  }
 }
 
 int sauvegarder_arbre(type_arbre* a, char* chemin)
@@ -55,7 +55,7 @@ void ecrire_tables(FILE* f1)
 
     fprintf(f1, "\ntable_region:\n");
     for (i = 0; i <= index_table_region; i++) {
-        fprintf(f1, "%d %d %d", i, table_region[i].taille, table_region[i].nis);
+        fprintf(f1, "%d %d %d ", i, table_region[i].taille, table_region[i].nis);
         ecrire_noeud(f1, table_region[i].a);
         genere_table_r(i, table_region[i].taille, table_region[i].nis, table_region[i].a);
         fprintf(f1, "\n");

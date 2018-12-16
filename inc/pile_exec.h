@@ -8,6 +8,12 @@
 #include "arbre.h"
 #include "define_const.h"
 #include "fileBC.h"
+#include "charger.h"
+
+#define couleur(param) printf("\033[%sm",param)
+#define ROUGE "31"
+#define BLEU  "34"
+#define REINIT "0"
 /*IMPORTANT le chaine de caractere doivent etre des tableaux de caractère*/
 #define INT 1
 #define BOOL 2
@@ -16,25 +22,21 @@
 
 typedef struct cellule{
     int type;
-    int val ; //boolen ou entier
+    int val ; //boolen, entier, caractère
     float reel ;
-    char caractere ;
 }cellule;
 
 cellule pexec[5000] ;
 
 int region_courante; //utile pour retrouver le NIScourant
 
-//globale table ou fonction charger table
-//TODO
-
-
+FileBC chainage;
+int BC, indice_libre , NIScourant, NISdeclaration, indice_libre;
 //fonction de gestion de la pile
 void empiler( cellule elem );
 void depiler();
 
-
-fileBC chainage;
+void init_pexec();
  //fonctions principales
 //gère un appel (fonction ou proecdure cad mise à jour de la BC,...)
 void evalue_appel(type_arbre *a);
@@ -47,6 +49,7 @@ int evalue_condition(type_arbre *a);
 void evalue_arbre(type_arbre *a);
 cellule evalue_expression(type_arbre *a);
 
+void affiche_pile();
 
 /*POUR LE MAIN
     init_pile();
