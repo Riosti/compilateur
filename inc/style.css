@@ -28,7 +28,7 @@ footer {
   font-size: 80%
 }
 
-a:link,a:visited,a:hover{
+footer>a:link,footer>a:visited,footer>a:hover{
   color:red
 }
 
