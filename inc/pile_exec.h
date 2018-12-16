@@ -37,7 +37,7 @@ void empiler( cellule elem );
 void depiler();
 
 void init_pexec();
- //fonctions principales
+ //fonctions principalesy
 //gère un appel (fonction ou proecdure cad mise à jour de la BC,...)
 void evalue_appel(type_arbre *a);
 //une procédure ne peut renvoyer une valeur

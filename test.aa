@@ -1,21 +1,7 @@
 Prog
 
 Var a : Int;
-Var b : Float;
-Fonction f (a : Int) Return Int 
-{
-    Return 1;
-};
-
-Procedure p 
-{
-    a = a +1;
-};
-
 {
     a=1+1;
-    b=2.0+3.99;
-    
-    Return b;
 }
 
