@@ -294,6 +294,6 @@ void affiche_pile(){
 	
 int main(int argc, char *argv[]){
     //initialiser les tables
-    
-}
 
+    return 1;
+}
