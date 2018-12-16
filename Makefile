@@ -48,8 +48,8 @@ html.o: inc/html.h src/html.c obj
 ##########################################################################
 MV: charger.o fileBC.o pile_exec.o pile_exec
 
-pile_exec: obj/pile_exec.o
-	gcc -Wall -o pile_exec pile_exec.o
+pile_exec: objbis/pile_exec.o objbis/fileBC.o objbis/charger.o
+	gcc -Wall -o pile_exec objbis/pile_exec.o objbis/fileBC.o objbis/charger.o
 
 pile_exec.o: src/pile_exec.c inc/pile_exec.h
 	gcc -Wall src/pile_exec.c inc/pile_exec.h -c

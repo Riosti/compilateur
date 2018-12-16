@@ -12,16 +12,16 @@ typedef struct elem{
 typedef struct_file *FileBC;
 
 //initialiser la file
-FileBC initialiase();
+FileBC init_bc();
 
 //Est-elle vide?
 int est_vide(FileBC f);
 
 //enfiler
-FileBC enfile(int BC, FileBC f);
+FileBC enfile_bc(int BC, FileBC f);
 
 //defiler (me renvoie l'élément retiré)
 //Précondition : la file n'est pas vide
-int defile(FileBC f);
+int defile_bc(FileBC f);
 
 #endif

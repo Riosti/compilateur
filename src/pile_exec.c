@@ -1,7 +1,9 @@
 #include "../inc/pile_exec.h"
 
-int BC = 0, indice_libre = 0, NIScourant = 0;
-FileBC chainage = initialise();
+void empiler(cellule elem){
+    pexec[indice_libre] = elem;
+    indice_libre ++;
+}
 
 void depiler(){
     indice_libre-=1;
@@ -19,7 +21,7 @@ void evalue_appel(type_arbre *a){
      int i;
     //Mise à jour de la base courante
     pexec[indice_libre].val = BC; //la region appelante
-    enfile(BC, chainage);
+    enfile_bc(BC, chainage);
     BC = indice_libre; //MaJ de la BC
     indice_libre++;
     
@@ -27,7 +29,7 @@ void evalue_appel(type_arbre *a){
     FileBC p = chainage;
     while(!est_vide(p)){
 	pexec[indice_libre].val = p->bc;
-	indice_libre++
+	indice_libre++;
 	p = p->suivant;
     }
     //empiler les paramètres
@@ -111,16 +113,16 @@ int evalue_condition(type_arbre *a){
 void evalue_arbre(type_arbre *a){//on connait la région
     int NISdeclaration, NIScourant = table_region[region_courante].nis;
     switch(a->type){
-    case A_READ: //comme une affectation, c'est une procédure donc que des types simples
+    case A_LIRE: //comme une affectation, c'est une procédure donc que des types simples
 	//pour Antho
 	NISdeclaration = table_region[Tab_dec[a->fils->num_dec].region].nis;
-	if( a->fils.type == REEL )
-	    fscanf(stdin, "%lf", &pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution].reel);
+	if( a->fils->type == REEL )
+	    fscanf(stdin, "%f", &pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution].reel);
 	else
 	    fscanf(stdin, "%d", &pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution].val);
 	break;
 	
-    case A_WRITE://procedure => des types simples en paramètres
+    case A_ECRIRE://procedure => des types simples en paramètres
 	NISdeclaration = table_region[Tab_dec[a->fils->num_dec].region].nis;
 	switch(a->fils->type){
 	case CHAR:
@@ -138,9 +140,9 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	break;
     case A_APPEL: //il s'agit d'une procédure
 	evalue_appel(a);
-	region_courante = TabDec[a->num_dec].execution; //on change de region
-	evalue_procedure(TabReg[region_courante].a);
-	region_courante = TabDec[a->num_dec].region;//on revient dans la region englobante
+	region_courante = Tab_dec[a->num_dec].execution; //on change de region
+	evalue_procedure(table_region[region_courante].a);
+	region_courante = Tab_dec[a->num_dec].region;//on revient dans la region englobante
 	break;
 	
     case A_TQ:
@@ -157,9 +159,9 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	
 	//LE most important
     case A_OPAFF:
+	printf("Affextation\n");
 	NISdeclaration = table_region[Tab_dec[a->fils->num_dec].region].nis;
-	pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution]=
-	    evalue_expression(a->fils->frere);
+	pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution]=evalue_expression(a->fils->frere);
 	break;
 
 	
@@ -205,7 +207,7 @@ cellule evalue_fonction(type_arbre *a){
     }
     //recule la BC
     indice_libre = BC;//corrigé
-    BC = defile(chainage);//corrigé
+    BC = defile_bc(chainage);//corrigé
     affiche_pile();
     return evalue_expression(a->fils);
 }
@@ -216,7 +218,7 @@ void evalue_procedure(type_arbre *a){
 	a = a->frere;
     }
     indice_libre = BC;//corrigé
-    BC = defile(chainage);//corrigé
+    BC = defile_bc(chainage);//corrigé
 }
 
 cellule evalue_expression(type_arbre *a){ //
@@ -225,7 +227,7 @@ cellule evalue_expression(type_arbre *a){ //
     case A_APPEL: //il sagit d'une fonction
 	evalue_appel(a);
 	region_courante = Tab_dec[a->num_dec].execution;
-	rep = evalue_fonction(TabReg[region_courante].a);
+	rep = evalue_fonction(table_region[region_courante].a);
 	region_courante = Tab_dec[a->num_dec].region;
 	break;
     case A_CSTE_E:
@@ -287,10 +289,10 @@ void affiche_pile(){
 		    printf("%d     Faux\n", i);
 		break;
 	    case REEL:
-		printf("%d     %lf\n", pexec[i].reel);
+		printf("%d     %f\n", i,pexec[i].reel);
 		break;
 	    case CHAR:
-		printf("%d     %c\n", pexec[î].val);
+		printf("%d     %c\n", (char)pexec[i].val);
 		break;
 	    }
     }
@@ -298,14 +300,18 @@ void affiche_pile(){
 	
 int main(int argc, char *argv[]){
     //charger les tables
-    FILE *f = fopen("table_prog", "r");
+    
+    FILE *f = fopen("./table_prog", "r");
     charger_TabLex(f);
     charger_TabDec(f);
+    charger_TabRep(f);
     charger_TabReg(f);
-    carger_TabRep(f);
+
     fclose(f);
-    NIScourant = 0; NISdeclaration = 0;
-    evalue_arbre(TabReg[0].a);
-    return 1
+    
+    chainage = init_bc();
+    indice_libre =0; BC = 0;;
+    evalue_arbre(table_region[0].a);
+    return 1;
 }
 

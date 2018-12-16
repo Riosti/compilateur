@@ -34,8 +34,7 @@ void ecrire_tables(FILE* f1)
 {
     int i;
     fprintf(f1, "hash:\n");
-    for (i = 0; i 
-        Table[0]; i++) {
+    for (i = 0; i <Table[0]; i++) {
         fprintf(f1, "%d %s %d %d\n", i, List[i].chaine, List[i].len, List[i].suivant);
         genere_table_h(i, List[i].chaine, List[i].len, List[i].suivant);
     }

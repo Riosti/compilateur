@@ -1,6 +1,6 @@
 #include "../inc/fileBC.h"
 
-FileBC initialise(){
+FileBC init_bc(){
     return NULL;
 }
 
@@ -8,7 +8,7 @@ int est_vide(FileBC f){
     return f==NULL;
 }
 
-FileBC enfile(int BC, FileBC f){
+FileBC enfile_bc(int BC, FileBC f){
     FileBC p = malloc(sizeof(struct_file));
     if( p == NULL){
 	fprintf(stderr, "Erreur d'allocation mémoire\n");
@@ -19,7 +19,7 @@ FileBC enfile(int BC, FileBC f){
     return p;
 }
 
-int defile(FileBC f){
+int defile_bc(FileBC f){
     int val;
     FileBC p = f;
     while ( !est_vide(p->suivant) )

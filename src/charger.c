@@ -15,11 +15,12 @@ void charger_TabLex(FILE *f){
 	    }
 	}
 	else{
+	    printf("erreur charger Tablex1\n");
 	    erreur_fichier();
 	}
     }
     else{
-	printf("ici\n");
+	printf("erreur charger Tablex2\n");
 	erreur_fichier();
     }
 }
@@ -34,10 +35,12 @@ void charger_TabDec(FILE *f){
       }
     }
     else{
+	printf("erreur charger TabDec1\n");
       erreur_fichier();
     }
   }
   else{
+      printf("erreur charger Tabdec2\n");
     erreur_fichier();
   }
 }
@@ -76,10 +79,12 @@ void charger_TabReg(FILE *f){
       }
     }
     else{
+	printf("erreur charger TabReg1 %s\n", chaine);
       erreur_fichier();
     }
   }
   else{
+      printf("erreur charger TabReg2\n");
     erreur_fichier();
   }
 }
@@ -96,10 +101,12 @@ void charger_TabRep(FILE *f){
       }
     }
     else{
+	printf("erreur charger Tabrep1\n");
       erreur_fichier();
     }
   }
   else{
+      printf("erreur charger Tabrep2\n");
     erreur_fichier();
   }
 }

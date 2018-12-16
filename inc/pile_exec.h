@@ -8,6 +8,7 @@
 #include "arbre.h"
 #include "define_const.h"
 #include "fileBC.h"
+#include "charger.h"
 
 #define couleur(param) printf("\033[%sm",param)
 #define ROUGE "31"
@@ -29,16 +30,13 @@ cellule pexec[5000] ;
 
 int region_courante; //utile pour retrouver le NIScourant
 
-//globale table ou fonction charger table
-//TODO
-
-
+FileBC chainage;
+int BC, indice_libre , NIScourant, NISdeclaration, indice_libre;
 //fonction de gestion de la pile
 void empiler( cellule elem );
 void depiler();
 
 
-FileBC chainage;
  //fonctions principales
 //gère un appel (fonction ou proecdure cad mise à jour de la BC,...)
 void evalue_appel(type_arbre *a);
