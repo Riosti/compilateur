@@ -142,7 +142,7 @@ void init_html()
 void new_arbre_html(int t)
 {
     char titre[30];
-    sprintf(titre, "Arbre Region de nis %d", t);
+    sprintf(titre, "Arbre Region %d", narbre + 2);
     narbre++;
     if (narbre != 0) {
         fprintf(html, "</section>\n<input hidden=\"true\" id=\"acc%d\" value=\"%d\">\n", narbre - 1, aac);

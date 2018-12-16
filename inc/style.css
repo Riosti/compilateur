@@ -85,7 +85,7 @@ nav>a{
 .arbre {
   white-space: nowrap;
   overflow: auto;
-  
+  text-align: center
 }
 
 .arbre ul {
