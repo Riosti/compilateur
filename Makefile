@@ -8,7 +8,7 @@ all: lex.l yacc.y html.o arbre.o hash.o sauv.o pile.o table_region.o table_decla
 	mv lex.yy.c obj/
 
 
-all.o: arbre.o html.o sauv.o file.o hash.o table_rep_type.o erreur.o table_region.o table_declaration.o pile_exec.o
+all.o: arbre.o html.o sauv.o file.o hash.o table_rep_type.o erreur.o table_region.o table_declaration.o
 
 pile_exec.o: src/pile_exec.c inc/pile_exec.h
 	gcc -Wall src/pile_exec.h inc/pile_exec.c
@@ -50,8 +50,8 @@ html.o: inc/html.h src/html.c obj
 ##########################################################################
 MV: charger.o fileBC.o pile_exec.o pile_exec
 
-pile_exec: objbis/pile_exec.o objbis/fileBC.o objbis/charger.o
-	gcc -Wall -o pile_exec objbis/pile_exec.o objbis/fileBC.o objbis/charger.o
+pile_exec: objbis/pile_exec.o objbis/fileBC.o objbis/charger.o obj/table_rep_type.o obj/table_declaration.o obj/table_region.o obj/file.o obj/arbre.o obj/hash.o obj/pile.o
+	gcc -Wall -o pile_exec objbis/pile_exec.o objbis/fileBC.o objbis/charger.o obj/table_rep_type.o obj/table_declaration.o obj/table_region.o obj/file.o obj/arbre.o obj/hash.o obj/pile.o
 
 pile_exec.o: src/pile_exec.c inc/pile_exec.h
 	gcc -Wall src/pile_exec.c inc/pile_exec.h -c

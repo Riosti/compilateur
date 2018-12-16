@@ -10,7 +10,7 @@ void depiler(){
 }
 
 
-void init_pile(){
+void init_pexec(){
     BC = 0;
     indice_libre = 1;
     pexec[0].type = INT;
@@ -111,7 +111,9 @@ int evalue_condition(type_arbre *a){
 
 
 void evalue_arbre(type_arbre *a){//on connait la région
+    printf("je suis dans evalue_arbre\n");
     int NISdeclaration, NIScourant = table_region[region_courante].nis;
+    printf("%d\n", a->type);
     switch(a->type){
     case A_LIRE: //comme une affectation, c'est une procédure donc que des types simples
 	//pour Antho
@@ -159,9 +161,15 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	
 	//LE most important
     case A_OPAFF:
-	printf("Affextation\n");
+	printf("Affectation\n");
 	NISdeclaration = table_region[Tab_dec[a->fils->num_dec].region].nis;
-	pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution]=evalue_expression(a->fils->frere);
+	printf("NIS de declaration %d\n", NISdeclaration);
+	printf("NIS courant %d\n", NIScourant);
+	printf("BC %d\n", BC);
+	printf("%d\n",pexec[BC+NIScourant-NISdeclaration].val);
+	printf("%d\n",Tab_dec[a->fils->num_dec].execution);
+	pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution] = evalue_expression(a->fils->frere);
+	printf("Affectation done");
 	break;
 
 	
@@ -223,6 +231,8 @@ void evalue_procedure(type_arbre *a){
 
 cellule evalue_expression(type_arbre *a){ //
     cellule rep;
+    printf("evalexp\n");
+    printf("Dans evalue_expression %d\n", a->type);
     switch(a->type){
     case A_APPEL: //il sagit d'une fonction
 	evalue_appel(a);
@@ -231,6 +241,7 @@ cellule evalue_expression(type_arbre *a){ //
 	region_courante = Tab_dec[a->num_dec].region;
 	break;
     case A_CSTE_E:
+	printf("Il s'agit d'une cste entiere\n");
 	rep.type = INT;
 	rep.val = a->noeud;
 	break;
@@ -300,8 +311,10 @@ void affiche_pile(){
 	
 int main(int argc, char *argv[]){
     //charger les tables
-    
-    FILE *f = fopen("./table_prog", "r");
+    FILE *f = fopen("table_prog", "r");
+    init_table_region();
+    init_table_decla();
+    init_table_rep_type();
     charger_TabLex(f);
     charger_TabDec(f);
     charger_TabRep(f);
@@ -310,7 +323,10 @@ int main(int argc, char *argv[]){
     fclose(f);
     
     chainage = init_bc();
-    indice_libre =0; BC = 0;;
+    indice_libre =0;
+    BC = 0;
+    init_pexec();
+    printf("%d\n", table_region[0].a->type);
     evalue_arbre(table_region[0].a);
     return 1;
 }

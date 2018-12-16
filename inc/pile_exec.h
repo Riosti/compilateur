@@ -36,7 +36,7 @@ int BC, indice_libre , NIScourant, NISdeclaration, indice_libre;
 void empiler( cellule elem );
 void depiler();
 
-
+void init_pexec();
  //fonctions principales
 //gère un appel (fonction ou proecdure cad mise à jour de la BC,...)
 void evalue_appel(type_arbre *a);
