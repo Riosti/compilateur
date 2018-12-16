@@ -109,19 +109,42 @@ int evalue_condition(type_arbre *a){
 
 void evalue_arbre(type_arbre *a){//on connait la région
     int NISdeclaration, NIScourant = table_region[region_courante].nis;
-    switch(a->type){	
+    switch(a->type){
+    case A_READ: //comme une affectation, c'est une procédure donc que des types simples
+	//pour Antho
+	NISdeclaration = table_region[Tab_dec[a->fils->num_dec].region].nis;
+	if( a->fils.type == REEL )
+	    fscanf(stdin, "%lf", &pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution].reel);
+	else
+	    fscanf(stdin, "%d", &pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution].val);
+	break;
+	
+    case A_WRITE://procedure => des types simples en paramètres
+	NISdeclaration = table_region[Tab_dec[a->fils->num_dec].region].nis;
+	switch(a->fils->type){
+	case CHAR:
+	    printf("%c\n", pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution].val);
+	break;
+	case REEL:
+	    printf("%lf\n", pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution].reel);
+	    break;
+	default:
+	    printf("%d\n", pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution].val);
+	}
+	break;
     case A_LIST:
 	evalue_arbre(a->fils);
 	break;
-    case A_APPEL: //afficher la pile
+    case A_APPEL: //il s'agit d'une procédure
 	evalue_appel(a);
-	evalue_arbre(a->frere);
+	region_courante = TabDec[a->num_dec].execution; //on change de region
+	evalue_procedure(TabReg[region_courante].a);
+	region_courante = TabDec[a->num_dec].region;//on revient dans la region englobante
 	break;
 	
     case A_TQ:
 	while( evalue_condition(a->fils) )
 	    evalue_arbre( a->fils->frere);
-	evalue_arbre(a->frere);
 	break;
 	
     case A_SI:
@@ -129,7 +152,6 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	    evalue_arbre(a->fils->frere);
 	else
 	    evalue_arbre(a->fils->frere->frere);
-	evalue_arbre(a->frere);
 	break;
 	
 	//LE most important
@@ -143,19 +165,16 @@ void evalue_arbre(type_arbre *a){//on connait la région
     case A_INCR: 
 	NISdeclaration = table_region[Tab_dec[a->num_dec].region].nis;
 	switch(pexec[pexec[BC+NIScourant-NISdeclaration].val +
-		Tab_dec[a->fils->frere->num_dec].execution].type){
+		     Tab_dec[a->fils->frere->num_dec].execution].type){
 	case INT:
 	    pexec[pexec[BC+NIScourant-NISdeclaration].val +
-		 Tab_dec[a->fils->frere->num_dec].execution].val--;
+		  Tab_dec[a->fils->frere->num_dec].execution].val--;
 	    break;
 	case REEL:
 	    pexec[pexec[BC+NIScourant-NISdeclaration].val +
-		 Tab_dec[a->fils->frere->num_dec].execution].reel--;
+		  Tab_dec[a->fils->frere->num_dec].execution].reel--;
 	    break;
-	default:
-	    fprintf(stderr, "Le type attendue INT/REEL\nReçu %d\n", pexec[pexec[BC+NIScourant-NISdeclaration].val +Tab_dec[a->fils->frere->num_dec].execution].type);
 	}
-	evalue_arbre(a->frere);
 	break;
 	
     case A_DEC:
@@ -174,9 +193,9 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	default:
 	    fprintf(stderr, "Le type attendue INT/REEL\nReçu %d\n", pexec[pexec[BC+NIScourant-NISdeclaration].val +Tab_dec[a->fils->frere->num_dec].execution].type);
 	}
-	evalue_arbre(a->frere);
 	break;
     }
+    evalue_arbre(a->frere);
 }
 cellule evalue_fonction(type_arbre *a){
     while( a->type != A_RETURN ){
@@ -251,8 +270,30 @@ cellule evalue_expression(type_arbre *a){ //
     return rep;
 }
 
+void affiche_pile(){
+    printf("INDICE      VALEUR\n");
+    for( int i = 0; i<indice_libre; i++){
+	switch(pexec[i].type)
+	    {
+	    case INT:
+		printf("%d     %d\n", i, pexec[i].val);
+		break;
+	    case BOOL:
+		if(pexec[i].val)
+		    printf("%d     Vrai\n", i);
+		else
+		    printf("%d     Faux\n", i);
+		break;
+	    case REEL:
+		printf("%d     %lf\n", pexec[i].reel);
+		break;
+	    case CHAR:
+		printf("%d     %c\n", pexec[î].val);
+		break;
+	    }
+	
 int main(int argc, char *argv[]){
     //initialiser les tables
     
-
+}
 

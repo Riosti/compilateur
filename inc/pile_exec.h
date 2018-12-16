@@ -8,6 +8,11 @@
 #include "arbre.h"
 #include "define_const.h"
 #include "fileBC.h"
+
+#define couleur(param) printf("\033[%sm",param)
+#define ROUGE "31"
+#define BLEU  "34"
+#define REINIT "0"
 /*IMPORTANT le chaine de caractere doivent etre des tableaux de caractère*/
 #define INT 1
 #define BOOL 2
@@ -16,9 +21,8 @@
 
 typedef struct cellule{
     int type;
-    int val ; //boolen ou entier
+    int val ; //boolen, entier, caractère
     float reel ;
-    char caractere ;
 }cellule;
 
 cellule pexec[5000] ;
@@ -47,6 +51,7 @@ int evalue_condition(type_arbre *a);
 void evalue_arbre(type_arbre *a);
 cellule evalue_expression(type_arbre *a);
 
+void affiche_pile();
 
 /*POUR LE MAIN
     init_pile();
