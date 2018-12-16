@@ -168,6 +168,7 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	printf("BC %d\n", BC);
 	printf("%d\n",pexec[BC+NIScourant-NISdeclaration].val);
 	printf("%d\n",Tab_dec[a->fils->num_dec].execution);
+	printf("type %d\n", a->fils->ftype);
 	pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution] = evalue_expression(a->fils->frere);
 	printf("Affectation done");
 	break;
