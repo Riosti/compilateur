@@ -16,6 +16,22 @@ section{
     padding: 5px;
 }
 
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: rgb(0, 0, 0);
+  color: #666;
+  color: white;
+  text-align: center;
+  font-size: 80%
+}
+
+footer>a:link,footer>a:visited,footer>a:hover{
+  color:red
+}
+
 nav{
   margin-top: 20px;
     margin-bottom: 20px;
@@ -69,7 +85,7 @@ nav>a{
 .arbre {
   white-space: nowrap;
   overflow: auto;
-  
+  text-align: center
 }
 
 .arbre ul {
@@ -213,8 +229,6 @@ right connector from last child*/
 }
 /*Thats all. I hope you enjoyed it.
 Thanks :)*/
-
-
 
 .lienArbre {
   border: 1px solid #ccc;

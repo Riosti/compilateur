@@ -15,11 +15,12 @@ void charger_TabLex(FILE *f){
 	    }
 	}
 	else{
+	    printf("erreur charger Tablex1\n");
 	    erreur_fichier();
 	}
     }
     else{
-	printf("ici\n");
+	printf("erreur charger Tablex2\n");
 	erreur_fichier();
     }
 }
@@ -34,13 +35,16 @@ void charger_TabDec(FILE *f){
       }
     }
     else{
+	printf("erreur charger TabDec1\n");
       erreur_fichier();
     }
   }
   else{
+      printf("erreur charger Tabdec2\n");
     erreur_fichier();
   }
 }
+
 
 
 type_arbre * lire_arbre(FILE *f){
@@ -48,18 +52,22 @@ type_arbre * lire_arbre(FILE *f){
   type_arbre *a;
   int type,noeud;
   float noeud_f;
-  if(fscanf(f,"%s",chaine)==1){
-    if(!strcmp(chaine,"vide")){
-      a=malloc(sizeof(type_arbre));
-      fscanf(f," %d %d %f ",&type,&noeud,&noeud_f);
-      a->type=type;
-      a->noeud=noeud;
-      a->noeudf=noeud_f;
-      fscanf(f," %s ",chaine);
-      a->frere=lire_arbre(f);
-      fscanf(f," %s ",chaine);
-      a->fils=lire_arbre(f);
-    }
+  if(fscanf(f,"%s\n",chaine)==1){
+    printf("lecture de %s\n", chaine);
+     if( strcmp(chaine,"debut") == 0){
+       a=malloc(sizeof(type_arbre));
+       fscanf(f," %d %d %f\n",&type,&noeud,&noeud_f);
+       a->type=type;
+       a->noeud=noeud;
+       a->noeudf=noeud_f;
+       fscanf(f,"%s\n",chaine);
+       a->fils=lire_arbre(f);
+       fscanf(f,"%s\n",chaine);
+       a->frere=lire_arbre(f);
+     }
+     else{
+       a=NULL;
+     }
   }
   return a;
 }
@@ -69,17 +77,20 @@ void charger_TabReg(FILE *f){
   int i;
   i=0;
   if(fscanf(f,"%s\n",chaine)==1){
-    if(strcmp(chaine,"table_region")==0){
+    if(strcmp(chaine,"table_region:")==0){
       while(fscanf(f," %d ",&i)==1){
 	fscanf(f,"%d %d ",&table_region[i].taille,&table_region[i].nis);
 	table_region[i].a=lire_arbre(f);
+	afficher_arbre(table_region[i].a);
       }
     }
     else{
+	printf("erreur charger TabReg1 %s\n", chaine);
       erreur_fichier();
     }
   }
   else{
+      printf("erreur charger TabReg2\n");
     erreur_fichier();
   }
 }
@@ -89,17 +100,19 @@ void charger_TabRep(FILE *f){
   int i,nbr;
   i=0;
   if(fscanf(f,"%s\n",chaine)==1){
-    if(strcmp(chaine,"table_rep_type")==0){
+    if(strcmp(chaine,"table_rep_type:")==0){
       while(fscanf(f," %d ",&nbr)==1){
 	Table_rep_type[i]=nbr;
 	i++;
       }
     }
     else{
+	printf("erreur charger Tabrep1\n");
       erreur_fichier();
     }
   }
   else{
+      printf("erreur charger Tabrep2\n");
     erreur_fichier();
   }
 }
