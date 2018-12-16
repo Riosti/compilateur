@@ -142,9 +142,7 @@ void init_html()
 void new_arbre_html(int t)
 {
     char titre[30];
-    char reg[10];
     sprintf(titre, "Arbre Region de nis %d", t);
-    sprintf(reg, "Région %d", t);
     narbre++;
     if (narbre != 0) {
         fprintf(html, "</section>\n<input hidden=\"true\" id=\"acc%d\" value=\"%d\">\n", narbre - 1, aac);
@@ -160,13 +158,14 @@ void new_arbre_html(int t)
 
 void end_html()
 {
-    fprintf(html, "\n</section>\n<input hidden=\"true\" id=\"acc%d\" value=\"%d\">\n</body>\n</html>", narbre, aac);
+    fprintf(html, "\n</section>\n<input hidden=\"true\" id=\"acc%d\" value=\"%d\">\n<footer><a href=\"https://codepen.io/simplyhue/pen/pjEYGo\" >Modèle</a> d'arbre vertical par <a href=\"https://codepen.io/simplyhue/\">SimplyHue</a> <!-- Design uniquement, génération et fonctionnalités supplémentaires personnelles mais bon personne ne viendra voir ce commentaire --></footer></body>\n</html>", narbre, aac);
 
     fprintf(tabled, "\n</table>\n</section>\n</body>\n</html>");
 
     fprintf(tabler, "\n</table>\n</section>\n</body>\n</html>");
 
     fprintf(tablet, "\n</tr></table>\n</section>\n</body>\n</html>");
+    fprintf(tableh, "\n</tr></table>\n</section>\n</body>\n</html>");
 }
 
 void genere_html(type_arbre* a)
@@ -174,12 +173,28 @@ void genere_html(type_arbre* a)
     if (!arbre_vide(a)) {
         //corres tab noeud noeudf type
         aac++;
-        fprintf(html, "<li>\n<a href=\"javascript:\" onclick=\"toggle('a%da%d')\"> %s</a>\n", narbre, aac, tab[a->type]);
+        char c[20];
+        if (a->noeud == 0 && a->noeudf != 0) {
+            sprintf(c, "%f", a->noeudf);
+        } else if (a->noeudf == 0 && a->noeud != 0) {
+            if (a->noeud == -1) {
+                sprintf(c, " ");
+            } else if (a->type == A_IDF) {
+                sprintf(c, "%s", get_lexeme(a->noeud));
+            } else {
+                sprintf(c, "%d", a->noeud);
+            }
+        } else {
+            sprintf(c, " ");
+        }
+        fprintf(html, "<li>\n<a id=\"i%di%d\" href=\"javascript:\" onclick=\"toggle('a%da%d')\">%s %s</a> <!-- t%d dec%d tf%d tv%d -->\n", narbre, aac, narbre, aac, tab[a->type], c, a->type, a->num_dec, a->type_final, a->type_var);
 
         if (!arbre_vide(a->fils)) {
             fprintf(html, "<ul id=\"a%da%d\" hid=\"0\">\n", narbre, aac);
             genere_html(a->fils);
             fprintf(html, "</ul>\n");
+        } else {
+            fprintf(html, "<script>document.getElementById(\"i%di%d\").style.backgroundColor = \"#ecdfc2\"</script>", narbre, aac);
         }
         genere_html(a->frere);
         fprintf(html, "</li>\n");
