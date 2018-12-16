@@ -1,0 +1,178 @@
+programme                -> DEBUT_PROG corps
+
+corps                    -> liste_declarations liste_instructions
+corps                    -> liste_instructions
+
+liste_declarations       -> dec1
+
+liste_instructions       -> DEBUT suite_liste_inst FIN
+
+suite_liste_inst         -> instruction POINT_VIRGULE
+suite_liste_inst         -> suite_liste_inst instruction POINT_VIRGULE
+
+dec1                     -> declaration_type POINT_VIRGULE
+dec1                     -> declaration_type POINT_VIRGULE dec1
+dec1                     -> dec2
+
+dec2                     -> declaration_variable  POINT_VIRGULE
+dec2                     -> declaration_variable  POINT_VIRGULE dec2
+dec2                     -> dec3
+
+dec3                     -> declaration_procedure POINT_VIRGULE
+dec3                     -> declaration_fonction  POINT_VIRGULE
+dec3                     -> declaration_procedure POINT_VIRGULE dec3
+dec3                     -> declaration_fonction  POINT_VIRGULE dec3
+
+declaration_type         -> TYPE IDF DEUX_POINTS suite_declaration_type_t
+declaration_type         -> TYPE IDF DEUX_POINTS suite_declaration_type_s
+
+suite_declaration_type_s -> STRUCT liste_champs FSTRUCT
+suite_declaration_type_t -> TABLEAU dimension DE nom_type
+
+dimension                -> CO liste_dimensions CF
+
+liste_dimensions         -> une_dimension
+liste_dimensions         -> liste_dimensions VIRGULE une_dimension
+
+une_dimension            -> const_entier DIEZ const_entier
+
+liste_champs             -> un_champ
+liste_champs             -> liste_champs un_champ
+
+un_champ                 -> IDF DEUX_POINTS nom_type POINT_VIRGULE
+
+nom_type                 -> type_simple
+nom_type                 -> IDF
+
+type_simple              -> ENTIER
+type_simple              -> REEL
+type_simple              -> BOOLEEN
+type_simple              -> CARACTERE
+type_simple              -> CHAINE CO CSTE_ENTIERE CF
+
+declaration_variable     -> VARIABLE IDF DEUX_POINTS nom_type
+
+declaration_procedure    -> PROCEDURE IDF liste_parametres corps
+
+declaration_fonction     -> FONCTION IDF liste_parametres RETOURNE nom_type corps
+
+liste_parametres         ->
+liste_parametres         -> PO liste_param PF
+
+liste_param              -> un_param
+liste_param              -> liste_param POINT_VIRGULE un_param
+
+un_param                 -> IDF DEUX_POINTS nom_type
+
+instruction              -> affectation
+instruction              -> condition
+instruction              -> tant_que
+instruction              -> appel
+instruction              -> VIDE
+instruction              -> RETOURNE resultat_retourne
+instruction              -> lire
+instruction              -> ecrire
+
+lire                     -> READ PO type_simple PF
+
+ecrire                   -> WRITE PO expression PF
+
+resultat_retourne        ->
+resultat_retourne        -> expression
+resultat_retourne        -> expression_chaine /* modifié obligé sinon ambi*/
+
+appel                    -> IDF liste_arguments
+
+liste_arguments          -> PO PF
+liste_arguments          -> PO liste_args PF
+     
+liste_args               -> un_arg
+liste_args               -> liste_args VIRGULE un_arg
+
+un_arg                   -> expression
+
+condition                -> SI expression
+                            ALORS liste_instructions
+                            SINON liste_instructions
+
+tant_que                 -> TANT_QUE expression FAIRE liste_instructions
+
+affectation              -> variable OPAFF expression
+affectation              -> variable OPAFF expression_chaine /*modifié*/
+affectation              -> variable plus_moins		  /*modifié*/
+
+variable                 -> variable_idf
+variable	             -> tableau
+variable	             -> variable POINT tableau
+variable	             -> variable POINT variable_idf
+
+variable_idf	         -> IDF
+
+tableau		             -> IDF liste_param_tab
+
+liste_param_tab          -> CO param_du_tab CF
+liste_param_tab          -> liste_param_tab CO param_du_tab CF
+
+param_du_tab	         -> expression
+param_du_tab	         -> param_du_tab VIRGULE expression
+
+expression_chaine        -> expression_chaine PLUS CSTE_CHAINE
+expression_chaine        -> CSTE_CHAINE
+
+expression               -> expression_et
+
+expression_et	         -> expression_et ET expression_ou
+expression_et	         -> expression_ou
+
+expression_ou  	         -> expression_ou OU expression_neg
+expression_ou  	         -> expression_neg
+
+expression_neg	         -> NON expression_bcn
+expression_neg           -> expression_bcn
+
+expression_bcn           -> cste_bool
+expression_bcn           -> expression_cmp
+expression_bcn           -> expression_num
+
+cste_bool	             -> VRAI
+cste_bool	             -> FAUX
+
+expression_cmp	         -> expression_num opcomp expression_num
+
+opcomp	                 -> INF
+opcomp	                 -> INFEGAL
+opcomp	                 -> SUP
+opcomp	                 -> SUPEGAL
+opcomp	                 -> EGAL
+opcomp	                 -> DIFF
+
+expression_num	         -> e1
+
+e1		                 -> e2
+e1		                 -> e1 PLUS e2
+e1		                 -> e1 MOINS e2
+
+e2		                 -> e3
+e2		                 -> e2 MULT e3
+e2		                 -> e2 DIV e3
+
+e3		                 -> MOINS e4
+e3		                 -> e4
+
+e4		                 -> PO expression PF
+e4		                 -> CSTE_ENTIERE
+e4		                 -> CSTE_REEL
+e4		                 -> CSTE_CARACTERE
+e4		                 -> appel
+e4		                 -> e5
+
+e5		                 -> variable
+e5		                 -> variable plus_moins
+
+plus_moins 	             -> INCREMENTE
+plus_moins	             -> DECREMENTE
+
+
+
+
+

@@ -121,7 +121,7 @@ liste_param : un_param {type_arbre *a ;
    ajoute_type_final(a,donne_type_final($1));
    $$=a;
  }
-| liste_param POINT_VIRGULE un_param {type_arbre * a,*b;a=$1;b=concat_pere_fils(cree_noeud(A_PARAM,-1),$3);while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,b);$$=a;ajoute_type_final(b,donne_type_final($3));}
+            | liste_param POINT_VIRGULE un_param {type_arbre * a,*b;a=$1;b=concat_pere_fils(cree_noeud(A_PARAM,-1),$3);while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,b);$$=a;ajoute_type_final(b,donne_type_final($3));}
             ;
 
 un_param : IDF DEUX_POINTS nom_type {type_arbre *a;a=cree_noeud(A_IDF,$1);enfile($1);enfile($3->noeud);ajoute_type_final(a,donne_type_final($3));$$=a;}/*nom type nan ?*/
