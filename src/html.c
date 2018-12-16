@@ -142,9 +142,7 @@ void init_html()
 void new_arbre_html(int t)
 {
     char titre[30];
-    char reg[10];
     sprintf(titre, "Arbre Region de nis %d", t);
-    sprintf(reg, "Région %d", t);
     narbre++;
     if (narbre != 0) {
         fprintf(html, "</section>\n<input hidden=\"true\" id=\"acc%d\" value=\"%d\">\n", narbre - 1, aac);
@@ -174,7 +172,19 @@ void genere_html(type_arbre* a)
     if (!arbre_vide(a)) {
         //corres tab noeud noeudf type
         aac++;
-        fprintf(html, "<li>\n<a href=\"javascript:\" onclick=\"toggle('a%da%d')\"> %s</a>\n", narbre, aac, tab[a->type]);
+        char c[20];
+        if (a->noeud == 0 && a->noeudf != 0) {
+            sprintf(c, "%f", a->noeudf);
+        } else if (a->noeudf == 0 && a->noeud != 0) {
+            if (a->noeud == -1) {
+                sprintf(c, " ");
+            } else {
+                sprintf(c, "%d", a->noeud);
+            }
+        } else {
+            sprintf(c, " ");
+        }
+        fprintf(html, "<li>\n<a href=\"javascript:\" onclick=\"toggle('a%da%d')\">%s %s</a>\n", narbre, aac, tab[a->type], c);
 
         if (!arbre_vide(a->fils)) {
             fprintf(html, "<ul id=\"a%da%d\" hid=\"0\">\n", narbre, aac);

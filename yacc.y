@@ -1,6 +1,7 @@
 %{
   #include "inc/sauv.h"
   #include "inc/html.h"
+  #include "inc/analyse_sementique.h"
   extern int Num_lignes;
   extern int Num_inst;
   int yylex();

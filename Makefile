@@ -1,19 +1,21 @@
-all: lex.l yacc.y html.o arbre.o hash.o sauv.o pile.o table_region.o table_declaration.o table_rep_type.o file.o bin obj clean_gch
+all: lex.l yacc.y html.o arbre.o hash.o sauv.o pile.o table_region.o table_declaration.o table_rep_type.o analyse_sementique.o file.o bin obj clean_gch
 	yacc -d -v yacc.y
 	lex lex.l
 	gcc -c lex.yy.c
-	gcc -o bin/exec y.tab.c lex.yy.o obj/html.o obj/arbre.o obj/sauv.o obj/hash.o obj/pile.o obj/table_region.o obj/table_declaration.o obj/table_rep_type.o obj/file.o -ly -ll
+	gcc -o bin/exec y.tab.c lex.yy.o obj/html.o obj/arbre.o obj/sauv.o obj/hash.o obj/pile.o obj/table_region.o obj/table_declaration.o obj/analyse_sementique.o obj/table_rep_type.o obj/file.o -ly -ll
 	mv y.* obj/
 	mv *.o obj/
 	mv lex.yy.c obj/
-	
 
 
 all.o: arbre.o html.o sauv.o file.o hash.o table_rep_type.o erreur.o table_region.o table_declaration.o pile_exec.o
 
 pile_exec.o: src/pile_exec.c inc/pile_exec.h
-	gcc -Wall src/pile_exec.c inc/pile_exec.h
+	gcc -Wall src/pile_exec.h inc/pile_exec.c
 	mv pile_exec.o obj/
+analyse_sementique.o: src/analyse_sementique.c inc/analyse_sementique.h
+	gcc -Wall -c src/analyse_sementique.c inc/analyse_sementique.h
+	mv analyse_sementique.o obj/
 arbre.o: src/arbre.c inc/arbre.h obj
 	gcc -Wall src/arbre.c inc/arbre.h -c
 	mv arbre.o obj/ 
