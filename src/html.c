@@ -178,13 +178,15 @@ void genere_html(type_arbre* a)
         } else if (a->noeudf == 0 && a->noeud != 0) {
             if (a->noeud == -1) {
                 sprintf(c, " ");
+            } else if (a->type == A_IDF) {
+                sprintf(c, "%s", get_lexeme(a->noeud));
             } else {
                 sprintf(c, "%d", a->noeud);
             }
         } else {
             sprintf(c, " ");
         }
-        fprintf(html, "<li>\n<a href=\"javascript:\" onclick=\"toggle('a%da%d')\">%s %s</a>\n", narbre, aac, tab[a->type], c);
+        fprintf(html, "<li>\n<a href=\"javascript:\" onclick=\"toggle('a%da%d')\">%s %s</a> <!-- t%d dec%d tf%d tv%d -->\n", narbre, aac, tab[a->type], c, a->type, a->num_dec, a->type_final, a->type_var);
 
         if (!arbre_vide(a->fils)) {
             fprintf(html, "<ul id=\"a%da%d\" hid=\"0\">\n", narbre, aac);
