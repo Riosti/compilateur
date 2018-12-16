@@ -69,7 +69,7 @@ int type_dun_tab(int le_tab)
     if (Tab_dec[le_tab].nature == TYPE_T) {
         return Table_rep_type[Tab_dec[le_tab].description];
     } else {
-        fprintf(stderr, "le champ %s n'est pas un tableau", get_lexeme(le_tab));
+        fprintf(stderr, "le champ %s n'est pas un tableau\n", get_lexeme(le_tab));
 
         exit(-1);
     }
@@ -225,8 +225,21 @@ int test_corp_fonction(int num_hash, type_arbre* a)
 
 int test_corp_procedure(type_arbre* a)
 {
-    test_return_dans_liste_instruction(a, -1);
-    return 0;
+  ajoute_fin_procedure_return(a);
+  test_return_dans_liste_instruction(a, -1);
+  return 0;
+}
+
+void ajoute_fin_procedure_return(type_arbre *a){
+  type_arbre *b;
+  b=cree_noeud(A_RETURN,-1);
+  ajoute_type_final(b,-1);
+  if(a->fils!=NULL){
+    while(a->frere!=NULL){
+      a=a->frere;a=a->fils;
+    }
+    concat_pere_frere(a,concat_pere_fils(cree_noeud(A_LIST,-1),b));
+  }
 }
 
 #endif
