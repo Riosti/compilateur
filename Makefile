@@ -44,17 +44,32 @@ pile.o : src/pile.c inc/pile.h
 html.o: inc/html.h src/html.c obj
 	gcc -Wall src/html.c inc/html.h -c
 	mv html.o obj/
+#######################MACHINE VIRTUELLE##################################
+##########################################################################
+MV: charger.o fileBC.o pile_exec.o pile_exec
 
-chargement: charger.o module.o module
+pile_exec: obj/pile_exec.o
+	gcc -Wall -o pile_exec pile_exec.o
+
+pile_exec.o: src/pile_exec.c inc/pile_exec.h
+	gcc -Wall src/pile_exec.c inc/pile_exec.h -c
+	mv pile_exec.o objbis/
+
+fileBC.o: src/fileBC.c inc/fileBC.h
+	gcc -Wall src/fileBC.c inc/fileBC.h -c
+	mv fileBC.o objbis/
 
 charger.o: src/charger.c inc/charger.h
 	gcc -Wall src/charger.c inc/charger.h -c
+	mv charger.o objbis/
 
-module.o: module_chargement.c inc/charger.h
+
+module_chargement.o: module_chargement.c inc/charger.h
 	gcc -Wall  module_chargement.c inc/charger.h -c
 
-module: module.o charger.o
+module: module_chargement.o charger.o
 	gcc -Wall -o module module_chargement.o charger.o
+###########################################################################
 
 obj:
 	mkdir obj

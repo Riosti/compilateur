@@ -1,7 +1,7 @@
 #include "../inc/pile_exec.h"
 
 int BC = 0, indice_libre = 0, NIScourant = 0;
-FileBC chainage = NULL;
+FileBC chainage = initialise();
 
 void depiler(){
     indice_libre-=1;
@@ -36,6 +36,7 @@ void evalue_appel(type_arbre *a){
 	empiler(evalue_expression(b->fils));
 	b = b->frere;
     }
+    affiche_pile();
 }
 
 
@@ -205,6 +206,7 @@ cellule evalue_fonction(type_arbre *a){
     //recule la BC
     indice_libre = BC;//corrigé
     BC = defile(chainage);//corrigé
+    affiche_pile();
     return evalue_expression(a->fils);
 }
 
@@ -291,9 +293,19 @@ void affiche_pile(){
 		printf("%d     %c\n", pexec[î].val);
 		break;
 	    }
+    }
+}
 	
 int main(int argc, char *argv[]){
-    //initialiser les tables
-
-    return 1;
+    //charger les tables
+    FILE *f = fopen("table_prog", "r");
+    charger_TabLex(f);
+    charger_TabDec(f);
+    charger_TabReg(f);
+    carger_TabRep(f);
+    fclose(f);
+    NIScourant = 0; NISdeclaration = 0;
+    evalue_arbre(TabReg[0].a);
+    return 1
 }
+

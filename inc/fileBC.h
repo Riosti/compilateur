@@ -1,7 +1,8 @@
 #ifndef _FILE_BC_
 #define _FILE_BC_
 //MODULE QUI ME SERA UTILE POUR LE CHAINAGE DYNAMIQUE (BC des régions engobantes)
-
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef struct elem{
     int bc;
@@ -11,7 +12,7 @@ typedef struct elem{
 typedef struct_file *FileBC;
 
 //initialiser la file
-FileBC init();
+FileBC initialiase();
 
 //Est-elle vide?
 int est_vide(FileBC f);
