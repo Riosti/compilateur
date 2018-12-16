@@ -35,19 +35,18 @@ int taille_type(int type)
     return Tab_dec[type].execution; /*ici ca risque d etre modif*/
 }
 
-int indice_pour_lexem(int lexem)
-{
-    int index = lexem;
-    while (Tab_dec[index].suivant != -1) {
-        index = Tab_dec[index].suivant = -1;
-    }
-    if (Tab_dec[index].nature != -1) {
-        Tab_dec[index].suivant = prochaine_place_libre;
-        index = prochaine_place_libre;
-        prochaine_place_libre++;
-        test_place_libre();
-    }
-    return index;
+int indice_pour_lexem(int lexem){
+  int index=lexem;
+  while(Tab_dec[index].suivant!=-1){
+    index=Tab_dec[index].suivant;
+  }
+  if(Tab_dec[index].nature!=-1){
+    Tab_dec[index].suivant=prochaine_place_libre;
+    index=prochaine_place_libre;
+    prochaine_place_libre++;
+    test_place_libre();
+  }
+  return index;
 }
 
 void ajoute_type_base(int lexem)
