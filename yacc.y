@@ -243,7 +243,7 @@ variable : variable_idf {$$=$1;
 
 
 | tableau {$$=$1;
-   ajoute_type_final($1,type_dun_tab(type_var(num_dec(donne_num_hash_arbre($1->fils)))));
+   ajoute_type_final($1,type_dun_tab(num_dec(donne_num_hash_arbre($1->fils))));
    ajoute_num_dec($1,num_dec(donne_num_hash_arbre($1->fils)));
   }
 
