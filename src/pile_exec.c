@@ -168,7 +168,7 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	printf("BC %d\n", BC);
 	printf("%d\n",pexec[BC+NIScourant-NISdeclaration].val);
 	printf("%d\n",Tab_dec[a->fils->num_dec].execution);
-	printf("type %d\n", a->fils->ftype);
+	printf("type %d\n", a->fils->type);
 	pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution] = evalue_expression(a->fils->frere);
 	printf("Affectation done");
 	break;
@@ -322,13 +322,13 @@ int main(int argc, char *argv[]){
     charger_TabReg(f);
 
     fclose(f);
-    
+    /*
     chainage = init_bc();
     indice_libre =0;
     BC = 0;
     init_pexec();
     printf("%d\n", table_region[0].a->type);
-    evalue_arbre(table_region[0].a);
+    evalue_arbre(table_region[0].a);*/
     return 1;
 }
 
