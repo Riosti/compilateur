@@ -8,7 +8,7 @@ all: lex.l yacc.y html.o arbre.o hash.o sauv.o pile.o table_region.o table_decla
 	mv lex.yy.c obj/
 
 
-all.o: arbre.o html.o sauv.o file.o hash.o table_rep_type.o erreur.o table_region.o table_declaration.o pile_exec.o
+all.o: arbre.o html.o sauv.o file.o hash.o table_rep_type.o erreur.o table_region.o table_declaration.o
 
 pile_exec.o: src/pile_exec.c inc/pile_exec.h
 	gcc -Wall src/pile_exec.h inc/pile_exec.c
@@ -46,17 +46,32 @@ pile.o : src/pile.c inc/pile.h
 html.o: inc/html.h src/html.c obj
 	gcc -Wall src/html.c inc/html.h -c
 	mv html.o obj/
+#######################MACHINE VIRTUELLE##################################
+##########################################################################
+MV: charger.o fileBC.o pile_exec.o pile_exec
 
-chargement: charger.o module.o module
+pile_exec: objbis/pile_exec.o objbis/fileBC.o objbis/charger.o obj/table_rep_type.o obj/table_declaration.o obj/table_region.o obj/file.o obj/arbre.o obj/hash.o obj/pile.o
+	gcc -Wall -o pile_exec objbis/pile_exec.o objbis/fileBC.o objbis/charger.o obj/table_rep_type.o obj/table_declaration.o obj/table_region.o obj/file.o obj/arbre.o obj/hash.o obj/pile.o
+
+pile_exec.o: src/pile_exec.c inc/pile_exec.h
+	gcc -Wall src/pile_exec.c inc/pile_exec.h -c
+	mv pile_exec.o objbis/
+
+fileBC.o: src/fileBC.c inc/fileBC.h
+	gcc -Wall src/fileBC.c inc/fileBC.h -c
+	mv fileBC.o objbis/
 
 charger.o: src/charger.c inc/charger.h
 	gcc -Wall src/charger.c inc/charger.h -c
+	mv charger.o objbis/
 
-module.o: module_chargement.c inc/charger.h
+
+module_chargement.o: module_chargement.c inc/charger.h
 	gcc -Wall  module_chargement.c inc/charger.h -c
 
-module: module.o charger.o
+module: module_chargement.o charger.o
 	gcc -Wall -o module module_chargement.o charger.o
+###########################################################################
 
 obj:
 	mkdir obj

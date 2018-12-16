@@ -2,7 +2,7 @@
 #ifndef _CHARGER_H_
 #define _CHARGER_H_
 
-#include "analyse_semetique.h"
+#include "analyse_sementique.h"
 
 //fonction d'erreur de chargement
 int erreur_fichier();
