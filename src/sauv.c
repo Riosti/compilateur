@@ -3,16 +3,16 @@
 
 void ecrire_noeud(FILE* f, type_arbre* a)
 {
-    if (!arbre_vide(a)) {
-        fprintf(f, "debut ");
-        fprintf(f, " %d %d %f\n", a->type, a->noeud, a->noeudf);
-        fprintf(f, "fils: ");
-        ecrire_noeud(f, a->fils);
-        fprintf(f, "\nfrere: ");
-        ecrire_noeud(f, a->frere);
-    } else {
-        fprintf(f, "\nvide ");
-    }
+  if (!arbre_vide(a)) {
+    fprintf(f, "debut \n");
+    fprintf(f, "%d %d %f\n", a->type, a->noeud, a->noeudf);
+    fprintf(f, "fils: \n");
+    ecrire_noeud(f, a->fils);
+    fprintf(f, "frere: \n");
+    ecrire_noeud(f, a->frere);
+  } else {
+    fprintf(f, "vide \n");
+  }
 }
 
 int sauvegarder_arbre(type_arbre* a, char* chemin)

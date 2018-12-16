@@ -46,28 +46,27 @@ void charger_TabDec(FILE *f){
 }
 
 
+
 type_arbre * lire_arbre(FILE *f){
   char chaine[100];
   type_arbre *a;
   int type,noeud;
   float noeud_f;
-  if(fscanf(f,"%s",chaine)==1){
-      printf("lecture de %s\n", chaine);
-      if( strcmp(chaine,"vide") != 0){
-	  a=malloc(sizeof(type_arbre));
-	  if ( !fscanf(f," %d %d %f\n",&type,&noeud,&noeud_f)){
-	      fprintf(stderr, "Erreur chargement de l'arbre\n");
-	  exit(-1);
-      }
-      printf("Type %d, Noeud %d, Noeudf %f\n", type, noeud, noeud_f);
-      a->type=type;
-      a->noeud=noeud;
-      a->noeudf=noeud_f;
-      fscanf(f," %[^ ]s ",chaine);
-      a->frere=lire_arbre(f);
-      fscanf(f," %[^ ]s ",chaine);
-      a->fils=lire_arbre(f);
-    }
+  if(fscanf(f,"%s\n",chaine)==1){
+     if( strcmp(chaine,"debut") == 0){
+       a=malloc(sizeof(type_arbre));
+       fscanf(f," %d %d %f\n",&type,&noeud,&noeud_f);
+       a->type=type;
+       a->noeud=noeud;
+       a->noeudf=noeud_f;
+       fscanf(f,"%s\n",chaine);
+       a->fils=lire_arbre(f);
+       fscanf(f,"%s\n",chaine);
+       a->frere=lire_arbre(f);
+     }
+     else{
+       a=NULL;
+     }
   }
   return a;
 }
@@ -77,11 +76,11 @@ void charger_TabReg(FILE *f){
   int i;
   i=0;
   if(fscanf(f,"%s\n",chaine)==1){
-      printf("%s\n", chaine);
-    if(strcmp(chaine,"table_region")==0){
+    if(strcmp(chaine,"table_region:")==0){
       while(fscanf(f," %d ",&i)==1){
 	fscanf(f,"%d %d ",&table_region[i].taille,&table_region[i].nis);
 	table_region[i].a=lire_arbre(f);
+	afficher_arbre(table_region[i].a);
       }
     }
     else{
@@ -100,7 +99,7 @@ void charger_TabRep(FILE *f){
   int i,nbr;
   i=0;
   if(fscanf(f,"%s\n",chaine)==1){
-    if(strcmp(chaine,"table_rep_type")==0){
+    if(strcmp(chaine,"table_rep_type:")==0){
       while(fscanf(f," %d ",&nbr)==1){
 	Table_rep_type[i]=nbr;
 	i++;

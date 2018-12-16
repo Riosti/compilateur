@@ -92,7 +92,7 @@ un_champ : IDF DEUX_POINTS nom_type POINT_VIRGULE {enfile($1);enfile($3->noeud);
          ;
 
 nom_type : type_simple {$$=$1;}
-| IDF {type_arbre *a ;a=cree_noeud(A_IDF,$1);ajoute_type_final(a,type_var(num_dec($1)));$$=a;}
+         | IDF {type_arbre *a ;a=cree_noeud(A_IDF,$1);ajoute_type_final(a,type_var(num_dec($1)));$$=a;}
          ;
 
 type_simple : ENTIER {type_arbre *a;a=cree_noeud(A_INT,$1); ajoute_type_final(a,0);$$=a;}
@@ -121,7 +121,7 @@ liste_param : un_param {type_arbre *a ;
    ajoute_type_final(a,donne_type_final($1));
    $$=a;
  }
-| liste_param POINT_VIRGULE un_param {type_arbre * a,*b;a=$1;b=concat_pere_fils(cree_noeud(A_PARAM,-1),$3);while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,b);$$=a;ajoute_type_final(b,donne_type_final($3));}
+            | liste_param POINT_VIRGULE un_param {type_arbre * a,*b;a=$1;b=concat_pere_fils(cree_noeud(A_PARAM,-1),$3);while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,b);$$=a;ajoute_type_final(b,donne_type_final($3));}
             ;
 
 un_param : IDF DEUX_POINTS nom_type {type_arbre *a;a=cree_noeud(A_IDF,$1);enfile($1);enfile($3->noeud);ajoute_type_final(a,donne_type_final($3));$$=a;}/*nom type nan ?*/
@@ -132,7 +132,7 @@ instruction : affectation {$$=$1;}
             | tant_que {$$=$1;}
             | appel  {$$=$1;}
             | VIDE {$$=cree_noeud(A_VIDE,-1);}
-| RETOURNE resultat_retourne {type_arbre *a;a=concat_pere_fils(cree_noeud(A_RETURN,-1),$2);ajoute_type_final(a,donne_type_final($2));$$=a;}
+            | RETOURNE resultat_retourne {type_arbre *a;a=concat_pere_fils(cree_noeud(A_RETURN,-1),$2);ajoute_type_final(a,donne_type_final($2));$$=a;}
             | lire {$$=$1;}
             | ecrire {$$=$1;}
             ;
@@ -187,7 +187,7 @@ SINON liste_instructions {
     $$=concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(concat_pere_fils(cree_noeud(A_SI,-1),$2),concat_pere_frere(concat_pere_fils(cree_noeud(A_ALORS,-1),$4),concat_pere_fils(cree_noeud(A_SINON,-1),$6))));
   }
   else{
-    fprintf(stderr,"apres un il il faut une expression boolean \n");
+    fprintf(stderr,"apres un if il faut une expression boolean \n");
     exit(-1);
   }}
           ;
@@ -401,7 +401,7 @@ e1 : e2 {$$=$1;}
        $$=a;
      }
      else{
-       fprintf(stderr,"les type ne sont pas identique donc - imposible\n");
+       fprintf(stderr,"les type ne sont pas identique donc - impossible\n");
        exit(-1);
      }
    }
