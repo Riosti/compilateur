@@ -2,8 +2,8 @@
   #include "inc/sauv.h"
   #include "inc/html.h"
   #include "inc/analyse_sementique.h"
-  extern int Num_lignes;
-  extern int Num_inst;
+  //extern int Num_lignes;
+  //extern int Num_inst;
   int yylex();
   int yyerror();
   
@@ -40,7 +40,7 @@ liste_instructions : DEBUT suite_liste_inst FIN {$$=$2;}
                    ;
 
 suite_liste_inst : instruction POINT_VIRGULE{$$=$1;}
-                 | suite_liste_inst instruction POINT_VIRGULE {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;a=a->fils;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_LIST,-1),$2));;$$=$1;} 
+                 | suite_liste_inst instruction POINT_VIRGULE {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;a=a->fils;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_LIST,-1),$2));$$=$1;} 
                  ;
 
 
@@ -140,7 +140,7 @@ instruction : affectation {$$=$1;}
 lire : READ PO type_simple PF {type_arbre *a =concat_pere_fils(cree_noeud(A_LIRE,-1),$3);ajoute_type_final(a,donne_type_final($3));$$=a;}/*type*/
 
 
-ecrire : WRITE PO expression PF {type_arbre *a;a = concat_pere_fils(cree_noeud(A_LIRE,-1),$3);ajoute_type_final(a,donne_type_final($3));$$=a;} /*expression*/
+ecrire : WRITE PO expression PF {type_arbre *a;if(test_type($3,0) || test_type($3,1) || test_type($3,2) || test_type($3,3) || test_type($3,4)){a = concat_pere_fils(cree_noeud(A_LIRE,-1),$3);ajoute_type_final(a,donne_type_final($3));$$=a;}else{ fprintf(stderr,"erreur de type on ne peux ecrire que des type de bases \n");exit(-1);}} /*expression*/
 
 
 resultat_retourne : {$$=cree_noeud(A_VIDE,-1);}
