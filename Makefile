@@ -10,9 +10,6 @@ all: lex.l yacc.y html.o arbre.o hash.o sauv.o pile.o table_region.o table_decla
 
 all.o: arbre.o html.o sauv.o file.o hash.o table_rep_type.o erreur.o table_region.o table_declaration.o
 
-pile_exec.o: src/pile_exec.c inc/pile_exec.h
-	gcc -Wall src/pile_exec.h inc/pile_exec.c
-	mv pile_exec.o obj/
 analyse_sementique.o: src/analyse_sementique.c inc/analyse_sementique.h
 	gcc -Wall -c src/analyse_sementique.c inc/analyse_sementique.h
 	mv analyse_sementique.o obj/
@@ -80,16 +77,15 @@ bin:
 	mkdir bin
 
 clean_gch:
-	rm inc/*.gch
+	rm -rf inc/*.gch
 
 clean_obj:
 	rm -rf obj
+	rm -rf objbis
 
 clean_bin:
 	rm -rf bin
 
 
-clean:
-	rm -rf bin
-	rm -rf obj
-	rm -rf inc/*.gch
+clean: clean_bin clean_gch clean_obj
+	
