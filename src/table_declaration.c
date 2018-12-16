@@ -35,7 +35,7 @@ int taille_type(int type){
 int indice_pour_lexem(int lexem){
   int index=lexem;
   while(Tab_dec[index].suivant!=-1){
-    index=Tab_dec[index].suivant=-1;
+    index=Tab_dec[index].suivant;
   }
   if(Tab_dec[index].nature!=-1){
     Tab_dec[index].suivant=prochaine_place_libre;
