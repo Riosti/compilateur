@@ -54,3 +54,56 @@ void sous_chaine_color(char *final,char *msg,char *color,int begin,int end){
   strcat(final,mem);
 }
 
+int erreur_affiche(){
+  FILE* f1;
+  int i,j;
+  char inst[1000];
+  char c='a';
+  change_color(KRED);
+  if ((f1 = fopen(Fichier_ouvert, "r")) == NULL) {
+    fprintf(stderr, "erreur ouverture fichier : %s", Fichier_ouvert);
+    fclose(f1);
+    return -1;
+  }
+
+  print(" ! erreur ! ");
+  fprintf(stderr," ligne %d instruction %d\n",Num_lignes,Num_inst);
+  i=1;
+  while(i!=Num_lignes){
+    fscanf(f1,"%c",&c);
+    if(c=='\n'){
+      i++;
+    }
+  }
+  i=0;
+  j=0;
+  while(i<Num_inst){
+    fscanf(f1,"%c",&c);
+    if(c==' '){
+      i++;
+      inst[j]='\0';
+      fprintf(stderr,"%s ",inst);
+      j=0;
+    }else{
+      inst[j]=c;
+      j++;
+    }
+  }
+  fscanf(f1,"%s",inst);
+  change_color(KRED);
+  print(inst);
+
+  fscanf(f1,"%c",&c);
+  j=0;
+  while(c!='\n'){
+    inst[j]=c;
+    fscanf(f1,"%c",&c);
+    j++;
+  }
+  inst[j]='\0';
+  fprintf(stderr,"%s \n",inst);
+    
+
+  fclose(f1);
+  exit(-1);
+}

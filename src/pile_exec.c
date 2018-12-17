@@ -111,6 +111,10 @@ int evalue_condition(type_arbre *a){
 
 
 void evalue_arbre(type_arbre *a){//on connait la région
+    if(a == NULL){
+	printf("fin de l'execution\n");
+	exit(0);
+    }
     printf("je suis dans evalue_arbre\n");
     int NISdeclaration, NIScourant = table_region[region_courante].nis;
     printf("%d\n", a->type);
@@ -312,6 +316,7 @@ void affiche_pile(){
 	
 int main(int argc, char *argv[]){
     //charger les tables
+    printf("lancement de la pile\n");
     FILE *f = fopen("table_prog", "r");
     init_table_region();
     init_table_decla();
@@ -322,13 +327,13 @@ int main(int argc, char *argv[]){
     charger_TabReg(f);
 
     fclose(f);
-    /*
+    
     chainage = init_bc();
     indice_libre =0;
     BC = 0;
     init_pexec();
     printf("%d\n", table_region[0].a->type);
-    evalue_arbre(table_region[0].a);*/
+    evalue_arbre(table_region[0].a);
     return 1;
 }
 
