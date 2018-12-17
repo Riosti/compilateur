@@ -1,21 +1,32 @@
 Prog
 
-Var a : Int;
-Var b : Float;
-Fonction f (a : Int) Return Int 
+Type Coord : Struct x : Int; y : Int; Fstruct;
+Var x : Int;
+Var b : Bool;
+Var fr : Float;
+Fonction f (a : Coord) Return Coord 
 {
-    Return 1;
+    a.x++;
+    a.y--;
+    Return a;
 };
 
 Procedure p 
 {
-    a = a +1;
+    x = x*2;
 };
 
 {
-    a=1+1;
-    b=2.0+3.99;
-    
-    Return b;
+    fr = 4.0;
+    b= 1 < 3 && 3 >= 6;
+    If(b)
+    Then
+    {
+        x=10;
+    }
+    Else
+    {
+        x=1;
+    };
+    Return 1;
 }
-

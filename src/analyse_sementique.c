@@ -69,7 +69,7 @@ int type_dun_tab(int le_tab)
     if (Tab_dec[le_tab].nature == TYPE_T) {
         return Table_rep_type[Tab_dec[le_tab].description];
     } else {
-        fprintf(stderr, "le champ %s n'est pas un tableau", get_lexeme(le_tab));
+        fprintf(stderr, "le champ %s n'est pas un tableau\n", get_lexeme(le_tab));
 
         exit(-1);
     }

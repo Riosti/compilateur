@@ -1,6 +1,6 @@
 #include "../inc/html.h"
 
-char* tab[] = { "A_LIST", "A_CSTE_E", "A_CSTE_R", "A_IDF", "A_CSTE_CARAC", "A_CSTE_CHAINE", "A_BOOL", "A_TQ", "A_APPEL_F", "A_APPEL_P", "A_VARIABLE", "A_TABLEAU", "A_STRUCT", "A_ET", "A_OU", "A_PLUS", "A_MULT", "A_MOINS", "A_DIV", "A_NON", "A_INF", "A_SUP", "A_EGAL", "A_SUPEGAL", "A_INFEGAL", "A_DIFF", "A_OPAFF", "A_SI", "A_ALORS", "A_SINON", "A_PROC", "A_FONCTION", "A_INCR", "A_DEC", "A_CHAINE", "A_VIRGULE", "A_ARG", "A_PARAM", "A_APPEL", "A_VIDE", "A_RETURN", "A_INT", "A_FLOAT", "A_CHAR" };
+char* tab[] = { "A_LIST", "A_CSTE_E", "A_CSTE_R", "A_IDF", "A_CSTE_CARAC", "A_CSTE_CHAINE", "A_BOOL", "A_TQ", "A_APPEL_F", "A_APPEL_P", "A_VARIABLE", "A_TABLEAU", "A_STRUCT", "A_ET", "A_OU", "A_PLUS", "A_MULT", "A_MOINS", "A_DIV", "A_NON", "A_INF", "A_SUP", "A_EGAL", "A_SUPEGAL", "A_INFEGAL", "A_DIFF", "A_OPAFF", "A_SI", "A_ALORS", "A_SINON", "A_PROC", "A_FONCTION", "A_INCR", "A_DEC", "A_CHAINE", "A_VIRGULE", "A_ARG", "A_PARAM", "A_APPEL", "A_VIDE", "A_RETURN", "A_INT", "A_FLOAT", "A_CHAR", "A_LIRE", "A_ECRIRE" };
 
 FILE* html;
 FILE* tabled;
@@ -107,10 +107,7 @@ void init_html()
                     "\t\t</nav>\n"
                     "\t</header>\n"
                     "\t<section class=\" table \">\n"
-                    "\t<table>"
-                    "<thead>\n"
-                    "\t<th>int</th>\n"
-                    "</thead>",
+                    "\t<table class=\"type\">",
         liens);
 
     fprintf(tableh, "<html>\n"
@@ -209,7 +206,7 @@ void genere_table_r(int x, int taille, int nis, type_arbre* a)
 {
     new_arbre_html(nis);
     genere_html(a);
-    fprintf(tabler, "<tr><th>%d</th><td>%d</td><td>%d</td><td><a class=\"lienArbre\" href=\"aff_arbre.html#sec%d\">Arbre correspondant</a></td></tr>", x, taille, nis, nis);
+    fprintf(tabler, "<tr><th>%d</th><td>%d</td><td>%d</td><td><a class=\"lienArbre\" href=\"aff_arbre.html#sec%d\">Arbre correspondant</a></td></tr>", x, taille, nis, narbre);
 }
 
 int nbRType = 0;
@@ -217,10 +214,19 @@ void genere_table_t(int a, int tt)
 {
     nbRType++;
 
-    if (nbRType == 16) {
+    if (nbRType == 21) {
+        nbRType = 1;
         fprintf(tablet, "</tr><tr>");
     }
-    fprintf(tablet, "<td>%d %d</td>", a, tt);
+    fprintf(tablet, "<td class=\"type\"><table class=\"case\">"
+                    "\n<tr class=\"casetd\">"
+                    "\n	<td>%d</td>"
+                    "\n</tr>"
+                    "\n<tr>"
+                    "\n	<td>%d</td>"
+                    "\n</tr>"
+                    "\n</table></td>",
+        a, tt);
 }
 
 void genere_table_h(int x, char* c, int a, int b)
