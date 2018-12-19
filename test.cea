@@ -1,14 +1,14 @@
 Prog
 
-Type Coord : Struct x : Int; y : Int; Fstruct;
+Type coord : Struct x : Int; y : Int; Fstruct;
 Var x : Int;
 Var b : Bool;
 Var fr : Float;
-Fonction f (a : Coord) Return Coord 
+Fonction f (a : coord) Return Int 
 {
     a.x++;
     a.y--;
-    Return a;
+    Return 1;
 };
 
 Procedure p 
