@@ -1,3 +1,8 @@
+Terminaux inutilisés dans la grammaire
+
+   ERREUR
+
+
 Grammaire
 
     0 $accept: all $end
@@ -236,141 +241,142 @@ DIEZ (301) 26
 NON (302) 90
 READ (303) 57
 WRITE (304) 58
-CSTE_ENTIERE (305) 27 28 38 114
-IDF (306) 19 20 31 33 39 41 43 48 62 77 78
-CSTE_CARACTERE (307) 116
-CSTE_CHAINE (308) 83 84
-ENTIER (309) 34
-REEL (310) 35
-CHAINE (311) 38
-BOOLEEN (312) 36
-CARACTERE (313) 37
-CSTE_REEL (314) 115
+ERREUR (305)
+CSTE_ENTIERE (306) 27 28 38 114
+IDF (307) 19 20 31 33 39 41 43 48 62 77 78
+CSTE_CARACTERE (308) 116
+CSTE_CHAINE (309) 83 84
+ENTIER (310) 34
+REEL (311) 35
+CHAINE (312) 38
+BOOLEEN (313) 36
+CARACTERE (314) 37
+CSTE_REEL (315) 115
 
 
 Non-terminaux, suivis des règles où ils apparaissent
 
-$accept (60)
+$accept (61)
     à gauche: 0
-all (61)
+all (62)
     à gauche: 1, à droite: 0
-programme (62)
+programme (63)
     à gauche: 2, à droite: 1
-corps (63)
+corps (64)
     à gauche: 3 4, à droite: 2 41 43
-liste_declarations (64)
+liste_declarations (65)
     à gauche: 5, à droite: 3
-liste_instructions (65)
+liste_instructions (66)
     à gauche: 6, à droite: 3 4 68 69
-suite_liste_inst (66)
+suite_liste_inst (67)
     à gauche: 7 8, à droite: 6 8
-dec1 (67)
+dec1 (68)
     à gauche: 9 10 11, à droite: 5 10
-dec2 (68)
+dec2 (69)
     à gauche: 12 13 14, à droite: 11 13
-dec3 (69)
+dec3 (70)
     à gauche: 15 16 17 18, à droite: 14 17 18
-declaration_type (70)
+declaration_type (71)
     à gauche: 19 20, à droite: 9 10
-suite_declaration_type_s (71)
+suite_declaration_type_s (72)
     à gauche: 21, à droite: 20
-suite_declaration_type_t (72)
+suite_declaration_type_t (73)
     à gauche: 22, à droite: 19
-dimension (73)
+dimension (74)
     à gauche: 23, à droite: 22
-liste_dimensions (74)
+liste_dimensions (75)
     à gauche: 24 25, à droite: 23 25
-une_dimension (75)
+une_dimension (76)
     à gauche: 26, à droite: 24 25
-const_entier (76)
+const_entier (77)
     à gauche: 27 28, à droite: 26
-liste_champs (77)
+liste_champs (78)
     à gauche: 29 30, à droite: 21 30
-un_champ (78)
+un_champ (79)
     à gauche: 31, à droite: 29 30
-nom_type (79)
+nom_type (80)
     à gauche: 32 33, à droite: 22 31 39 43 48
-type_simple (80)
+type_simple (81)
     à gauche: 34 35 36 37 38, à droite: 32 57
-declaration_variable (81)
+declaration_variable (82)
     à gauche: 39, à droite: 12 13
-declaration_procedure (82)
+declaration_procedure (83)
     à gauche: 41, à droite: 15 17
-$@1 (83)
+$@1 (84)
     à gauche: 40, à droite: 41
-declaration_fonction (84)
+declaration_fonction (85)
     à gauche: 43, à droite: 16 18
-$@2 (85)
+$@2 (86)
     à gauche: 42, à droite: 43
-liste_parametres (86)
+liste_parametres (87)
     à gauche: 44 45, à droite: 41 43
-liste_param (87)
+liste_param (88)
     à gauche: 46 47, à droite: 45 47
-un_param (88)
+un_param (89)
     à gauche: 48, à droite: 46 47
-instruction (89)
+instruction (90)
     à gauche: 49 50 51 52 53 54 55 56, à droite: 7 8
-lire (90)
+lire (91)
     à gauche: 57, à droite: 55
-ecrire (91)
+ecrire (92)
     à gauche: 58, à droite: 56
-resultat_retourne (92)
+resultat_retourne (93)
     à gauche: 59 60 61, à droite: 54
-appel (93)
+appel (94)
     à gauche: 62, à droite: 52 117
-liste_arguments (94)
+liste_arguments (95)
     à gauche: 63 64, à droite: 62
-liste_args (95)
+liste_args (96)
     à gauche: 65 66, à droite: 64 66
-un_arg (96)
+un_arg (97)
     à gauche: 67, à droite: 65 66
-condition (97)
+condition (98)
     à gauche: 68, à droite: 50
-tant_que (98)
+tant_que (99)
     à gauche: 69, à droite: 51
-affectation (99)
+affectation (100)
     à gauche: 70 71 72, à droite: 49
-variable (100)
+variable (101)
     à gauche: 73 74 75 76, à droite: 70 71 72 75 76 119 120
-variable_idf (101)
+variable_idf (102)
     à gauche: 77, à droite: 73 76
-tableau (102)
+tableau (103)
     à gauche: 78, à droite: 74 75
-liste_param_tab (103)
+liste_param_tab (104)
     à gauche: 79 80, à droite: 78 80
-param_du_tab (104)
+param_du_tab (105)
     à gauche: 81 82, à droite: 79 80 82
-expression_chaine (105)
+expression_chaine (106)
     à gauche: 83 84, à droite: 61 71 83
-expression (106)
+expression (107)
     à gauche: 85, à droite: 58 60 67 68 69 70 81 82 113
-expression_et (107)
+expression_et (108)
     à gauche: 86 87, à droite: 85 86
-expression_ou (108)
+expression_ou (109)
     à gauche: 88 89, à droite: 86 87 88
-expression_neg (109)
+expression_neg (110)
     à gauche: 90 91, à droite: 88 89
-expression_bcn (110)
+expression_bcn (111)
     à gauche: 92 93 94, à droite: 90 91
-cste_bool (111)
+cste_bool (112)
     à gauche: 95 96, à droite: 92
-expression_cmp (112)
+expression_cmp (113)
     à gauche: 97, à droite: 93
-opcomp (113)
+opcomp (114)
     à gauche: 98 99 100 101 102 103, à droite: 97
-expression_num (114)
+expression_num (115)
     à gauche: 104, à droite: 94 97
-e1 (115)
+e1 (116)
     à gauche: 105 106 107, à droite: 104 106 107
-e2 (116)
+e2 (117)
     à gauche: 108 109 110, à droite: 105 106 107 109 110
-e3 (117)
+e3 (118)
     à gauche: 111 112, à droite: 108 109 110
-e4 (118)
+e4 (119)
     à gauche: 113 114 115 116 117 118, à droite: 111 112
-e5 (119)
+e5 (120)
     à gauche: 119 120, à droite: 118
-plus_moins (120)
+plus_moins (121)
     à gauche: 121 122, à droite: 72 120
 
 

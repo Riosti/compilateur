@@ -92,16 +92,17 @@ extern int yydebug;
     NON = 302,
     READ = 303,
     WRITE = 304,
-    CSTE_ENTIERE = 305,
-    IDF = 306,
-    CSTE_CARACTERE = 307,
-    CSTE_CHAINE = 308,
-    ENTIER = 309,
-    REEL = 310,
-    CHAINE = 311,
-    BOOLEEN = 312,
-    CARACTERE = 313,
-    CSTE_REEL = 314
+    ERREUR = 305,
+    CSTE_ENTIERE = 306,
+    IDF = 307,
+    CSTE_CARACTERE = 308,
+    CSTE_CHAINE = 309,
+    ENTIER = 310,
+    REEL = 311,
+    CHAINE = 312,
+    BOOLEEN = 313,
+    CARACTERE = 314,
+    CSTE_REEL = 315
   };
 #endif
 /* Tokens.  */
@@ -152,16 +153,17 @@ extern int yydebug;
 #define NON 302
 #define READ 303
 #define WRITE 304
-#define CSTE_ENTIERE 305
-#define IDF 306
-#define CSTE_CARACTERE 307
-#define CSTE_CHAINE 308
-#define ENTIER 309
-#define REEL 310
-#define CHAINE 311
-#define BOOLEEN 312
-#define CARACTERE 313
-#define CSTE_REEL 314
+#define ERREUR 305
+#define CSTE_ENTIERE 306
+#define IDF 307
+#define CSTE_CARACTERE 308
+#define CSTE_CHAINE 309
+#define ENTIER 310
+#define REEL 311
+#define CHAINE 312
+#define BOOLEEN 313
+#define CARACTERE 314
+#define CSTE_REEL 315
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -175,7 +177,7 @@ union YYSTYPE
   float type_float;
   
 
-#line 179 "y.tab.h" /* yacc.c:1909  */
+#line 181 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

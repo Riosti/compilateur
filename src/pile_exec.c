@@ -19,25 +19,31 @@ void init_pexec(){
 
 void evalue_appel(type_arbre *a){
      int i;
+     cellule rep;
     //Mise à jour de la base courante
+     indice_libre = BC + table_region[Tab_dec[a->num_dec].region].taille;
     pexec[indice_libre].val = BC; //la region appelante
-    enfile_bc(BC, chainage);
-    BC = indice_libre; //MaJ de la BC
-    indice_libre++;
+    enfile_bc(BC, chainage); //MaJ du chainage dynamique
+    BC = indice_libre;
+    printf("new base courante %d \n", BC); //ok
     
     //empiler le chainage dynamique
     FileBC p = chainage;
+    int dc = 0;
     while(!est_vide(p)){
-	pexec[indice_libre].val = p->bc;
-	indice_libre++;
+	pexec[BC + dc].val = p->bc;
 	p = p->suivant;
     }
     //empiler les paramètres
     type_arbre *b = a;
+    printf("valeur tabreptype %d\n", Table_rep_type[Tab_dec[b->num_dec].description]);
     for( i = 1; i <= Table_rep_type[Tab_dec[b->num_dec].description]; i++ ){
-	empiler(evalue_expression(b->fils));
+	//empiler
+	rep = evalue_expression(b->fils);
+	pexec[ BC + Tab_dec[b->fils->num_dec].execution ]= rep;
 	b = b->frere;
     }
+    printf("CICICICINCINI\n");
     affiche_pile();
 }
 
@@ -154,10 +160,13 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	printf("Il s'agit d'une liste\n");
 	evalue_arbre(a->fils);
 	break;
-    case A_APPEL: //il s'agit d'une procédure
-	evalue_appel(a);
-	region_courante = Tab_dec[a->num_dec].execution; //on change de region
-	evalue_procedure(table_region[region_courante].a);
+    case A_APPEL_P: //il s'agit d'une procédure
+	printf("Il s'agit d'une procedure\n");
+       	evalue_appel(a);
+	region_courante = Tab_dec[a->fils->num_dec].execution; //on change de region
+	printf("num_dec %d\n", a->num_dec);
+	printf("Region courante %d\n", region_courante);
+	evalue_procedure(table_region[region_courante].a->fils->frere->frere);
 	region_courante = Tab_dec[a->num_dec].region;//on revient dans la region englobante
 	break;
 	
@@ -241,7 +250,6 @@ void evalue_procedure(type_arbre *a){
 	evalue_arbre(a);
 	a = a->frere;
     }
-    indice_libre = BC;//corrigé
     BC = defile_bc(chainage);//corrigé
 }
 
@@ -249,10 +257,12 @@ cellule evalue_expression(type_arbre *a){ //
     cellule rep;
     printf("Dans evalue_expression %d\n", a->type);
     switch(a->type){
-    case A_IDF:
+    case A_IDF: //testé et ok
 	printf("Il s'agit d'un IDF\n");
 	NISdeclaration = table_region[Tab_dec[a->num_dec].region].nis;
-	rep = pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->num_dec].execution];
+	int dec = Tab_dec[a->num_dec].execution;
+	printf("DECALAGE %d\n", dec);
+	rep = pexec[BC+NIScourant-NISdeclaration +dec];
 	break;
     case A_APPEL: //il sagit d'une fonction
 	evalue_appel(a);
@@ -260,20 +270,20 @@ cellule evalue_expression(type_arbre *a){ //
 	rep = evalue_fonction(table_region[region_courante].a);
 	region_courante = Tab_dec[a->num_dec].region;
 	break;
-    case A_CSTE_E:
+    case A_CSTE_E: //testé et ok
 	printf("Il s'agit d'une cste entiere\n");
 	rep.type = INT;
 	rep.val = a->noeud;
 	break;
-    case A_CSTE_R:
+    case A_CSTE_R: //a tester
 	rep.type = REEL;
 	rep.reel = a->noeudf;
 	break;
-    case A_BOOL:
+    case A_BOOL: //a tester
 	rep.type = BOOL;
 	rep.val = a->noeud;
 	break;
-    case A_PLUS:
+    case A_PLUS: //testé et ok
 	printf("Il s'agit d'une addition\n");
 	rep = evalue_expression(a->fils);
 	if(rep.type == INT)
@@ -281,21 +291,21 @@ cellule evalue_expression(type_arbre *a){ //
 	else
 	    rep.reel += evalue_expression(a->fils->frere).reel;
 	break;	
-    case A_MOINS:
+    case A_MOINS: // TOTEST
 	rep = evalue_expression(a->fils);
 	if(rep.type == INT)
 	    rep.val -=evalue_expression(a->fils->frere).val;
 	else
 	    rep.reel -= evalue_expression(a->fils->frere).reel;
 	break;	
-    case A_DIV:
+    case A_DIV: //TOTEST
 	rep = evalue_expression(a->fils);
 	if(rep.type == INT)
 	    rep.val /=evalue_expression(a->fils->frere).val;
 	else
 	    rep.reel /= evalue_expression(a->fils->frere).reel;
 	break;	
-    case A_MULT:
+    case A_MULT: //TOTEST
 	rep = evalue_expression(a->fils);
 	if(rep.type == INT)
 	    rep.val *=evalue_expression(a->fils->frere).val;
@@ -309,7 +319,7 @@ cellule evalue_expression(type_arbre *a){ //
 
 void affiche_pile(){
     printf("INDICE      VALEUR\n");
-    for( int i = 0; i<10 /*indice_libre*/; i++){
+    for( int i = 0; i<50; i++){
 	switch(pexec[i].type)
 	    {
 	    case INT:
