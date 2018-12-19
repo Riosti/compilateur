@@ -108,8 +108,16 @@ int evalue_condition(type_arbre *a){
     }
     return sol;
 }
-
-
+/*
+int decalage(int numdec){
+    int dec = 1;
+    int reg = Tab_dec[numdec].region;
+    for( int i = 0; i < numdec; i++)
+	if( Tab_dec[i].region == reg )
+	    dec += Tab_dec[i].execution;
+    return dec;
+}
+*/
 void evalue_arbre(type_arbre *a){//on connait la région
     if(a == NULL){
 	affiche_pile();
@@ -143,6 +151,7 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	}
 	break;
     case A_LIST:
+	printf("Il s'agit d'une liste\n");
 	evalue_arbre(a->fils);
 	break;
     case A_APPEL: //il s'agit d'une procédure
@@ -171,11 +180,11 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	printf("NIS de declaration %d\n", NISdeclaration);
 	printf("NIS courant %d\n", NIScourant);
 	printf("BC %d\n", BC);
-	printf("%d\n",pexec[BC+NIScourant-NISdeclaration].val);
-	printf("%d\n",Tab_dec[a->fils->num_dec].execution);
-	printf("type %d\n", a->fils->type);
-	pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution] = evalue_expression(a->fils->frere);
-	printf("Resultat : %d\n", evalue_expression(a->fils->frere).val);
+	
+	int dec = Tab_dec[a->fils->num_dec].execution;
+	printf("decalage %d\n", dec);
+	pexec[BC+NIScourant-NISdeclaration +dec] = evalue_expression(a->fils->frere);
+
 	printf("Affectation done\n");
 	break;
 
@@ -265,6 +274,7 @@ cellule evalue_expression(type_arbre *a){ //
 	rep.val = a->noeud;
 	break;
     case A_PLUS:
+	printf("Il s'agit d'une addition\n");
 	rep = evalue_expression(a->fils);
 	if(rep.type == INT)
 	    rep.val +=evalue_expression(a->fils->frere).val;
@@ -299,7 +309,7 @@ cellule evalue_expression(type_arbre *a){ //
 
 void affiche_pile(){
     printf("INDICE      VALEUR\n");
-    for( int i = 0; i<10; i++){
+    for( int i = 0; i<10 /*indice_libre*/; i++){
 	switch(pexec[i].type)
 	    {
 	    case INT:
@@ -325,6 +335,10 @@ int main(int argc, char *argv[]){
     //charger les tables
     printf("lancement de la pile\n");
     FILE *f = fopen("table_prog", "r");
+    if ( f == NULL){
+	printf("erreur ouverture du fichier");
+	exit(-1);
+    }
     init_table_region();
     init_table_decla();
     init_table_rep_type();
@@ -332,14 +346,13 @@ int main(int argc, char *argv[]){
     charger_TabDec(f);
     charger_TabRep(f);
     charger_TabReg(f);
-
+    
     fclose(f);
     
     chainage = init_bc();
     indice_libre =0;
-    BC = 0;
     init_pexec();
-    printf("%d\n", table_region[0].a->type);
+    printf("Region %d\n", table_region[0].a->type);
     evalue_arbre(table_region[0].a);
     return 1;
 }

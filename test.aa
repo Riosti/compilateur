@@ -3,5 +3,6 @@ Prog
 Var a : Int;
 Var b : Int;
 {
+    a = 1 + 1;
     b = 5;
 }

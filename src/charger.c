@@ -80,7 +80,7 @@ void charger_TabReg(FILE *f){
       while(fscanf(f," %d ",&i)==1){
 	fscanf(f,"%d %d ",&table_region[i].taille,&table_region[i].nis);
 	table_region[i].a=lire_arbre(f);
-	afficher_arbre(table_region[i].a);
+	//afficher_arbre(table_region[i].a);
       }
     }
     else{
