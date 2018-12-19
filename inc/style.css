@@ -134,7 +134,7 @@ nav>a{
   -webkit-transition: all 0.5s;
   -moz-transition: all 0.5s;
   /*added for long names*/
-  
+    
   float: none;
   display: inline-block;
   vertical-align: top;

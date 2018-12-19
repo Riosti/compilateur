@@ -170,21 +170,50 @@ void genere_html(type_arbre* a)
     if (!arbre_vide(a)) {
         //corres tab noeud noeudf type
         aac++;
-        char c[20];
+        char c[30];
+        char* c1;
+        char* c2;
+        char* c3;
+        char* href;
+        char tmp[10];
         if (a->noeud == 0 && a->noeudf != 0) {
-            sprintf(c, "%f", a->noeudf);
+            sprintf(tmp, "%f", a->noeudf);
+            c1 = strdup(tmp);
         } else if (a->noeudf == 0 && a->noeud != 0) {
-            if (a->noeud == -1) {
-                sprintf(c, " ");
-            } else if (a->type == A_IDF) {
-                sprintf(c, "%s", get_lexeme(a->noeud));
+            if (a->noeud != -1) {
+                sprintf(tmp, "%d", a->noeud);
+                c1 = strdup(tmp);
+                if (a->type == A_IDF) {
+                    c1 = strdup(get_lexeme(a->noeud));
+                }
             } else {
-                sprintf(c, "%d", a->noeud);
+                c1 = strdup("");
             }
         } else {
-            sprintf(c, " ");
+            c1 = strdup("");
         }
-        fprintf(html, "<li>\n<a id=\"i%di%d\" href=\"javascript:\" onclick=\"toggle('a%da%d')\">%s %s</a> <!-- t%d dec%d tf%d tv%d -->\n", narbre, aac, narbre, aac, tab[a->type], c, a->type, a->num_dec, a->type_final, a->type_var);
+
+        if (a->type_final != -1) {
+            c2 = malloc(20 * sizeof(char));
+            sprintf(c2, "<br>TF%d", a->type_final);
+        } else {
+            c2 = strdup("");
+        }
+
+        if (a->num_dec != -1) {
+            c3 = malloc(20 * sizeof(char));
+            sprintf(c3, "ND%d", a->num_dec);
+        } else {
+            c3 = strdup("");
+        }
+        sprintf(c, "%s %s %s %s", tab[a->type], c1, c2, c3);
+        if (arbre_vide(a->fils) && a->type == A_IDF) {
+            href = strdup("tablesh.html");
+        } else {
+            href = strdup("javascript:");
+        }
+
+        fprintf(html, "<li>\n<a id=\"i%di%d\" href=\"%s\" onclick=\"toggle('a%da%d')\">%s</a> <!-- t%d dec%d tf%d tv%d -->\n", narbre, aac, href, narbre, aac, c, a->type, a->num_dec, a->type_final, a->type_var);
 
         if (!arbre_vide(a->fils)) {
             fprintf(html, "<ul id=\"a%da%d\" hid=\"0\">\n", narbre, aac);
