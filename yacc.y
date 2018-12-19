@@ -2,8 +2,9 @@
   #include "inc/sauv.h"
   #include "inc/html.h"
   #include "inc/analyse_sementique.h"
-  extern int Num_lignes;
-  extern int Num_inst;
+  #include "inc/erreur.h"
+  //extern int Num_lignes;
+  //extern int Num_inst;
   int yylex();
   int yyerror();
   
@@ -40,7 +41,7 @@ liste_instructions : DEBUT suite_liste_inst FIN {$$=$2;}
                    ;
 
 suite_liste_inst : instruction POINT_VIRGULE{$$=$1;}
-                 | suite_liste_inst instruction POINT_VIRGULE {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;a=a->fils;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_LIST,-1),$2));;$$=$1;} 
+                 | suite_liste_inst instruction POINT_VIRGULE {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;a=a->fils;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_LIST,-1),$2));$$=$1;} 
                  ;
 
 
@@ -140,7 +141,7 @@ instruction : affectation {$$=$1;}
 lire : READ PO type_simple PF {type_arbre *a =concat_pere_fils(cree_noeud(A_LIRE,-1),$3);ajoute_type_final(a,donne_type_final($3));$$=a;}/*type*/
 
 
-ecrire : WRITE PO expression PF {type_arbre *a;a = concat_pere_fils(cree_noeud(A_LIRE,-1),$3);ajoute_type_final(a,donne_type_final($3));$$=a;} /*expression*/
+ecrire : WRITE PO expression PF {type_arbre *a;if(test_type($3,0) || test_type($3,1) || test_type($3,2) || test_type($3,3) || test_type($3,4)){a = concat_pere_fils(cree_noeud(A_ECRIRE,-1),$3);ajoute_type_final(a,donne_type_final($3));$$=a;}else{ fprintf(stderr,"erreur de type on ne peux ecrire que des type de bases \n");erreur_affiche();}} /*expression*/
 
 
 resultat_retourne : {$$=cree_noeud(A_VIDE,-1);}
@@ -158,7 +159,7 @@ appel : IDF liste_arguments {type_arbre *a;
      }
      else{
        fprintf(stderr,"%s n'est pas une fonction ou une procedure donc appelle impossible\n",get_lexeme($1));
-       exit(-1);
+       erreur_affiche();
      }
    }
  } 
@@ -188,7 +189,7 @@ SINON liste_instructions {
   }
   else{
     fprintf(stderr,"apres un if il faut une expression boolean \n");
-    exit(-1);
+    erreur_affiche();
   }}
           ;
 
@@ -198,7 +199,7 @@ tant_que : TANT_QUE expression FAIRE liste_instructions {
   }
   else{
     fprintf(stderr,"apres un tant que le type de l'expression dois etre un boolean \n");
-    exit(-1);
+    erreur_affiche();
   }
 }
          ;
@@ -209,7 +210,7 @@ affectation : variable OPAFF expression {
    }
    else{
      fprintf(stderr,"affectaion de impossible types diffents \n");
-     exit(-1);
+     erreur_affiche();
    }
  }
             | variable OPAFF expression_chaine {
@@ -218,7 +219,7 @@ affectation : variable OPAFF expression {
 	      }
 	      else{
 		fprintf(stderr,"affectaion de impossible types diffents \n");
-		exit(-1);
+		erreur_affiche();
 	      }
  }
             | variable plus_moins {
@@ -229,7 +230,7 @@ affectation : variable OPAFF expression {
 	      }
 	      else{
 		fprintf(stderr,"erreur type pour le ++ ou -- n'est pas respecter \n");
-		exit(-1);
+		erreur_affiche();
 	      }
 	      $$=a;}
             ;
@@ -243,7 +244,7 @@ variable : variable_idf {$$=$1;
 
 
 | tableau {$$=$1;
-   ajoute_type_final($1,type_dun_tab(type_var(num_dec(donne_num_hash_arbre($1->fils)))));
+   ajoute_type_final($1,type_dun_tab(num_dec(donne_num_hash_arbre($1->fils))));
    ajoute_num_dec($1,num_dec(donne_num_hash_arbre($1->fils)));
   }
 
@@ -280,7 +281,7 @@ param_du_tab : expression {type_arbre *a;
    }
    else{
      fprintf(stderr,"un tableau ne peux prendre que des entier en parametre\n");
-     exit(-1);
+     erreur_affiche();
    }
  }
              | param_du_tab VIRGULE expression {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_VIRGULE,-1),$3));;$$=$1;}
@@ -302,7 +303,7 @@ type_arbre *a;
      }
    else{
      fprintf(stderr,"seul les expressions booleen ou les booleans peuvent avoir un et entre elles\n");
-     exit(-1);
+     erreur_affiche();
    }
  }
               | expression_ou {$$=$1;}
@@ -317,7 +318,7 @@ expression_ou : expression_ou OU expression_neg {
      }
    else{
      fprintf(stderr,"seul les expressions booleen ou les booleans peuvent avoir un ou entre elles\n");
-     exit(-1);
+     erreur_affiche();
    }
  }
               | expression_neg {$$=$1;}
@@ -332,7 +333,7 @@ expression_neg : NON expression_bcn {
      }
    else{
      fprintf(stderr,"seul les expression booleen ou les boolean peuvente avoir un non davant eux\n");
-     exit(-1);
+     erreur_affiche();
    }}
                | expression_bcn {$$=$1;}
                ;
@@ -347,7 +348,7 @@ cste_bool : VRAI {type_arbre *a;a=cree_noeud_type(A_BOOL,1,3); ajoute_type_final
           ;
 
 expression_cmp : expression_num opcomp expression_num {type_arbre *a;
-   if((test_type($1,0) || test_type($1,1)) && (test_type($3,0) || test_type($3,1))){
+   if((test_type($1,0) || test_type($1,1) || test_type($1,3) || test_type($1,4)) && (test_type($3,0) || test_type($3,1) || test_type($3,3) || test_type($3,4))){
      if(test_des_types_arbre($1,$3)){
        a=concat_pere_fils($2,concat_pere_frere($1,$3));
        ajoute_type_final(a,3);
@@ -355,12 +356,12 @@ expression_cmp : expression_num opcomp expression_num {type_arbre *a;
      }
      else{
        fprintf(stderr,"les type ne sont pas identique donc imposible de les comparer\n");
-       exit(-1);
+       erreur_affiche();
      }
    }
    else{
-     fprintf(stderr,"les type ne sont pas des int ou des reels imposible de comparer d'autres types\n");
-     exit(-1);
+     fprintf(stderr,"les type ne sont pas des int des reels des boolean ou des character imposible de comparer d'autres types\n");
+     erreur_affiche();
    }}
                ;
 
@@ -385,12 +386,12 @@ e1 : e2 {$$=$1;}
      }
      else{
        fprintf(stderr,"les type ne sont pas identique donc + imposible\n");
-       exit(-1);
+       erreur_affiche();
      }
    }
    else{
      fprintf(stderr,"les type ne sont pas des int ou des reels + imposible\n");
-     exit(-1);
+     erreur_affiche();
    }
  }
 | e1 MOINS e2 {type_arbre *a;
@@ -402,12 +403,12 @@ e1 : e2 {$$=$1;}
      }
      else{
        fprintf(stderr,"les type ne sont pas identique donc - impossible\n");
-       exit(-1);
+       erreur_affiche();
      }
    }
    else{
      fprintf(stderr,"les type ne sont pas des int ou des reels - imposible\n");
-     exit(-1);
+     erreur_affiche();
    }
  }
    ;
@@ -422,12 +423,12 @@ e2 : e3 {$$=$1;}
      }
      else{
        fprintf(stderr,"les type ne sont pas identique donc multiplication imposible\n");
-       exit(-1);
+       erreur_affiche();
      }
    }
    else{
      fprintf(stderr,"les type ne sont pas des int ou des reels multiplication imposible\n");
-     exit(-1);
+     erreur_affiche();
    }
  }
 | e2 DIV e3 {type_arbre *a;
@@ -439,12 +440,12 @@ e2 : e3 {$$=$1;}
      }
      else{
        fprintf(stderr,"les type ne sont pas identique donc division imposible\n");
-       exit(-1);
+       erreur_affiche();
      }
    }
    else{
      fprintf(stderr,"les type ne sont pas des int ou des reels division imposible\n");
-     exit(-1);
+     erreur_affiche();
    }}
    ;
 
@@ -456,7 +457,7 @@ e3 : MOINS e4 {
       }
       else{
 	fprintf(stderr,"erreur - var mais la variable n'est pas un entier ou un reel \n");
-	exit(-1);
+	erreur_affiche();
       }
       }
    | e4 {$$=$1;}
@@ -479,7 +480,7 @@ e5 : variable {$$=$1;}
      }
      else{
        fprintf(stderr,"erreur type pour le ++ ou -- n'est pas respecter \n");
-       exit(-1);
+       erreur_affiche();
      }
      $$=a;}
    ;
@@ -498,10 +499,11 @@ plus_moins : INCREMENTE {$$=cree_noeud(A_INCR,-1);}
 
 %%
 
-int yyerror(){ printf("Erreur ligne %d instruction %d\n",Num_lignes,Num_inst);}
+int yyerror(){fprintf(stderr,"erreur syntaxique \n");erreur_affiche();}
 
 
-int main(){
+int main(int argc ,char * argv[]){
+  strcpy(Fichier_ouvert,argv[1]);
   init_html();
   init_table_hash();
   init_table_decla();

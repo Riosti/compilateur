@@ -8,7 +8,7 @@ int num_dec(int num_hash)
     int indice_a_regarder = num_hash;
     if (Tab_dec[indice_a_regarder].nature == -1) {
         fprintf(stderr, "%s n'est pas declarer ! \n", get_lexeme(num_hash));
-        exit(-1);
+        erreur_affiche();
     }
     num_declaration = -1;
     indice_a_regarder = num_hash;
@@ -22,7 +22,7 @@ int num_dec(int num_hash)
 
     if (num_declaration == -1) {
         fprintf(stderr, "%s n'est pas declarer ! \n", get_lexeme(num_hash));
-        exit(-1);
+        erreur_affiche();
     }
     return num_declaration;
 }
@@ -33,7 +33,7 @@ int type_var(int hash_num)
     int indice_a_regarder = hash_num;
     if (Tab_dec[indice_a_regarder].nature == -1) {
         fprintf(stderr, "%s n'est pas declarer ! \n", get_lexeme(hash_num));
-        exit(-1);
+        erreur_affiche();
     }
     num_declaration = hash_num;
     indice_a_regarder = Tab_dec[indice_a_regarder].suivant;
@@ -61,7 +61,7 @@ int type_dun_struct(int la_struct, int hash_champ)
 
     fprintf(stderr, "le champ %s n'existe pas dans la structure %s\n", get_lexeme(hash_champ), get_lexeme(la_struct));
 
-    exit(-1);
+    return erreur_affiche();
 }
 
 int type_dun_tab(int le_tab)
@@ -69,16 +69,15 @@ int type_dun_tab(int le_tab)
     if (Tab_dec[le_tab].nature == TYPE_T) {
         return Table_rep_type[Tab_dec[le_tab].description];
     } else {
-        fprintf(stderr, "le champ %s n'est pas un tableau", get_lexeme(le_tab));
+        fprintf(stderr, "le champ %s n'est pas un tableau\n", get_lexeme(le_tab));
 
-        exit(-1);
+        return erreur_affiche();
     }
 }
 
 int test_des_types_arbre(type_arbre* a, type_arbre* a2)
 {
     if (donne_type_final(a) != donne_type_final(a2)) {
-        fprintf(stderr, "type differents\n");
         return 0;
     }
     return 1;
@@ -87,7 +86,6 @@ int test_des_types_arbre(type_arbre* a, type_arbre* a2)
 int test_type(type_arbre* a, int type_t)
 {
     if (donne_type_final(a) != type_t) {
-        fprintf(stderr, "type diff\n");
         return 0;
     }
     return 1;
@@ -100,7 +98,7 @@ int donne_type_fonction(int num)
     } else {
         fprintf(stderr, "le champ %s n'est pas une fonction", get_lexeme(num));
 
-        exit(-1);
+        return erreur_affiche();
     }
 }
 
@@ -129,21 +127,19 @@ int verif_arg_fonction(int num_f, type_arbre* param)
     while (i < nbr_param) {
         if (a == NULL) {
             fprintf(stderr, "il n'y a pas assez de parametre a la fonction %s ici %d sont donner elle attend %d param", get_lexeme(num_f), i, nbr_param);
-            exit(-1);
+            erreur_affiche();
         }
-
-        fprintf(stderr, "type de l'arg %d est %d\n", i, type_arg_n_fonction(num_f, i));
 
         if (!test_type(a, type_arg_n_fonction(num_f, i))) {
             fprintf(stderr, "l'argument n° %d de la fonction %s n'est pas du bon type\n", i, get_lexeme(num_f));
-            exit(-1);
+            erreur_affiche();
         }
         a = a->frere;
         i++;
     }
     if (a != NULL) {
         fprintf(stderr, "il ya trop d'arg pour la fonction %s elle attend %d arg\n", get_lexeme(num_f), nbr_param);
-        exit(-1);
+        erreur_affiche();
     }
     return 1;
 }
@@ -158,18 +154,18 @@ int verif_arg_procedure(int num_f, type_arbre* param)
     while (i < nbr_param) {
         if (a == NULL) {
             fprintf(stderr, "il n'y a pas assez de parametre a la procedure %s ici %d sont donner elle attend %d param", get_lexeme(num_f), i, nbr_param);
-            exit(-1);
+            erreur_affiche();
         }
         if (!test_type(a, type_arg_n_procedure(num_f, i))) {
             fprintf(stderr, "l'argument n° %d de la procedure %s n'est pas du bon type\n", i, get_lexeme(num_f));
-            exit(-1);
+            erreur_affiche();
         }
         a = a->frere;
         i++;
     }
     if (a != NULL) {
         fprintf(stderr, "il ya trop d'arg pour la procedure %s elle attend %d arg\n", get_lexeme(num_f), nbr_param);
-        exit(-1);
+        erreur_affiche();
     }
     return 1;
 }
@@ -199,7 +195,7 @@ int test_return_dans_liste_instruction(type_arbre* a, int type_return)
             return 1;
         } else {
             fprintf(stderr, "erreur sur le type de renvoie %d il dois etre de type %d\n", donne_type_final(a), type_return);
-            exit(-1);
+            erreur_affiche();
         }
     }
     if (a->type == A_SI) {
@@ -218,15 +214,28 @@ int test_corp_fonction(int num_hash, type_arbre* a)
     int type_return = donne_type_fonction(num_dec(num_hash));
     if (!test_return_dans_liste_instruction(a, type_return)) {
         fprintf(stderr, " il n'y a pas de return ou il en manque dans la fonction %s", get_lexeme(num_hash));
-        exit(-1);
+        erreur_affiche();
     }
     return 0;
 }
 
 int test_corp_procedure(type_arbre* a)
 {
-    test_return_dans_liste_instruction(a, -1);
-    return 0;
+  ajoute_fin_procedure_return(a);
+  test_return_dans_liste_instruction(a, -1);
+  return 0;
+}
+
+void ajoute_fin_procedure_return(type_arbre *a){
+  type_arbre *b;
+  b=cree_noeud(A_RETURN,-1);
+  ajoute_type_final(b,-1);
+  if(a->fils!=NULL){
+    while(a->frere!=NULL){
+      a=a->frere;a=a->fils;
+    }
+    concat_pere_frere(a,concat_pere_fils(cree_noeud(A_LIST,-1),b));
+  }
 }
 
 #endif

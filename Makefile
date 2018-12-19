@@ -1,8 +1,8 @@
-all: lex.l yacc.y html.o arbre.o hash.o sauv.o pile.o table_region.o table_declaration.o table_rep_type.o analyse_sementique.o file.o bin obj clean_gch
+all: lex.l yacc.y html.o arbre.o hash.o sauv.o pile.o erreur.o table_region.o table_declaration.o table_rep_type.o analyse_sementique.o file.o bin obj clean_gch
 	yacc -d -v yacc.y
 	lex lex.l
 	gcc -c lex.yy.c
-	gcc -o bin/exec y.tab.c lex.yy.o obj/html.o obj/arbre.o obj/sauv.o obj/hash.o obj/pile.o obj/table_region.o obj/table_declaration.o obj/analyse_sementique.o obj/table_rep_type.o obj/file.o -ly -ll
+	gcc -o bin/exec y.tab.c lex.yy.o obj/html.o obj/erreur.o obj/arbre.o obj/sauv.o obj/hash.o obj/pile.o obj/table_region.o obj/table_declaration.o obj/analyse_sementique.o obj/table_rep_type.o obj/file.o -ly -ll
 	mv y.* obj/
 	mv *.o obj/
 	mv lex.yy.c obj/
@@ -88,4 +88,4 @@ clean_bin:
 
 
 clean: clean_bin clean_gch clean_obj
-	
+	rm -rf pile_exec table_prog

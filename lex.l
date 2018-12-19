@@ -3,6 +3,7 @@
 #include "inc/hash.h"
 int Num_lignes=1;
 int Num_inst=0;
+int Num_mots_lu=0;
 %}
 
 %%
@@ -66,8 +67,8 @@ int Num_inst=0;
 [a-z][a-zA-Z0-9_]* {yylval.type_int=ajoute_lexem(yytext);return(IDF);}
 \'[a-zA-Z]\' {return(CSTE_CARACTERE);}
 \"[a-zA-Z0-9_]+\" {return(CSTE_CHAINE);}
-\n {Num_lignes++;Num_inst=0;}
-" " {Num_inst++;}
+\n {Num_lignes++;Num_inst=0;Num_mots_lu++;}
+" " {Num_inst++;Num_mots_lu++;}
 .
 %%
 
