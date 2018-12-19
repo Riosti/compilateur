@@ -117,6 +117,7 @@ declaration_fonction : FONCTION IDF liste_parametres RETOURNE nom_type {enfile($
  } corps {
     test_corp_fonction(num_dec($2),$7);
     fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_FONCTION,$2),concat_pere_frere($3,concat_pere_frere(concat_pere_fils(cree_noeud(A_RETURN,-1),$5),concat_pere_fils(cree_noeud(A_LIST,-1),$7))))));
+    
   
 
  }/*nom type nan?*/
@@ -172,11 +173,11 @@ resultat_retourne : {$$=cree_noeud(A_VIDE,-1);}
 
 appel : IDF liste_arguments {type_arbre *a;
    if(est_une_fonction(num_dec($1))){
-     a=concat_pere_fils(cree_noeud(A_APPEL_F,-1),concat_pere_frere(cree_noeud(A_IDF,$1),$2));ajoute_type_final(a,donne_type_fonction(num_dec($1)));verif_arg_fonction(num_dec($1),$2);$$=a;
+     a=concat_pere_fils(cree_noeud(A_APPEL_F,-1),concat_pere_frere(cree_noeud(A_IDF,$1),$2));ajoute_type_final(a,donne_type_fonction(num_dec($1)));verif_arg_fonction(num_dec($1),$2);a->num_dec=num_dec($1);$$=a;
    }
    else{
      if(est_une_procedure(num_dec($1))){
-       a=concat_pere_fils(cree_noeud(A_APPEL_P,-1),concat_pere_frere(cree_noeud(A_IDF,$1),$2));verif_arg_procedure(num_dec($1),$2);$$=a;
+       a=concat_pere_fils(cree_noeud(A_APPEL_P,-1),concat_pere_frere(cree_noeud(A_IDF,$1),$2));verif_arg_procedure(num_dec($1),$2);a->num_dec=num_dec($1);$$=a;
      }
      else{
        fprintf(stderr,"%s n'est pas une fonction ou une procedure donc appelle impossible\n",get_lexeme($1));
