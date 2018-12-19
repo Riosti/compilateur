@@ -16,7 +16,7 @@
   float type_float;
   }
 
-%token DEBUT_PROG DEBUT FIN POINT_VIRGULE TYPE DEUX_POINTS STRUCT FSTRUCT TABLEAU CO CF VIRGULE POINT VARIABLE PROCEDURE FONCTION PO PF VIDE TANT_QUE FAIRE OPAFF PLUS MOINS DIV MULT VRAI FAUX INF SUP INFEGAL SUPEGAL EGAL DIFF RETOURNE SI ALORS SINON ET OU DE  INCREMENTE DECREMENTE DIEZ NON READ WRITE
+%token DEBUT_PROG DEBUT FIN POINT_VIRGULE TYPE DEUX_POINTS STRUCT FSTRUCT TABLEAU CO CF VIRGULE POINT VARIABLE PROCEDURE FONCTION PO PF VIDE TANT_QUE FAIRE OPAFF PLUS MOINS DIV MULT VRAI FAUX INF SUP INFEGAL SUPEGAL EGAL DIFF RETOURNE SI ALORS SINON ET OU DE  INCREMENTE DECREMENTE DIEZ NON READ WRITE ERREUR
 
 %token<type_int> CSTE_ENTIERE IDF CSTE_CARACTERE CSTE_CHAINE ENTIER REEL CHAINE BOOLEEN CARACTERE
 %token<type_float> CSTE_REEL
@@ -93,7 +93,7 @@ un_champ : IDF DEUX_POINTS nom_type POINT_VIRGULE {enfile($1);enfile($3->noeud);
          ;
 
 nom_type : type_simple {$$=$1;}
-         | IDF {type_arbre *a ;a=cree_noeud(A_IDF,$1);ajoute_type_final(a,type_var(num_dec($1)));$$=a;}
+| IDF {type_arbre *a ;a=cree_noeud(A_IDF,$1);ajoute_type_final(a,num_dec($1));$$=a; }
          ;
 
 type_simple : ENTIER {type_arbre *a;a=cree_noeud(A_INT,$1); ajoute_type_final(a,0);$$=a;}
@@ -109,7 +109,17 @@ declaration_variable : VARIABLE IDF DEUX_POINTS nom_type {ajoute_variable($2,$4-
 declaration_procedure : PROCEDURE  IDF liste_parametres {ajoute_proc($2);} corps {test_corp_procedure($5);fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_PROC,$2),concat_pere_frere($3,concat_pere_fils(cree_noeud(A_LIST,-1),$5)))));}
                       ;
 
-declaration_fonction : FONCTION IDF liste_parametres RETOURNE nom_type {enfile($5->noeud);ajoute_fonction($2);} corps {test_corp_fonction(num_dec($2),$7);fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_FONCTION,$2),concat_pere_frere($3,concat_pere_frere(concat_pere_fils(cree_noeud(A_RETURN,-1),$5),concat_pere_fils(cree_noeud(A_LIST,-1),$7))))));}/*nom type nan?*/
+declaration_fonction : FONCTION IDF liste_parametres RETOURNE nom_type {enfile($5->noeud);ajoute_fonction($2);
+   if(!(test_type($5,0) || test_type($5,1) || test_type($5,2) || test_type($5,3) || test_type($5,4))){
+     fprintf(stderr,"erreur le return de la fonction %s ne peux etre que un type de base\n",get_lexeme($2));
+    erreur_affiche();
+   }
+ } corps {
+    test_corp_fonction(num_dec($2),$7);
+    fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_FONCTION,$2),concat_pere_frere($3,concat_pere_frere(concat_pere_fils(cree_noeud(A_RETURN,-1),$5),concat_pere_fils(cree_noeud(A_LIST,-1),$7))))));
+  
+
+ }/*nom type nan?*/
                      ;
 
 
@@ -125,7 +135,18 @@ liste_param : un_param {type_arbre *a ;
             | liste_param POINT_VIRGULE un_param {type_arbre * a,*b;a=$1;b=concat_pere_fils(cree_noeud(A_PARAM,-1),$3);while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,b);$$=a;ajoute_type_final(b,donne_type_final($3));}
             ;
 
-un_param : IDF DEUX_POINTS nom_type {type_arbre *a;a=cree_noeud(A_IDF,$1);enfile($1);enfile($3->noeud);ajoute_type_final(a,donne_type_final($3));$$=a;}/*nom type nan ?*/
+un_param : IDF DEUX_POINTS nom_type {
+  type_arbre * a;
+  a=cree_noeud(A_IDF,$1);
+  enfile($1);
+  enfile($3->noeud);
+  ajoute_type_final(a,donne_type_final($3));
+  $$=a;
+  if(!(test_type(a,0) || test_type(a,1) || test_type(a,2) || test_type(a,3) || test_type(a,4))){
+    fprintf(stderr,"erreur le parametre %s ne peux etre que un type de base\n",get_lexeme($1));
+    erreur_affiche();
+  }
+ }/*nom type nan ?*/
          ;
 
 instruction : affectation {$$=$1;}
