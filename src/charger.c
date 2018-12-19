@@ -52,13 +52,16 @@ type_arbre * lire_arbre(FILE *f){
   type_arbre *a;
   int type,noeud;
   float noeud_f;
+  int type_final,num_dec;
   if(fscanf(f,"%s\n",chaine)==1){
      if( strcmp(chaine,"debut") == 0){
        a=malloc(sizeof(type_arbre));
-       fscanf(f," %d %d %f\n",&type,&noeud,&noeud_f);
+       fscanf(f," %d %d %f %d %d\n",&type,&noeud,&noeud_f,&type_final,&num_dec);
        a->type=type;
        a->noeud=noeud;
        a->noeudf=noeud_f;
+       a->type_final=type_final;
+       a->num_dec=num_dec;
        fscanf(f,"%s\n",chaine);
        a->fils=lire_arbre(f);
        fscanf(f,"%s\n",chaine);
