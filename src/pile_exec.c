@@ -112,7 +112,8 @@ int evalue_condition(type_arbre *a){
 
 void evalue_arbre(type_arbre *a){//on connait la région
     if(a == NULL){
-	printf("fin de l'execution\n");
+	affiche_pile();
+	printf("\nfin de l'execution\n");
 	exit(0);
     }
     printf("je suis dans evalue_arbre\n");
@@ -174,7 +175,8 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	printf("%d\n",Tab_dec[a->fils->num_dec].execution);
 	printf("type %d\n", a->fils->type);
 	pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution] = evalue_expression(a->fils->frere);
-	printf("Affectation done");
+	printf("Resultat : %d\n", evalue_expression(a->fils->frere).val);
+	printf("Affectation done\n");
 	break;
 
 	
@@ -236,9 +238,13 @@ void evalue_procedure(type_arbre *a){
 
 cellule evalue_expression(type_arbre *a){ //
     cellule rep;
-    printf("evalexp\n");
     printf("Dans evalue_expression %d\n", a->type);
     switch(a->type){
+    case A_IDF:
+	printf("Il s'agit d'un IDF\n");
+	NISdeclaration = table_region[Tab_dec[a->num_dec].region].nis;
+	rep = pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->num_dec].execution];
+	break;
     case A_APPEL: //il sagit d'une fonction
 	evalue_appel(a);
 	region_courante = Tab_dec[a->num_dec].execution;
@@ -287,16 +293,17 @@ cellule evalue_expression(type_arbre *a){ //
 	    rep.reel *= evalue_expression(a->fils->frere).reel;
 	break;
     }
+    printf("Resulat(eval) %d\n", rep.val);
     return rep;
 }
 
 void affiche_pile(){
     printf("INDICE      VALEUR\n");
-    for( int i = 0; i<indice_libre; i++){
+    for( int i = 0; i<10; i++){
 	switch(pexec[i].type)
 	    {
 	    case INT:
-		printf("%d     %d\n", i, pexec[i].val);
+		printf("%d            %d\n", i, pexec[i].val);
 		break;
 	    case BOOL:
 		if(pexec[i].val)
