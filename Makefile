@@ -81,7 +81,6 @@ clean_gch:
 
 clean_obj:
 	rm -rf obj
-	rm -rf objbis
 
 clean_bin:
 	rm -rf bin
