@@ -180,7 +180,7 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	printf("NIS de declaration %d\n", NISdeclaration);
 	printf("NIS courant %d\n", NIScourant);
 	printf("BC %d\n", BC);
-	
+	printf("NUMERO DEC %d\n", a->fils->num_dec);
 	int dec = Tab_dec[a->fils->num_dec].execution;
 	printf("decalage %d\n", dec);
 	pexec[BC+NIScourant-NISdeclaration +dec] = evalue_expression(a->fils->frere);
