@@ -69,7 +69,7 @@ int type_dun_tab(int le_tab)
     if (Tab_dec[le_tab].nature == TYPE_T) {
         return Table_rep_type[Tab_dec[le_tab].description];
     } else {
-        fprintf(stderr, "le champ %s n'est pas un tableau\n", get_lexeme(le_tab));
+      fprintf(stderr, "le champ %s n'est pas un tableau c'est un type %d\n", get_lexeme(le_tab),Tab_dec[le_tab].nature);
 
         return erreur_affiche();
     }
@@ -194,7 +194,7 @@ int test_return_dans_liste_instruction(type_arbre* a, int type_return)
         if (donne_type_final(a) == type_return) {
             return 1;
         } else {
-            fprintf(stderr, "erreur sur le type de renvoie %d il dois etre de type %d\n", donne_type_final(a), type_return);
+	  fprintf(stderr, "erreur sur le type de renvoie %s il dois etre de type %s\n", get_lexeme(donne_type_final(a)),get_lexeme( type_return));
             erreur_affiche();
         }
     }
