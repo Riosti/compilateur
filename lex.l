@@ -69,6 +69,7 @@ int Num_mots_lu=0;
 \"[a-zA-Z0-9_]+\" {return(CSTE_CHAINE);}
 \n {Num_lignes++;Num_inst=0;Num_mots_lu++;}
 " " {Num_inst++;Num_mots_lu++;}
+[A-Z][a-zA-z0-9]* {return (ERREUR);}
 .
 %%
 

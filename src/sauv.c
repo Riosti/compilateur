@@ -5,7 +5,7 @@ void ecrire_noeud(FILE* f, type_arbre* a)
 {
   if (!arbre_vide(a)) {
     fprintf(f, "debut \n");
-    fprintf(f, "%d %d %f\n", a->type, a->noeud, a->noeudf);
+    fprintf(f, "%d %d %f %d %d \n", a->type, a->noeud, a->noeudf,a->type_final,a->num_dec);
     fprintf(f, "fils: \n");
     ecrire_noeud(f, a->fils);
     fprintf(f, "frere: \n");
