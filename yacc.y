@@ -266,6 +266,7 @@ variable : variable_idf {$$=$1;
 
 
 | tableau {$$=$1;
+   verrif_tab($1,type_var(num_dec($1->fils->noeud)));
    ajoute_type_final($1,type_dun_tab(type_var(donne_num_hash_arbre($1->fils))));
    ajoute_num_dec($1,num_dec(donne_num_hash_arbre($1->fils)));
   }
@@ -285,6 +286,7 @@ variable : variable_idf {$$=$1;
   while(a->frere!=NULL){a=a->frere;}
   concat_pere_frere(a,$3);
   ajoute_type_var($3,type_dun_tab(type_dun_struct(donne_type_arbre(a),donne_num_hash_arbre($3->fils))));
+  verrif_tab($3,type_dun_struct(donne_type_arbre(a),donne_num_hash_arbre($3->fils)));
   ajoute_type_final($1,donne_type_arbre($3));
    $$=$1;}
 

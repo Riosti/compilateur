@@ -1,9 +1,0 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "table_region.h"
-#include "table_rep_type.h"
-#include "table_declaration.h"
-#include "arbre.h"
-#include "define_const.h"
-#include "fileBC.h"
-#include "charger.h"

@@ -238,4 +238,24 @@ void ajoute_fin_procedure_return(type_arbre *a){
   }
 }
 
+void verrif_tab(type_arbre *a,int num_dec){
+  int nbr_attendu;
+  int i=0;
+  if(Tab_dec[num_dec].nature != TYPE_T){
+    fprintf(stderr, "le champ %s n'est pas un tableau c'est un type %d\n", get_lexeme(num_dec),Tab_dec[num_dec].nature);
+    erreur_affiche();
+  }
+  nbr_attendu=Table_rep_type[Tab_dec[num_dec].description+1];
+  type_arbre *arbre_actu=a->fils;
+  while(arbre_actu->frere!=NULL){
+    arbre_actu=arbre_actu->frere;
+    i++;
+  }
+  if(i!=nbr_attendu){
+    fprintf(stderr, "erreur il n'y a pas le bon nombre d'argument au tableau %s pour acceder a la case du tableau il en faudrais %d et vous en donnez %d \n",get_lexeme(a->fils->noeud),nbr_attendu ,i);
+    erreur_affiche();
+  }
+  
+}
+
 #endif
