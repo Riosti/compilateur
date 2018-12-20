@@ -217,7 +217,7 @@ SINON liste_instructions {
 
 tant_que : TANT_QUE expression FAIRE liste_instructions {
   if(test_type($2,3)){
-    $$=concat_pere_fils(cree_noeud(A_TQ,-1),concat_pere_frere($2,$4));
+    $$=concat_pere_fils(cree_noeud(A_TQ,-1),concat_pere_frere($2,concat_pere_fils(cree_noeud(A_LIST,-1),$4)));
   }
   else{
     fprintf(stderr,"apres un tant que le type de l'expression dois etre un boolean \n");
