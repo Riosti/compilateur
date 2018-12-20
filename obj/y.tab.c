@@ -568,12 +568,12 @@ static const yytype_uint16 yyrline[] =
      106,   109,   109,   112,   112,   127,   128,   131,   136,   139,
      153,   154,   155,   156,   157,   158,   159,   160,   163,   166,
      169,   170,   171,   174,   190,   191,   194,   195,   203,   206,
-     218,   229,   238,   247,   260,   268,   276,   283,   291,   294,
-     297,   298,   300,   309,   312,   313,   316,   319,   331,   334,
-     346,   349,   360,   363,   364,   365,   368,   369,   372,   390,
-     391,   392,   393,   394,   395,   398,   401,   402,   419,   438,
-     439,   456,   474,   485,   488,   489,   490,   491,   492,   493,
-     496,   497,   510,   511
+     218,   229,   238,   247,   260,   268,   277,   295,   313,   316,
+     319,   320,   322,   331,   334,   335,   338,   341,   353,   356,
+     368,   371,   382,   385,   386,   387,   390,   391,   394,   412,
+     413,   414,   415,   416,   417,   420,   423,   424,   441,   460,
+     461,   478,   496,   507,   510,   511,   512,   513,   514,   515,
+     518,   519,   532,   533
 };
 #endif
 
@@ -1859,7 +1859,7 @@ yyreduce:
 #line 218 "yacc.y" /* yacc.c:1646  */
     {
   if(test_type((yyvsp[-2].arbre),3)){
-    (yyval.arbre)=concat_pere_fils(cree_noeud(A_TQ,-1),concat_pere_frere((yyvsp[-2].arbre),(yyvsp[0].arbre)));
+    (yyval.arbre)=concat_pere_fils(cree_noeud(A_TQ,-1),concat_pere_frere((yyvsp[-2].arbre),concat_pere_fils(cree_noeud(A_LIST,-1),(yyvsp[0].arbre))));
   }
   else{
     fprintf(stderr,"apres un tant que le type de l'expression dois etre un boolean \n");
@@ -1926,58 +1926,80 @@ yyreduce:
   case 75:
 #line 268 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[0].arbre);
-   ajoute_type_final((yyvsp[0].arbre),type_dun_tab(num_dec(donne_num_hash_arbre((yyvsp[0].arbre)->fils))));
+   verrif_tab((yyvsp[0].arbre),type_var(num_dec((yyvsp[0].arbre)->fils->noeud)));
+   ajoute_type_final((yyvsp[0].arbre),type_dun_tab(type_var(donne_num_hash_arbre((yyvsp[0].arbre)->fils))));
    ajoute_num_dec((yyvsp[0].arbre),num_dec(donne_num_hash_arbre((yyvsp[0].arbre)->fils)));
   }
-#line 1933 "y.tab.c" /* yacc.c:1646  */
+#line 1934 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 276 "yacc.y" /* yacc.c:1646  */
-    {type_arbre * a;a=(yyvsp[-2].arbre);while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_STRUCT,-1),(yyvsp[0].arbre)));
-   ajoute_type_var((yyvsp[0].arbre),type_dun_tab(type_dun_struct(donne_type_arbre(a),donne_num_hash_arbre((yyvsp[0].arbre)->fils))));
-   ajoute_type_final((yyvsp[-2].arbre),donne_type_arbre((yyvsp[0].arbre)->fils));
+#line 277 "yacc.y" /* yacc.c:1646  */
+    {
+  type_arbre * a;
+  a=(yyvsp[-2].arbre);
+  if(a->type==A_IDF){
+    (yyvsp[-2].arbre)=concat_pere_fils(cree_noeud(A_STRUCT,-1),a);
+  }
+  else{
+    a=a->fils;
+  }
+  while(a->frere!=NULL){a=a->frere;}
+  concat_pere_frere(a,(yyvsp[0].arbre));
+  ajoute_type_var((yyvsp[0].arbre),type_dun_tab(type_dun_struct(donne_type_arbre(a),donne_num_hash_arbre((yyvsp[0].arbre)->fils))));
+  verrif_tab((yyvsp[0].arbre),type_dun_struct(donne_type_arbre(a),donne_num_hash_arbre((yyvsp[0].arbre)->fils)));
+  ajoute_type_final((yyvsp[-2].arbre),donne_type_arbre((yyvsp[0].arbre)));
    (yyval.arbre)=(yyvsp[-2].arbre);}
-#line 1942 "y.tab.c" /* yacc.c:1646  */
+#line 1954 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 283 "yacc.y" /* yacc.c:1646  */
-    {type_arbre * a;a=(yyvsp[-2].arbre);while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_STRUCT,-1),(yyvsp[0].arbre)));
+#line 295 "yacc.y" /* yacc.c:1646  */
+    {type_arbre * a;
+   a=(yyvsp[-2].arbre);
+   if(a->type==A_IDF){
+     (yyvsp[-2].arbre)=concat_pere_fils(cree_noeud(A_STRUCT,-1),a);
+   }
+   else{
+     a=a->fils;
+   }
+   while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,(yyvsp[0].arbre));
 
-   ajoute_type_var((yyvsp[0].arbre),type_dun_struct(donne_type_final((yyvsp[-2].arbre)),donne_num_hash_arbre((yyvsp[0].arbre))));
 
+   ajoute_type_var((yyvsp[0].arbre),type_dun_struct(donne_type_final((yyvsp[-2].arbre)->fils),donne_num_hash_arbre((yyvsp[0].arbre))));
+   ajoute_type_final((yyvsp[-2].arbre)->fils,donne_type_arbre((yyvsp[0].arbre)));
    ajoute_type_final((yyvsp[-2].arbre),donne_type_arbre((yyvsp[0].arbre)));
-   (yyval.arbre)=(yyvsp[-2].arbre); }
-#line 1953 "y.tab.c" /* yacc.c:1646  */
+   (yyval.arbre)=(yyvsp[-2].arbre);
+ }
+#line 1975 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 291 "yacc.y" /* yacc.c:1646  */
+#line 313 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=cree_noeud(A_IDF,(yyvsp[0].type_int));}
-#line 1959 "y.tab.c" /* yacc.c:1646  */
+#line 1981 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 294 "yacc.y" /* yacc.c:1646  */
+#line 316 "yacc.y" /* yacc.c:1646  */
     {type_arbre *a ; a=concat_pere_fils(cree_noeud(A_TABLEAU,-1),concat_pere_frere(cree_noeud(A_IDF,(yyvsp[-1].type_int)),(yyvsp[0].arbre)));(yyval.arbre)=a;}
-#line 1965 "y.tab.c" /* yacc.c:1646  */
+#line 1987 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 80:
-#line 297 "yacc.y" /* yacc.c:1646  */
+#line 319 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[-1].arbre);}
-#line 1971 "y.tab.c" /* yacc.c:1646  */
+#line 1993 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 81:
-#line 298 "yacc.y" /* yacc.c:1646  */
-    {type_arbre * a;a=(yyvsp[-3].arbre);while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_PARAM,-1),(yyvsp[-1].arbre)));;(yyval.arbre)=(yyvsp[-3].arbre);}
-#line 1977 "y.tab.c" /* yacc.c:1646  */
+#line 320 "yacc.y" /* yacc.c:1646  */
+    {type_arbre * a;a=(yyvsp[-3].arbre);while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,(yyvsp[-1].arbre));(yyval.arbre)=(yyvsp[-3].arbre);}
+#line 1999 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 82:
-#line 300 "yacc.y" /* yacc.c:1646  */
+#line 322 "yacc.y" /* yacc.c:1646  */
     {type_arbre *a;
    if(test_type((yyvsp[0].arbre),0)){
      (yyval.arbre)=(yyvsp[0].arbre);
@@ -1987,35 +2009,35 @@ yyreduce:
      erreur_affiche();
    }
  }
-#line 1991 "y.tab.c" /* yacc.c:1646  */
+#line 2013 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 83:
-#line 309 "yacc.y" /* yacc.c:1646  */
+#line 331 "yacc.y" /* yacc.c:1646  */
     {type_arbre * a;a=(yyvsp[-2].arbre);while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_VIRGULE,-1),(yyvsp[0].arbre)));;(yyval.arbre)=(yyvsp[-2].arbre);}
-#line 1997 "y.tab.c" /* yacc.c:1646  */
+#line 2019 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 84:
-#line 312 "yacc.y" /* yacc.c:1646  */
+#line 334 "yacc.y" /* yacc.c:1646  */
     {concat_pere_fils(cree_noeud(A_PLUS,-1),concat_pere_frere((yyvsp[-2].arbre),cree_noeud(A_CHAINE,(yyvsp[0].type_int))));}
-#line 2003 "y.tab.c" /* yacc.c:1646  */
+#line 2025 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 85:
-#line 313 "yacc.y" /* yacc.c:1646  */
+#line 335 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=cree_noeud(A_CHAINE,(yyvsp[0].type_int));}
-#line 2009 "y.tab.c" /* yacc.c:1646  */
+#line 2031 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 86:
-#line 316 "yacc.y" /* yacc.c:1646  */
+#line 338 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[0].arbre);}
-#line 2015 "y.tab.c" /* yacc.c:1646  */
+#line 2037 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 87:
-#line 319 "yacc.y" /* yacc.c:1646  */
+#line 341 "yacc.y" /* yacc.c:1646  */
     {
 type_arbre *a;
    if(test_type((yyvsp[0].arbre),3) && test_type((yyvsp[-2].arbre),3)){
@@ -2028,17 +2050,17 @@ type_arbre *a;
      erreur_affiche();
    }
  }
-#line 2032 "y.tab.c" /* yacc.c:1646  */
+#line 2054 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 88:
-#line 331 "yacc.y" /* yacc.c:1646  */
+#line 353 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[0].arbre);}
-#line 2038 "y.tab.c" /* yacc.c:1646  */
+#line 2060 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 89:
-#line 334 "yacc.y" /* yacc.c:1646  */
+#line 356 "yacc.y" /* yacc.c:1646  */
     {
  type_arbre *a;
    if(test_type((yyvsp[0].arbre),3) && test_type((yyvsp[-2].arbre),3)){
@@ -2051,17 +2073,17 @@ type_arbre *a;
      erreur_affiche();
    }
  }
-#line 2055 "y.tab.c" /* yacc.c:1646  */
+#line 2077 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 90:
-#line 346 "yacc.y" /* yacc.c:1646  */
+#line 368 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[0].arbre);}
-#line 2061 "y.tab.c" /* yacc.c:1646  */
+#line 2083 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 91:
-#line 349 "yacc.y" /* yacc.c:1646  */
+#line 371 "yacc.y" /* yacc.c:1646  */
     {
  type_arbre *a;
    if(test_type((yyvsp[0].arbre),3)){
@@ -2073,47 +2095,47 @@ type_arbre *a;
      fprintf(stderr,"seul les expression booleen ou les boolean peuvente avoir un non davant eux\n");
      erreur_affiche();
    }}
-#line 2077 "y.tab.c" /* yacc.c:1646  */
+#line 2099 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 92:
-#line 360 "yacc.y" /* yacc.c:1646  */
+#line 382 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[0].arbre);}
-#line 2083 "y.tab.c" /* yacc.c:1646  */
+#line 2105 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 93:
-#line 363 "yacc.y" /* yacc.c:1646  */
+#line 385 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[0].arbre);}
-#line 2089 "y.tab.c" /* yacc.c:1646  */
+#line 2111 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 94:
-#line 364 "yacc.y" /* yacc.c:1646  */
+#line 386 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[0].arbre);}
-#line 2095 "y.tab.c" /* yacc.c:1646  */
+#line 2117 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 95:
-#line 365 "yacc.y" /* yacc.c:1646  */
+#line 387 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[0].arbre);}
-#line 2101 "y.tab.c" /* yacc.c:1646  */
+#line 2123 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 96:
-#line 368 "yacc.y" /* yacc.c:1646  */
+#line 390 "yacc.y" /* yacc.c:1646  */
     {type_arbre *a;a=cree_noeud_type(A_BOOL,1,3); ajoute_type_final(a,3);(yyval.arbre)=a;}
-#line 2107 "y.tab.c" /* yacc.c:1646  */
+#line 2129 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 97:
-#line 369 "yacc.y" /* yacc.c:1646  */
+#line 391 "yacc.y" /* yacc.c:1646  */
     {type_arbre *a;a=cree_noeud_type(A_BOOL,-1,3); ajoute_type_final(a,3);(yyval.arbre)=a;}
-#line 2113 "y.tab.c" /* yacc.c:1646  */
+#line 2135 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 98:
-#line 372 "yacc.y" /* yacc.c:1646  */
+#line 394 "yacc.y" /* yacc.c:1646  */
     {type_arbre *a;
    if((test_type((yyvsp[-2].arbre),0) || test_type((yyvsp[-2].arbre),1) || test_type((yyvsp[-2].arbre),3) || test_type((yyvsp[-2].arbre),4)) && (test_type((yyvsp[0].arbre),0) || test_type((yyvsp[0].arbre),1) || test_type((yyvsp[0].arbre),3) || test_type((yyvsp[0].arbre),4))){
      if(test_des_types_arbre((yyvsp[-2].arbre),(yyvsp[0].arbre))){
@@ -2130,59 +2152,59 @@ type_arbre *a;
      fprintf(stderr,"les type ne sont pas des int des reels des boolean ou des character imposible de comparer d'autres types\n");
      erreur_affiche();
    }}
-#line 2134 "y.tab.c" /* yacc.c:1646  */
+#line 2156 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 99:
-#line 390 "yacc.y" /* yacc.c:1646  */
+#line 412 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=cree_noeud(A_INF,-1);}
-#line 2140 "y.tab.c" /* yacc.c:1646  */
+#line 2162 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 100:
-#line 391 "yacc.y" /* yacc.c:1646  */
+#line 413 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=cree_noeud(A_INFEGAL,-1);}
-#line 2146 "y.tab.c" /* yacc.c:1646  */
+#line 2168 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 101:
-#line 392 "yacc.y" /* yacc.c:1646  */
+#line 414 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=cree_noeud(A_SUP,-1);}
-#line 2152 "y.tab.c" /* yacc.c:1646  */
+#line 2174 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 102:
-#line 393 "yacc.y" /* yacc.c:1646  */
+#line 415 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=cree_noeud(A_SUPEGAL,-1);}
-#line 2158 "y.tab.c" /* yacc.c:1646  */
+#line 2180 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 103:
-#line 394 "yacc.y" /* yacc.c:1646  */
+#line 416 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=cree_noeud(A_EGAL,-1);}
-#line 2164 "y.tab.c" /* yacc.c:1646  */
+#line 2186 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 104:
-#line 395 "yacc.y" /* yacc.c:1646  */
+#line 417 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=cree_noeud(A_DIFF,-1);}
-#line 2170 "y.tab.c" /* yacc.c:1646  */
+#line 2192 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 105:
-#line 398 "yacc.y" /* yacc.c:1646  */
+#line 420 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)==(yyvsp[0].arbre);}
-#line 2176 "y.tab.c" /* yacc.c:1646  */
+#line 2198 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 106:
-#line 401 "yacc.y" /* yacc.c:1646  */
+#line 423 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[0].arbre);}
-#line 2182 "y.tab.c" /* yacc.c:1646  */
+#line 2204 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 107:
-#line 402 "yacc.y" /* yacc.c:1646  */
+#line 424 "yacc.y" /* yacc.c:1646  */
     {type_arbre *a;
   if((test_type((yyvsp[-2].arbre),0) || test_type((yyvsp[-2].arbre),1)) && (test_type((yyvsp[0].arbre),0) || test_type((yyvsp[0].arbre),1))){
      if(test_des_types_arbre((yyvsp[-2].arbre),(yyvsp[0].arbre))){
@@ -2200,11 +2222,11 @@ type_arbre *a;
      erreur_affiche();
    }
  }
-#line 2204 "y.tab.c" /* yacc.c:1646  */
+#line 2226 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 108:
-#line 419 "yacc.y" /* yacc.c:1646  */
+#line 441 "yacc.y" /* yacc.c:1646  */
     {type_arbre *a;
      if((test_type((yyvsp[-2].arbre),0) || test_type((yyvsp[-2].arbre),1)) && (test_type((yyvsp[0].arbre),0) || test_type((yyvsp[0].arbre),1))){
      if(test_des_types_arbre((yyvsp[-2].arbre),(yyvsp[0].arbre))){
@@ -2222,17 +2244,17 @@ type_arbre *a;
      erreur_affiche();
    }
  }
-#line 2226 "y.tab.c" /* yacc.c:1646  */
+#line 2248 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 109:
-#line 438 "yacc.y" /* yacc.c:1646  */
+#line 460 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[0].arbre);}
-#line 2232 "y.tab.c" /* yacc.c:1646  */
+#line 2254 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 110:
-#line 439 "yacc.y" /* yacc.c:1646  */
+#line 461 "yacc.y" /* yacc.c:1646  */
     {type_arbre *a;
    if((test_type((yyvsp[-2].arbre),0) || test_type((yyvsp[-2].arbre),1)) && (test_type((yyvsp[0].arbre),0) || test_type((yyvsp[0].arbre),1))){
      if(test_des_types_arbre((yyvsp[-2].arbre),(yyvsp[0].arbre))){
@@ -2250,11 +2272,11 @@ type_arbre *a;
      erreur_affiche();
    }
  }
-#line 2254 "y.tab.c" /* yacc.c:1646  */
+#line 2276 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 111:
-#line 456 "yacc.y" /* yacc.c:1646  */
+#line 478 "yacc.y" /* yacc.c:1646  */
     {type_arbre *a;
    if((test_type((yyvsp[-2].arbre),0) || test_type((yyvsp[-2].arbre),1)) && (test_type((yyvsp[0].arbre),0) || test_type((yyvsp[0].arbre),1))){
      if(test_des_types_arbre((yyvsp[-2].arbre),(yyvsp[0].arbre))){
@@ -2271,11 +2293,11 @@ type_arbre *a;
      fprintf(stderr,"les type ne sont pas des int ou des reels division imposible\n");
      erreur_affiche();
    }}
-#line 2275 "y.tab.c" /* yacc.c:1646  */
+#line 2297 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 112:
-#line 474 "yacc.y" /* yacc.c:1646  */
+#line 496 "yacc.y" /* yacc.c:1646  */
     {
   if(test_type((yyvsp[0].arbre),0) || test_type((yyvsp[0].arbre),1)){
   (yyvsp[0].arbre)->noeud*=-1;
@@ -2287,59 +2309,59 @@ type_arbre *a;
 	erreur_affiche();
       }
       }
-#line 2291 "y.tab.c" /* yacc.c:1646  */
+#line 2313 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 113:
-#line 485 "yacc.y" /* yacc.c:1646  */
+#line 507 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[0].arbre);}
-#line 2297 "y.tab.c" /* yacc.c:1646  */
+#line 2319 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 114:
-#line 488 "yacc.y" /* yacc.c:1646  */
+#line 510 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[-1].arbre);}
-#line 2303 "y.tab.c" /* yacc.c:1646  */
+#line 2325 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 115:
-#line 489 "yacc.y" /* yacc.c:1646  */
+#line 511 "yacc.y" /* yacc.c:1646  */
     {type_arbre *a; a=cree_noeud_type(A_CSTE_E,(yyvsp[0].type_int),0); ajoute_type_final(a,0);(yyval.arbre)=a;}
-#line 2309 "y.tab.c" /* yacc.c:1646  */
+#line 2331 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 116:
-#line 490 "yacc.y" /* yacc.c:1646  */
+#line 512 "yacc.y" /* yacc.c:1646  */
     { type_arbre *a; a=cree_noeud_f_type(A_CSTE_R,(yyvsp[0].type_float),1); ajoute_type_final(a,1); (yyval.arbre)=a;}
-#line 2315 "y.tab.c" /* yacc.c:1646  */
+#line 2337 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 117:
-#line 491 "yacc.y" /* yacc.c:1646  */
+#line 513 "yacc.y" /* yacc.c:1646  */
     {type_arbre *a;a=cree_noeud_type(A_CSTE_E,(yyvsp[0].type_int),2); ajoute_type_final(a,2);(yyval.arbre)=a;}
-#line 2321 "y.tab.c" /* yacc.c:1646  */
+#line 2343 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 118:
-#line 492 "yacc.y" /* yacc.c:1646  */
+#line 514 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[0].arbre);}
-#line 2327 "y.tab.c" /* yacc.c:1646  */
+#line 2349 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 119:
-#line 493 "yacc.y" /* yacc.c:1646  */
+#line 515 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[0].arbre);}
-#line 2333 "y.tab.c" /* yacc.c:1646  */
+#line 2355 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 120:
-#line 496 "yacc.y" /* yacc.c:1646  */
+#line 518 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=(yyvsp[0].arbre);}
-#line 2339 "y.tab.c" /* yacc.c:1646  */
+#line 2361 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 121:
-#line 497 "yacc.y" /* yacc.c:1646  */
+#line 519 "yacc.y" /* yacc.c:1646  */
     {
    type_arbre *a ;
    a=concat_pere_fils((yyvsp[0].arbre),concat_pere_frere((yyvsp[-1].arbre),cree_noeud(A_CSTE_E,1)));
@@ -2351,23 +2373,23 @@ type_arbre *a;
        erreur_affiche();
      }
      (yyval.arbre)=a;}
-#line 2355 "y.tab.c" /* yacc.c:1646  */
+#line 2377 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 122:
-#line 510 "yacc.y" /* yacc.c:1646  */
+#line 532 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=cree_noeud(A_INCR,-1);}
-#line 2361 "y.tab.c" /* yacc.c:1646  */
+#line 2383 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 123:
-#line 511 "yacc.y" /* yacc.c:1646  */
+#line 533 "yacc.y" /* yacc.c:1646  */
     {(yyval.arbre)=cree_noeud(A_DEC,-1);}
-#line 2367 "y.tab.c" /* yacc.c:1646  */
+#line 2389 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2371 "y.tab.c" /* yacc.c:1646  */
+#line 2393 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2595,7 +2617,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 522 "yacc.y" /* yacc.c:1906  */
+#line 544 "yacc.y" /* yacc.c:1906  */
 
 
 int yyerror(){fprintf(stderr,"erreur syntaxique \n");erreur_affiche();}
