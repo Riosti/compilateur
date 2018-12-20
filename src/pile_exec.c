@@ -49,7 +49,7 @@ void evalue_appel(type_arbre *a){
 	dc++;
     }
     printf("\n");
-
+    dc--;
     //empiler les paramètres
     type_arbre *b = a->fils->frere;
     while(b != NULL){
@@ -297,8 +297,6 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	pexec[i].val = -1;
 	pexec[i].reel = -1;
     }
-
-	//Recule NIScourant
     
 	//BC = pexec[tmp].val;
 	NIScourant--;
