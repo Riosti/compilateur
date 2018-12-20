@@ -65,8 +65,10 @@ void evalue_appel(type_arbre *a){
 
 int evalue_condition(type_arbre *a){ 
     int sol;
+    printf("Je suis dans evalue condition\n");
     switch(a->type){
     case A_ET:
+	printf("Il s'agit d'un &&\n");
 	sol = evalue_condition(a->fils) &&
 	    evalue_condition(a->fils->frere);
 	break;
@@ -77,7 +79,8 @@ int evalue_condition(type_arbre *a){
     case A_NON:
 	sol = !evalue_condition(a->fils);
 	break;
-    case A_INF: 
+    case A_INF:
+	printf("Il s'agit d'un A_INF\n");
 	if (evalue_expression(a->fils).type == REEL)
 	    sol = evalue_expression(a->fils).reel
 		< evalue_expression(a->fils->frere).reel;
@@ -126,6 +129,20 @@ int evalue_condition(type_arbre *a){
 	break;
     case A_BOOL:
 	sol = a->noeud;
+	break;
+    case A_IDF:
+	printf("Il s'agit d'un IDF\nNIScourant = %d\nBC %d\n", NIScourant, BC);
+	NISdeclaration = table_region[Tab_dec[a->num_dec].region].nis;
+	
+	int dec = Tab_dec[a->num_dec].execution;
+	printf("DECALAGE %d\nIndice %d\n", dec, BC+NIScourant-NISdeclaration+dec);
+	if(BC != 0)
+	    sol = pexec[pexec[BC+NIScourant - NISdeclaration].val].val;
+	else
+	    sol = pexec[dec].val;
+	printf("I've got %d\n", sol);
+	break;
+	
     }
     return sol;
 }
@@ -186,15 +203,17 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	break;
 	
     case A_TQ:
+	printf("Il s'agit d'un A_TQ\n");
 	while( evalue_condition(a->fils) )
 	    evalue_arbre( a->fils->frere);
 	break;
 	
     case A_SI:
+	printf("Il s'agit de A_IF\n");
 	if( evalue_condition(a->fils) )
-	    evalue_arbre(a->fils->frere);
+	    evalue_arbre(a->frere->fils);//alors
 	else
-	    evalue_arbre(a->fils->frere->frere);
+	    evalue_arbre(a->frere->frere->fils);
 	break;
 	
 	//LE most important
@@ -250,13 +269,18 @@ void evalue_arbre(type_arbre *a){//on connait la région
     evalue_arbre(a->frere);
 }
 cellule evalue_fonction(type_arbre *a){
-    while( a->type != A_RETURN ){
-	evalue_arbre(a);
-	a = a->frere;
+    printf("Je suis dans evalue procedure\n");
+    evalue_arbre(a);
+    FileBC p = chainage -> suivant;
+    free(chainage);
+    for(int i = BC; i <= 10; i++){
+	pexec[i].type = -1;
+	pexec[i].val = -1;
+	pexec[i].reel = -1;
     }
-    //recule la BC
-    BC = defile_bc(chainage);//corrigé
+    
     //Recule NIScourant
+    BC = p -> bc;
     NIScourant--;
     affiche_pile();
     return evalue_expression(a->fils);
@@ -349,8 +373,27 @@ cellule evalue_expression(type_arbre *a){ //
 	else
 	    rep.reel *= evalue_expression(a->fils->frere).reel;
 	break;
+    default:
+	rep.type = BOOL;
+	rep.val = evalue_condition(a);
     }
+    switch(rep.type){
+    case INT:
     printf("Resulat(eval) %d\n", rep.val);
+    break;
+    case REEL:
+	printf("Resulat(eval) %f\n", rep.reel);
+	break;
+    case BOOL:
+	if (rep.val == 1)
+	    printf("Resulat(eval) Vrai\n");
+	else
+	    printf("Resulat(eval) Faux\n");
+	break;
+    case CHAR:
+	printf("Resulat(eval) %c\n", rep.val);
+	break;
+    }
     return rep;
 }
 

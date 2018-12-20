@@ -1,12 +1,11 @@
 hash:
 0 Int 3 3
 1 Float 5 -1
-2 Char 4 -1
+2 Char 4 6
 3 Bool 4 -1
 4 String 6 -1
-5 x 1 -1
-6 p 1 -1
-7 z 1 -1
+5 i 1 -1
+6 test 4 -1
 
 table_dec:
 0 1 -1 0 -1 1
@@ -15,18 +14,37 @@ table_dec:
 3 1 -1 0 -1 1
 4 1 -1 0 -1 1
 5 2 -1 0 0 0
-6 5 -1 0 0 1
-7 2 -1 1 0 0
+6 2 -1 0 3 1
 
 table_rep_type:
-0
 
 table_region:
-0 1 0 debut 
+0 2 0 debut 
 0 -1 0.000000 -1 -1 
 fils: 
 debut 
 26 -1 0.000000 -1 -1 
+fils: 
+debut 
+3 5 0.000000 0 5 
+fils: 
+vide 
+frere: 
+debut 
+1 0 0.000000 0 -1 
+fils: 
+vide 
+frere: 
+vide 
+frere: 
+debut 
+0 -1 0.000000 -1 -1 
+fils: 
+debut 
+7 -1 0.000000 -1 -1 
+fils: 
+debut 
+20 -1 0.000000 3 -1 
 fils: 
 debut 
 3 5 0.000000 0 5 
@@ -41,59 +59,6 @@ frere:
 vide 
 frere: 
 debut 
-0 -1 0.000000 -1 -1 
-fils: 
-debut 
-9 -1 0.000000 -1 6 
-fils: 
-debut 
-3 6 0.000000 -1 -1 
-fils: 
-vide 
-frere: 
-vide 
-frere: 
-vide 
-frere: 
-vide 
-frere: 
-vide 
-
-1 1 1 debut 
-0 -1 0.000000 -1 -1 
-fils: 
-debut 
-30 6 0.000000 -1 -1 
-fils: 
-vide 
-frere: 
-debut 
-39 -1 0.000000 -1 -1 
-fils: 
-vide 
-frere: 
-debut 
-0 -1 0.000000 -1 -1 
-fils: 
-debut 
-26 -1 0.000000 -1 -1 
-fils: 
-debut 
-3 7 0.000000 0 7 
-fils: 
-vide 
-frere: 
-debut 
-1 0 0.000000 0 -1 
-fils: 
-vide 
-frere: 
-vide 
-frere: 
-debut 
-0 -1 0.000000 -1 -1 
-fils: 
-debut 
 26 -1 0.000000 -1 -1 
 fils: 
 debut 
@@ -102,8 +67,18 @@ fils:
 vide 
 frere: 
 debut 
-1 0 0.000000 0 -1 
+15 -1 0.000000 0 -1 
 fils: 
+debut 
+3 5 0.000000 0 5 
+fils: 
+vide 
+frere: 
+debut 
+1 1 0.000000 0 -1 
+fils: 
+vide 
+frere: 
 vide 
 frere: 
 vide 
@@ -112,8 +87,28 @@ debut
 0 -1 0.000000 -1 -1 
 fils: 
 debut 
-40 -1 0.000000 -1 -1 
+26 -1 0.000000 -1 -1 
 fils: 
+debut 
+3 6 0.000000 3 6 
+fils: 
+vide 
+frere: 
+debut 
+20 -1 0.000000 3 -1 
+fils: 
+debut 
+3 5 0.000000 0 5 
+fils: 
+vide 
+frere: 
+debut 
+1 2 0.000000 0 -1 
+fils: 
+vide 
+frere: 
+vide 
+frere: 
 vide 
 frere: 
 vide 
