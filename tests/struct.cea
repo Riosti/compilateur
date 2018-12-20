@@ -1,0 +1,9 @@
+Prog
+
+Type s : Struct x:Int; y:Int Fstruct;
+Var a : s;
+
+{
+  a.x=1;
+  a.y=5;
+}

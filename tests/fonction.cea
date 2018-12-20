@@ -1,0 +1,15 @@
+Prog
+
+Var x : Int;
+Var y : Int;
+
+Fonction f (b:Int) Return Int
+{
+	Return (b + 1)*b; 
+}
+
+{
+	x=4;
+	y=5;
+    x=f(y);
+}
