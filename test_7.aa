@@ -1,0 +1,17 @@
+Prog
+
+
+Var i : Int;
+Var a : Int;
+Var b : Int;
+
+Fonction a_plus_b ( a :Int ;b : Int) Return Int
+{
+Return a+b;	 
+};
+
+{
+	a=1;
+	b=2;
+	i=a_plus_b(a,b);
+}

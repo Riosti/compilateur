@@ -1,0 +1,21 @@
+Prog
+
+Var x : Int;
+
+Procedure p
+{
+	x=x*x;
+};
+
+Procedure p2
+{
+	x=2*x;
+	p();
+};
+
+{
+	x=2;
+	p2();
+	Return x;
+}
+

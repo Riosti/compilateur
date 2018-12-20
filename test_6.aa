@@ -1,0 +1,11 @@
+Prog
+Var i : Int;
+Var test :Bool;
+
+{
+	i=0;
+	While (i < 2) Do{
+		i=i+1;
+		test=i < 2;
+	};
+}
