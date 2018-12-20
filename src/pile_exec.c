@@ -1,7 +1,6 @@
 #include "../inc/pile_exec.h"
 
 int tmpF;
-int taille_chainage;
 void empiler(cellule elem){
     pexec[indice_libre] = elem;
     indice_libre ++;
@@ -17,7 +16,6 @@ void init_pexec(){
 
 void evalue_appel(type_arbre *a){
     afficher_arbre(a->fils->frere);
-    taille_chainage = 0;
     int i, tmp;
      cellule rep;
      //Mise à jour de la base courante
@@ -50,7 +48,6 @@ void evalue_appel(type_arbre *a){
 	p = p->suivant;
 	dc++;
     }
-     taille_chainage = dc -1;
     printf("\n");
     printf("################################\n");
     affiche_pile();
@@ -146,8 +143,8 @@ int evalue_condition(type_arbre *a){
 	int dec = Tab_dec[a->num_dec].execution;
 	
 	if(BC != 0){
-	    printf("DECALAGE avec chainage %d\nIndice %d\n", dec+taille_chainage, BC+NIScourant-NISdeclaration+dec);
-	    sol = pexec[pexec[BC+NIScourant - NISdeclaration].val+ dec +taille_chainage].val;
+	    printf("DECALAGE avec chainage %d\nIndice %d\n", dec, BC+NIScourant-NISdeclaration+dec);
+	    sol = pexec[pexec[BC+NIScourant - NISdeclaration].val+ dec ].val;
 	}
 	else{
 	    printf("DECALAGE  %d\nIndice %d\n", dec, BC+NIScourant-NISdeclaration+dec);
@@ -351,13 +348,12 @@ cellule evalue_expression(type_arbre *a){ //
 	NISdeclaration = table_region[Tab_dec[a->num_dec].region].nis;
 	printf("                         NISdeclaration %d\n", NISdeclaration);
  	int dec = Tab_dec[a->num_dec].execution;
-	printf("DECALAGE %d\nIndice %d\n", dec, BC+NIScourant-NISdeclaration+dec);
+	printf("DECALAGE %d\nIndice %d\n", dec, pexec[BC+NIScourant-NISdeclaration+dec].val + dec);
 	if(BC != 0)
-	    rep = pexec[pexec[BC+NIScourant - NISdeclaration].val+dec+taille_chainage];
+	    rep = pexec[pexec[BC+NIScourant - NISdeclaration].val+dec];//ne fonctionne pas (mauvaise formule???)
 	else
 	    rep = pexec[dec];
 	printf("I've got %d\n", rep.val);
-	//rep = pexec[rep.val + dec];
 	
 	break;
 
