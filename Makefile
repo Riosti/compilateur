@@ -68,6 +68,11 @@ module_chargement.o: module_chargement.c inc/charger.h
 
 module: module_chargement.o charger.o
 	gcc -Wall -o module module_chargement.o charger.o
+
+calcule_deplacement.o : src/calcule_deplacement.c inc/calcule_deplacement.h
+	gcc -Wall src/calcule_deplacement.c inc/calcule_deplacement.h -c
+	mv calcule_deplacement.o objbis/
+
 ###########################################################################
 
 obj:
