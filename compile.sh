@@ -6,4 +6,6 @@ then
 
 else
     ./bin/exec $1 < $1
+    string=$1
+    mv table_prog ${string/cea/ocea}
 fi;
