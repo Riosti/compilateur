@@ -87,13 +87,16 @@ Procedure p ~( IDF : Type )~
 `IDF(elem)`  
 En sachant que IDF est déclarée comme procédure ou fonction et elem son ou ses paramètres
 
+### Tant que
+`While Condition Do { instructions } ;`
+
 ### Lecture / Ecriture
 `Read(Type);`  
 `Write(IDF);`
 
 ### Vide
-`Null`
-
+`Null;`
+Par exemple pour n'avoir aucune instruction dans un bloc -> Else
 ### Retour
 `Return elem`
 Sachant que elem est du même Type que ce que doit renvoyer la suite d'instructions
