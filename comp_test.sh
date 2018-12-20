@@ -1,37 +1,49 @@
 #!/usr/bin/env bash
 
-./compil.sh tests/erreur.cea
-mkdir bin/erreur
-mv bin/*.html bin/erreur/
+	rm -rf bin/struct bin/if bin/fonction bin/inc bin/procedure bin/tout bin/while
+	rm -rf tests/*.ocea
 
-./compil.sh tests/erreurtab.cea
-mkdir bin/erreurtab
-mv bin/*.html bin/erreurtab/
+if (( $# != 1 ))
+then
 
-./compil.sh tests/tab.cea
-mkdir bin/tab
-mv bin/*.html bin/tab/
+	# bin/exec < tests/erreur.cea
+	# mkdir bin/erreur
+	# mv bin/*.html bin/erreur/
 
-./compil.sh tests/srtuct.cea
-mkdir bin/srtuct
-mv bin/*.html bin/srtuct/
+	# bin/exec < tests/erreurtab.cea
+	# mkdir bin/erreurtab
+	# mv bin/*.html bin/erreurtab/
 
-./compil.sh tests/if.cea
-mkdir bin/if
-mv bin/*.html bin/if/
+	# bin/exec < tests/tab.cea
+	# mkdir bin/tab
+	# mv bin/*.html bin/tab/
 
-./compil.sh tests/while.cea
-mkdir bin/while
-mv bin/*.html bin/while/
+	bin/exec < tests/struct.cea
+	mkdir bin/struct
+	mv -f bin/*.html bin/struct/
 
-./compil.sh tests/procedure.cea
-mkdir bin/procedure
-mv bin/*.html bin/procedure/
+	bin/exec < tests/if.cea
+	mkdir bin/if
+	mv -f bin/*.html bin/if/
 
-./compil.sh tests/fonction.cea
-mkdir bin/fonction
-mv bin/*.html bin/fonction/
+	bin/exec < tests/while.cea
+	mkdir bin/while
+	mv -f bin/*.html bin/while/
 
-./compil.sh tests/tout.cea
-mkdir bin/tout
-mv bin/*.html bin/tout/
+	bin/exec < tests/procedure.cea
+	mkdir bin/procedure
+	mv -f bin/*.html bin/procedure/
+
+	bin/exec < tests/fonction.cea
+	mkdir bin/fonction
+	mv -f bin/*.html bin/fonction/
+
+	bin/exec < tests/tout.cea
+	mkdir bin/tout
+	mv -f bin/*.html bin/tout/
+
+	mkdir bin/inc/
+	cp inc/style.css bin/inc/
+	cp inc/affichage.js bin/inc/
+fi;
+
