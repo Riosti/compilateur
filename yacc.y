@@ -160,7 +160,10 @@ instruction : affectation {$$=$1;}
             | ecrire {$$=$1;}
             ;
 
-lire : READ PO type_simple PF {type_arbre *a =concat_pere_fils(cree_noeud(A_LIRE,-1),$3);ajoute_type_final(a,donne_type_final($3));$$=a;}/*type*/
+lire : READ PO variable_idf PF {type_arbre *a =concat_pere_fils(cree_noeud(A_LIRE,-1),$3);ajoute_type_final(a,donne_type_final($3));$$=a;
+   ajoute_type_var($3,type_var(num_dec(donne_num_hash_arbre($3))));
+   ajoute_type_final($3,type_var(num_dec(donne_num_hash_arbre($3))));
+   ajoute_num_dec($3,num_dec(donne_num_hash_arbre($3)));}/*type*/
 
 
 ecrire : WRITE PO expression PF {type_arbre *a;if(test_type($3,0) || test_type($3,1) || test_type($3,2) || test_type($3,3) || test_type($3,4)){a = concat_pere_fils(cree_noeud(A_ECRIRE,-1),$3);ajoute_type_final(a,donne_type_final($3));$$=a;}else{ fprintf(stderr,"erreur de type on ne peux ecrire que des type de bases \n");erreur_affiche();}} /*expression*/
