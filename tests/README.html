@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [['$','$'], ['\\(','\\)']]}});</script>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS": {"availableFonts":["TeX"],"scale": 150}});</script>
+
+<style>
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+	font-size: 14px;
+	padding: 0 12px;
+	line-height: 22px;
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	color: #4080D0;
+	text-decoration: none;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+h1 code,
+h2 code,
+h3 code,
+h4 code,
+h5 code,
+h6 code {
+	font-size: inherit;
+	line-height: auto;
+}
+
+a:hover {
+	color: #4080D0;
+	text-decoration: underline;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left: 5px solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 14px;
+	line-height: 19px;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+.mac code {
+	font-size: 12px;
+	line-height: 18px;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+/** Theming */
+
+.vscode-light,
+.vscode-light pre code {
+	color: rgb(30, 30, 30);
+}
+
+.vscode-dark,
+.vscode-dark pre code {
+	color: #DDD;
+}
+
+.vscode-high-contrast,
+.vscode-high-contrast pre code {
+	color: white;
+}
+
+.vscode-light code {
+	color: #A31515;
+}
+
+.vscode-dark code {
+	color: #D7BA7D;
+}
+
+.vscode-light pre:not(.hljs),
+.vscode-light code > div {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre:not(.hljs),
+.vscode-dark code > div {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre:not(.hljs),
+.vscode-high-contrast code > div {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+.vscode-light blockquote,
+.vscode-dark blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.vscode-high-contrast blockquote {
+	background: transparent;
+	border-color: #fff;
+}
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+</style>
+
+</head>
+<body>
+<h1 id="compilations5">compilation_s5</h1>
+<p>Synthèse de la grammaire et de la syntaxe</p>
+<h2 id="les-constantes">Les constantes</h2>
+<h3 id="constante-enti%C3%A8re">Constante Entière</h3>
+<p><code>0|([1-9][0-9]*)</code>  : suite simple de chiffres
+0, 1, 2, 10, 121233 ...</p>
+<h3 id="constante-r%C3%A9elle">Constante Réelle</h3>
+<p><code>(0|([1-9][0-9]*))&quot;.&quot;([0-9]+)</code> : deux suites simples de chiffres avec un point les séparants
+0.0, 0.1, 1.6, 2.0, 10.12414134, 121233.111111 ...</p>
+<h3 id="constante-caract%C3%A8re">Constante Caractère</h3>
+<p><code>'[a-zA-Z]'</code> : un unique caractère alphabétique entouré de simples 'quotes'
+'a', 'b', 'Z' ...</p>
+<h3 id="constante-chaine">Constante Chaine</h3>
+<p><code>&quot;[a-zA-Z0-9_]+&quot;</code> : suites vide ou non de caractères alphabétique entouré de double &quot;quotes&quot;
+&quot;abc&quot;, &quot;Abccc&quot;, &quot;&quot;, &quot;A&quot; ...</p>
+<h2 id="d%C3%A9clarations">Déclarations</h2>
+<h3 id="idf">IDF</h3>
+<p><code>[a-z][a-zA-Z0-9_]*</code> : Suite de caractères alphanumériques commençant par une minuscule
+x, p, f ...<br>
+<s>Aazea</s><br>
+<s>1ae</s></p>
+<p><em>dans l'ordre:</em><br>
+Suivent le même paterne:
+Type|Var <em>IDF</em> : Définition de la variable <em>;</em></p>
+<h3 id="type">Type</h3>
+<h4 id="structure">Structure</h4>
+<p><code>Type s : Struct elem : Int; elem2 : Chaine; Fstruct;</code></p>
+<h4 id="tableaux">Tableaux</h4>
+<p><code>Type t : Tab [ Int#Int ] Of Type;</code><br>
+<code>Type t2 : Tab [ Int#Int,Int#Int ] Of Type;</code></p>
+<h3 id="variable">Variable</h3>
+<h4 id="entiers">Entiers</h4>
+<p><code>Var x : Int</code></p>
+<h4 id="reels">Reels</h4>
+<p><code>Var y : Float</code></p>
+<h4 id="booleens">Booleens</h4>
+<p><code>Var b : Bool</code></p>
+<h4 id="caract%C3%A8re">Caractère</h4>
+<p><code>Var c : Char</code></p>
+<h4 id="chaines-de-caract%C3%A8res">Chaines de caractères</h4>
+<p><code>Var s : String[Int]</code></p>
+<h3 id="fonctions-et-procedures">Fonctions et Procedures</h3>
+<p>Contenant des instructions entre { }</p>
+<h4 id="fonction">Fonction</h4>
+<pre class="hljs"><code><div>Fonction f ~( IDF : Type )~ Return TypeR
+{
+    
+    Return ~~variable ou constante de type TypeR~~;
+};
+</div></code></pre>
+<h4 id="proc%C3%A9dure">Procédure</h4>
+<pre class="hljs"><code><div>Procedure p ~( IDF : Type )~
+{
+
+};
+</div></code></pre>
+<h2 id="instructions">Instructions</h2>
+<h3 id="affectation">Affectation</h3>
+<p><code>IDF = expression ;</code></p>
+<h3 id="condition">Condition</h3>
+<p><code>If expression Then { instructions } Else { instructions } ;</code></p>
+<h3 id="appel">Appel</h3>
+<p><code>IDF(elem)</code><br>
+En sachant que IDF est déclarée comme procédure ou fonction et elem son ou ses paramètres</p>
+<h3 id="tant-que">Tant que</h3>
+<p><code>While Condition Do { instructions } ;</code></p>
+<h3 id="lecture-ecriture">Lecture / Ecriture</h3>
+<p><code>Read(Type);</code><br>
+<code>Write(IDF);</code></p>
+<h3 id="vide">Vide</h3>
+<p><code>Null;</code>
+Par exemple pour n'avoir aucune instruction dans un bloc -&gt; Else</p>
+<h3 id="retour">Retour</h3>
+<p><code>Return elem</code>
+Sachant que elem est du même Type que ce que doit renvoyer la suite d'instructions</p>
+<h2 id="expressions">Expressions</h2>
+<h3 id="op%C3%A9rations-binaires">Opérations binaires</h3>
+<p><code>&amp;&amp;</code> : ET<br>
+<code>||</code> : OU<br>
+<code>!</code> : NON</p>
+<h3 id="concat%C3%A9nation">Concaténation</h3>
+<p><code>s1 + s2</code><br>
+Sachant <code>s1</code> et <code>s2</code> deux variables de type String</p>
+<h3 id="constante">Constante</h3>
+<p><code>True</code> ou <code>False</code></p>
+<h3 id="comparaison">Comparaison</h3>
+<p><code>e1 op e2</code><br>
+Sachant <code>e1</code> et <code>e2</code> tous deux réels ou entiers<br>
+et op parmis:</p>
+<ul>
+<li><code>&lt;</code>  : Inférieur</li>
+<li><code>&lt;=</code> : Inférieur ou égal</li>
+<li><code>&gt;</code>  : Supérieur</li>
+<li><code>&gt;=</code> : Supérieur ou égal</li>
+<li><code>==</code> : Égal</li>
+<li><code>!=</code> : Différent</li>
+</ul>
+
+</body>
+</html>
