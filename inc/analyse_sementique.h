@@ -18,4 +18,5 @@ int test_corp_fonction(int num_hash, type_arbre* a);
 int test_return_dans_si(type_arbre* a, int type_return);
 int test_return_dans_liste_instruction(type_arbre* a, int type_return);
 void ajoute_fin_procedure_return(type_arbre *a);
+void verrif_tab(type_arbre *a,int num_dec);
 #endif

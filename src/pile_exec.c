@@ -108,11 +108,20 @@ int evalue_condition(type_arbre *a){
     }
     return sol;
 }
-
-
+/*
+int decalage(int numdec){
+    int dec = 1;
+    int reg = Tab_dec[numdec].region;
+    for( int i = 0; i < numdec; i++)
+	if( Tab_dec[i].region == reg )
+	    dec += Tab_dec[i].execution;
+    return dec;
+}
+*/
 void evalue_arbre(type_arbre *a){//on connait la région
     if(a == NULL){
-	printf("fin de l'execution\n");
+	affiche_pile();
+	printf("\nfin de l'execution\n");
 	exit(0);
     }
     printf("je suis dans evalue_arbre\n");
@@ -142,6 +151,7 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	}
 	break;
     case A_LIST:
+	printf("Il s'agit d'une liste\n");
 	evalue_arbre(a->fils);
 	break;
     case A_APPEL: //il s'agit d'une procédure
@@ -170,11 +180,12 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	printf("NIS de declaration %d\n", NISdeclaration);
 	printf("NIS courant %d\n", NIScourant);
 	printf("BC %d\n", BC);
-	printf("%d\n",pexec[BC+NIScourant-NISdeclaration].val);
-	printf("%d\n",Tab_dec[a->fils->num_dec].execution);
-	printf("type %d\n", a->fils->type);
-	pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution] = evalue_expression(a->fils->frere);
-	printf("Affectation done");
+	printf("NUMERO DEC %d\n", a->fils->num_dec);
+	int dec = Tab_dec[a->fils->num_dec].execution;
+	printf("decalage %d\n", dec);
+	pexec[BC+NIScourant-NISdeclaration +dec] = evalue_expression(a->fils->frere);
+
+	printf("Affectation done\n");
 	break;
 
 	
@@ -236,9 +247,13 @@ void evalue_procedure(type_arbre *a){
 
 cellule evalue_expression(type_arbre *a){ //
     cellule rep;
-    printf("evalexp\n");
     printf("Dans evalue_expression %d\n", a->type);
     switch(a->type){
+    case A_IDF:
+	printf("Il s'agit d'un IDF\n");
+	NISdeclaration = table_region[Tab_dec[a->num_dec].region].nis;
+	rep = pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->num_dec].execution];
+	break;
     case A_APPEL: //il sagit d'une fonction
 	evalue_appel(a);
 	region_courante = Tab_dec[a->num_dec].execution;
@@ -259,6 +274,7 @@ cellule evalue_expression(type_arbre *a){ //
 	rep.val = a->noeud;
 	break;
     case A_PLUS:
+	printf("Il s'agit d'une addition\n");
 	rep = evalue_expression(a->fils);
 	if(rep.type == INT)
 	    rep.val +=evalue_expression(a->fils->frere).val;
@@ -287,16 +303,17 @@ cellule evalue_expression(type_arbre *a){ //
 	    rep.reel *= evalue_expression(a->fils->frere).reel;
 	break;
     }
+    printf("Resulat(eval) %d\n", rep.val);
     return rep;
 }
 
 void affiche_pile(){
     printf("INDICE      VALEUR\n");
-    for( int i = 0; i<indice_libre; i++){
+    for( int i = 0; i<10 /*indice_libre*/; i++){
 	switch(pexec[i].type)
 	    {
 	    case INT:
-		printf("%d     %d\n", i, pexec[i].val);
+		printf("%d            %d\n", i, pexec[i].val);
 		break;
 	    case BOOL:
 		if(pexec[i].val)
@@ -318,6 +335,10 @@ int main(int argc, char *argv[]){
     //charger les tables
     printf("lancement de la pile\n");
     FILE *f = fopen("table_prog", "r");
+    if ( f == NULL){
+	printf("erreur ouverture du fichier");
+	exit(-1);
+    }
     init_table_region();
     init_table_decla();
     init_table_rep_type();
@@ -325,14 +346,13 @@ int main(int argc, char *argv[]){
     charger_TabDec(f);
     charger_TabRep(f);
     charger_TabReg(f);
-
+    
     fclose(f);
     
     chainage = init_bc();
     indice_libre =0;
-    BC = 0;
     init_pexec();
-    printf("%d\n", table_region[0].a->type);
+    printf("Region %d\n", table_region[0].a->type);
     evalue_arbre(table_region[0].a);
     return 1;
 }

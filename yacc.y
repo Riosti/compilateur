@@ -117,6 +117,7 @@ declaration_fonction : FONCTION IDF liste_parametres RETOURNE nom_type {enfile($
  } corps {
     test_corp_fonction(num_dec($2),$7);
     fin_proc_fonc_region(concat_pere_fils(cree_noeud(A_LIST,-1),concat_pere_frere(cree_noeud(A_FONCTION,$2),concat_pere_frere($3,concat_pere_frere(concat_pere_fils(cree_noeud(A_RETURN,-1),$5),concat_pere_fils(cree_noeud(A_LIST,-1),$7))))));
+    
   
 
  }/*nom type nan?*/
@@ -172,11 +173,11 @@ resultat_retourne : {$$=cree_noeud(A_VIDE,-1);}
 
 appel : IDF liste_arguments {type_arbre *a;
    if(est_une_fonction(num_dec($1))){
-     a=concat_pere_fils(cree_noeud(A_APPEL_F,-1),concat_pere_frere(cree_noeud(A_IDF,$1),$2));ajoute_type_final(a,donne_type_fonction(num_dec($1)));verif_arg_fonction(num_dec($1),$2);$$=a;
+     a=concat_pere_fils(cree_noeud(A_APPEL_F,-1),concat_pere_frere(cree_noeud(A_IDF,$1),$2));ajoute_type_final(a,donne_type_fonction(num_dec($1)));verif_arg_fonction(num_dec($1),$2);a->num_dec=num_dec($1);$$=a;
    }
    else{
      if(est_une_procedure(num_dec($1))){
-       a=concat_pere_fils(cree_noeud(A_APPEL_P,-1),concat_pere_frere(cree_noeud(A_IDF,$1),$2));verif_arg_procedure(num_dec($1),$2);$$=a;
+       a=concat_pere_fils(cree_noeud(A_APPEL_P,-1),concat_pere_frere(cree_noeud(A_IDF,$1),$2));verif_arg_procedure(num_dec($1),$2);a->num_dec=num_dec($1);$$=a;
      }
      else{
        fprintf(stderr,"%s n'est pas une fonction ou une procedure donc appelle impossible\n",get_lexeme($1));
@@ -265,26 +266,48 @@ variable : variable_idf {$$=$1;
 
 
 | tableau {$$=$1;
-   ajoute_type_final($1,type_dun_tab(num_dec(donne_num_hash_arbre($1->fils))));
+   verrif_tab($1,type_var(num_dec($1->fils->noeud)));
+   ajoute_type_final($1,type_dun_tab(type_var(donne_num_hash_arbre($1->fils))));
    ajoute_num_dec($1,num_dec(donne_num_hash_arbre($1->fils)));
   }
 
 
 
 
-| variable POINT tableau {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_STRUCT,-1),$3));
-   ajoute_type_var($3,type_dun_tab(type_dun_struct(donne_type_arbre(a),donne_num_hash_arbre($3->fils))));
-   ajoute_type_final($1,donne_type_arbre($3->fils));
+| variable POINT tableau {
+  type_arbre * a;
+  a=$1;
+  if(a->type==A_IDF){
+    $1=concat_pere_fils(cree_noeud(A_STRUCT,-1),a);
+  }
+  else{
+    a=a->fils;
+  }
+  while(a->frere!=NULL){a=a->frere;}
+  concat_pere_frere(a,$3);
+  ajoute_type_var($3,type_dun_tab(type_dun_struct(donne_type_arbre(a),donne_num_hash_arbre($3->fils))));
+  verrif_tab($3,type_dun_struct(donne_type_arbre(a),donne_num_hash_arbre($3->fils)));
+  ajoute_type_final($1,donne_type_arbre($3));
    $$=$1;}
 
 
 
-| variable POINT variable_idf {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_STRUCT,-1),$3));
+| variable POINT variable_idf {type_arbre * a;
+   a=$1;
+   if(a->type==A_IDF){
+     $1=concat_pere_fils(cree_noeud(A_STRUCT,-1),a);
+   }
+   else{
+     a=a->fils;
+   }
+   while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,$3);
 
-   ajoute_type_var($3,type_dun_struct(donne_type_final($1),donne_num_hash_arbre($3)));
 
+   ajoute_type_var($3,type_dun_struct(donne_type_final($1->fils),donne_num_hash_arbre($3)));
+   ajoute_type_final($1->fils,donne_type_arbre($3));
    ajoute_type_final($1,donne_type_arbre($3));
-   $$=$1; }
+   $$=$1;
+ }
          ;
 
 variable_idf : IDF {$$=cree_noeud(A_IDF,$1);}
@@ -294,7 +317,7 @@ tableau : IDF liste_param_tab {type_arbre *a ; a=concat_pere_fils(cree_noeud(A_T
         ;
 
 liste_param_tab : CO param_du_tab CF {$$=$2;}
-                | liste_param_tab CO param_du_tab CF {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,concat_pere_fils(cree_noeud(A_PARAM,-1),$3));;$$=$1;}/*ici je sais pas si ca serais pas inutile*/
+                | liste_param_tab CO param_du_tab CF {type_arbre * a;a=$1;while(a->frere!=NULL){a=a->frere;}concat_pere_frere(a,$3);$$=$1;}/*ici je sais pas si ca serais pas inutile*/
 
 param_du_tab : expression {type_arbre *a;
    if(test_type($1,0)){

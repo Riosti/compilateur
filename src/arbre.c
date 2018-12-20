@@ -143,3 +143,5 @@ void ajoute_num_dec(type_arbre *a,int num_dec){
   a->num_dec=num_dec;
 }
 
+
+

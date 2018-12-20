@@ -10,6 +10,7 @@ typedef struct arbre{
   int type_var;
   int type_final;
   int num_dec;
+  int num_arg;
   struct arbre *frere;
   struct arbre *fils;
 } type_arbre;/*structure type arbre*/
@@ -40,4 +41,5 @@ int donne_type_final(type_arbre *a);
 void ajoute_type_final(type_arbre *a , int type_f);
 
 void ajoute_num_dec(type_arbre *a,int num_dec);
+
 #endif
