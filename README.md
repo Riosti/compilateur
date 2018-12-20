@@ -4,7 +4,7 @@ Synthèse de la grammaire et de la syntaxe
 
 
 
-## Les constantes
+## Les constantes
 ### Constante Entière
 `0|([1-9][0-9]*)`  : suite simple de chiffres
 0, 1, 2, 10, 121233 ...
