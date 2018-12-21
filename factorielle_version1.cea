@@ -1,0 +1,16 @@
+Prog
+Var i : Int;
+Var res : Int;
+Var n : Int;
+{
+
+i=0;
+n=5;
+res=1;
+While(i < n) Do
+{
+	i=i+1;
+	res=res*i;
+};
+
+}

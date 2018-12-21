@@ -1,0 +1,17 @@
+Prog
+
+Var x : Int;
+Var y : Float;
+{
+	If(4 < 5)
+	Then
+	{
+		x=4;
+		y=6.0;
+	}
+	Else
+	{
+		y=4.0;
+		x=6;
+	};
+}

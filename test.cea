@@ -1,0 +1,7 @@
+Prog
+Var i:Int;
+
+{
+Read(i);
+Write(i);
+}

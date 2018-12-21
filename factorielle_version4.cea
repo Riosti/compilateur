@@ -1,0 +1,21 @@
+Prog
+Var a : Int;
+Fonction fact (n : Int) Return Int
+Var i : Int;
+Var res : Int;
+{
+	If(n==0)
+	Then
+	{
+		Return 0;
+	}
+	Else{
+		Return fact(n-1)*n;
+	};
+};
+
+{
+
+a=fact(5);
+
+}

@@ -17,5 +17,5 @@ void empile(int num);
 int sommet_pile();
 int depile();
 int taille_pile();
-
+int est_dans_pile(int n);
 #endif

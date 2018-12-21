@@ -1,0 +1,12 @@
+Prog
+Type tab : Tab [1#5,5#8] Of Int;
+Type tab2 : Tab [0#7,0#8] Of Float;
+Var a : tab;
+Var x :Int;
+Var b : tab2;
+{
+x=0;
+a[5][6]=x;
+b[0][0]=2.0;
+
+}

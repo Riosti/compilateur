@@ -1,0 +1,13 @@
+Prog
+
+Var x: Int;
+
+Procedure p (Int b)
+{
+	x=x+b;
+}
+
+{
+    x=6;
+	p(3);
+}

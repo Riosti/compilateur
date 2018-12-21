@@ -13,6 +13,27 @@ type_arbre * cree_noeud(int type,int num){/*cree un noeud avec un type et un num
   else{
     a->noeud=num;
     a->type=type;
+    a->type_final=-1;
+    a->type_var=-1;
+    a->num_dec=-1;
+    a->frere=NULL;
+    a->fils=NULL;
+  }
+  return a;
+}
+
+type_arbre * cree_noeud_type(int type,int num,int t_var){/*cree un noeud avec un type et un numero de type entier et renvoie l'adresse du noeud*/
+  type_arbre* a;
+  a=malloc(sizeof(type_arbre)*1);
+  if(a==NULL){
+    fprintf(stderr,"erreur allocation mem \n");
+  }
+  else{
+    a->noeud=num;
+    a->type=type;
+    a->type_var=t_var;
+    a->type_final=-1;
+    a->num_dec=-1;
     a->frere=NULL;
     a->fils=NULL;
   }
@@ -28,6 +49,27 @@ type_arbre * cree_noeud_f(int type,float num){/*cree un noeud avec un type et un
   else{
     a->noeudf=num;
     a->type=type;
+    a->type_final=-1;
+    a->type_var=-1;
+    a->num_dec=-1;
+    a->frere=NULL;
+    a->fils=NULL;
+  }
+  return a;
+}
+
+type_arbre * cree_noeud_f_type(int type,float num, int t_val){/*cree un noeud avec un type et un numero de type reel et renvoie l'adresse du noeud*/
+  type_arbre* a;
+  a=malloc(sizeof(type_arbre)*1);
+  if(a==NULL){
+    fprintf(stderr,"erreur allocation mem \n");
+  }
+  else{
+    a->noeudf=num;
+    a->type=type;
+    a->type_var=t_val;
+    a->type_final=-1;
+    a->num_dec=-1;
     a->frere=NULL;
     a->fils=NULL;
   }
@@ -76,4 +118,30 @@ void afficher_arbre(type_arbre * a){
     afficher_arbre(a->fils);
   }
 }
+
+void ajoute_type_var(type_arbre *a , int type_var){
+  a->type_var=type_var;
+}
+
+void ajoute_type_final(type_arbre *a , int type_f){
+  a->type_final=type_f;
+}
+
+int donne_type_final(type_arbre *a){
+  return a->type_final;
+}
+
+int donne_num_hash_arbre(type_arbre *a){
+  return a->noeud;
+}
+
+int donne_type_arbre(type_arbre *a){
+  return a->type_var;
+}
+
+void ajoute_num_dec(type_arbre *a,int num_dec){
+  a->num_dec=num_dec;
+}
+
+
 

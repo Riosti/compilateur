@@ -1,0 +1,233 @@
+hash:
+0 Int 3 3
+1 Float 5 -1
+2 Char 4 -1
+3 Bool 4 6
+4 String 6 -1
+5 n 1 -1
+6 res 3 -1
+7 i 1 -1
+8 expo 4 -1
+
+table_dec:
+0 1 -1 0 -1 1
+1 1 -1 0 -1 1
+2 1 -1 0 -1 1
+3 1 -1 0 -1 1
+4 1 -1 0 -1 1
+5 2 500 0 0 0
+6 2 -1 0 0 1
+7 2 -1 0 0 2
+8 5 -1 0 0 1
+500 2 -1 1 0 0
+
+table_rep_type:
+1
+5
+0
+
+table_region:
+0 3 0 debut 
+0 -1 0.000000 -1 -1 
+fils: 
+debut 
+26 -1 0.000000 -1 -1 
+fils: 
+debut 
+3 5 0.000000 0 5 
+fils: 
+vide 
+frere: 
+debut 
+1 5 0.000000 0 -1 
+fils: 
+vide 
+frere: 
+vide 
+frere: 
+debut 
+0 -1 0.000000 -1 -1 
+fils: 
+debut 
+26 -1 0.000000 -1 -1 
+fils: 
+debut 
+3 6 0.000000 0 6 
+fils: 
+vide 
+frere: 
+debut 
+1 1 0.000000 0 -1 
+fils: 
+vide 
+frere: 
+vide 
+frere: 
+debut 
+0 -1 0.000000 -1 -1 
+fils: 
+debut 
+26 -1 0.000000 -1 -1 
+fils: 
+debut 
+3 7 0.000000 0 7 
+fils: 
+vide 
+frere: 
+debut 
+1 0 0.000000 0 -1 
+fils: 
+vide 
+frere: 
+vide 
+frere: 
+debut 
+0 -1 0.000000 -1 -1 
+fils: 
+debut 
+9 -1 0.000000 -1 8 
+fils: 
+debut 
+3 8 0.000000 -1 -1 
+fils: 
+vide 
+frere: 
+debut 
+36 -1 0.000000 0 -1 
+fils: 
+debut 
+3 5 0.000000 0 5 
+fils: 
+vide 
+frere: 
+vide 
+frere: 
+vide 
+frere: 
+vide 
+frere: 
+vide 
+frere: 
+vide 
+frere: 
+vide 
+frere: 
+vide 
+
+1 0 1 debut 
+0 -1 0.000000 -1 -1 
+fils: 
+debut 
+30 8 0.000000 -1 -1 
+fils: 
+vide 
+frere: 
+debut 
+37 -1 0.000000 0 -1 
+fils: 
+debut 
+3 5 0.000000 0 -1 
+fils: 
+vide 
+frere: 
+vide 
+frere: 
+debut 
+0 -1 0.000000 -1 -1 
+fils: 
+debut 
+7 -1 0.000000 -1 -1 
+fils: 
+debut 
+20 -1 0.000000 3 -1 
+fils: 
+debut 
+3 7 0.000000 0 7 
+fils: 
+vide 
+frere: 
+debut 
+3 5 0.000000 0 500 
+fils: 
+vide 
+frere: 
+vide 
+frere: 
+debut 
+0 -1 0.000000 -1 -1 
+fils: 
+debut 
+26 -1 0.000000 -1 -1 
+fils: 
+debut 
+3 7 0.000000 0 7 
+fils: 
+vide 
+frere: 
+debut 
+15 -1 0.000000 0 -1 
+fils: 
+debut 
+3 7 0.000000 0 7 
+fils: 
+vide 
+frere: 
+debut 
+1 1 0.000000 0 -1 
+fils: 
+vide 
+frere: 
+vide 
+frere: 
+vide 
+frere: 
+debut 
+0 -1 0.000000 -1 -1 
+fils: 
+debut 
+26 -1 0.000000 -1 -1 
+fils: 
+debut 
+3 6 0.000000 0 6 
+fils: 
+vide 
+frere: 
+debut 
+16 -1 0.000000 0 -1 
+fils: 
+debut 
+3 6 0.000000 0 6 
+fils: 
+vide 
+frere: 
+debut 
+3 7 0.000000 0 7 
+fils: 
+vide 
+frere: 
+vide 
+frere: 
+vide 
+frere: 
+vide 
+frere: 
+vide 
+frere: 
+vide 
+frere: 
+debut 
+0 -1 0.000000 -1 -1 
+fils: 
+debut 
+40 -1 0.000000 -1 -1 
+fils: 
+vide 
+frere: 
+vide 
+frere: 
+vide 
+frere: 
+vide 
+frere: 
+vide 
+

@@ -1,0 +1,33 @@
+Prog
+
+
+Var x : Int;
+Var b : Bool;
+Var fr : Float;
+Fonction f (a : Int) Return Int 
+{
+    a = a + 1;
+    a = a - 5;
+    Return a;
+};
+
+Procedure p 
+{
+    x = x*2;
+};
+
+{
+    fr = 4.0;
+    b= 1 < 3 && 3 >= 6;
+    If(b)
+    Then
+    {
+        x=10;
+    }
+    Else
+    {
+        x=1;
+    };
+    Return 1;
+
+}

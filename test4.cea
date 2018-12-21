@@ -1,0 +1,30 @@
+Prog
+
+Type tab : Tab [0#5,0#8] Of Int;
+
+Type s: Struct
+     t :tab;
+     index1 : Int;
+     index2 : Int;
+     Fstruct;
+
+Var voila : s;
+Var i : Int;
+Var j : Int;
+{
+	i=0;
+	s.index1=5;
+	s.index2=8;
+	While(i < s.index1) Do
+	{
+		j=0;
+		While(j < s.index2)Do
+		{
+			j=j+1;
+			s.t[i][j]=0;	
+		};
+		i=i+1;
+	};
+
+
+}

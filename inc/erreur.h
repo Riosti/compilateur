@@ -13,10 +13,15 @@
 #define KWHT  "\x1B[37m"
 #define CLI "\33[5m"
 
+int Num_lignes;
+int Num_inst;
+int Num_mots_lu;
+char Fichier_ouvert[1000];
+
 void print_color(char *msg,char * color);
 void change_color(char * color);
 void ajoute_chaine_color(char *final,char *msg,char * color);
 void print(char *m);
 void sous_chaine_color(char *final,char *msg,char *color,int begin,int end);
-
+int erreur_affiche();
 #endif

@@ -1,0 +1,12 @@
+Prog
+
+Var x : Int;
+
+{
+	x=0;
+    While(x<8)
+	Do
+	{
+		x++;
+	};
+}
