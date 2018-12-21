@@ -1,4 +1,9 @@
-all: lex.l yacc.y html.o arbre.o hash.o sauv.o pile.o erreur.o table_region.o table_declaration.o table_rep_type.o analyse_sementique.o file.o bin obj clean_gch
+all: obj bin objbis
+	make all_compilateur
+	make MV
+	make clean_gch
+
+all_compilateur: lex.l yacc.y html.o arbre.o hash.o sauv.o pile.o erreur.o table_region.o table_declaration.o table_rep_type.o analyse_sementique.o file.o bin obj clean_gch
 	yacc -d -v yacc.y
 	lex lex.l
 	gcc -c lex.yy.c
@@ -45,14 +50,17 @@ html.o: inc/html.h src/html.c obj
 	mv html.o obj/
 #######################MACHINE VIRTUELLE##################################
 ##########################################################################
-MV: charger.o fileBC.o pile_exec.o pile_exec
+MV: objbis pile_exec 
+	mv pile_exec bin/
 
-pile_exec: objbis/pile_exec.o objbis/fileBC.o objbis/charger.o obj/table_rep_type.o obj/table_declaration.o obj/table_region.o obj/file.o obj/arbre.o obj/hash.o obj/pile.o
-	gcc -Wall -o pile_exec objbis/pile_exec.o objbis/fileBC.o objbis/charger.o obj/table_rep_type.o obj/table_declaration.o obj/table_region.o obj/file.o obj/arbre.o obj/hash.o obj/pile.o
+pile_exec: pile_exec.o fileBC.o charger.o calcule_deplacement.o
+	gcc -Wall -o pile_exec objbis/pile_exec.o objbis/fileBC.o objbis/charger.o obj/table_rep_type.o obj/table_declaration.o obj/table_region.o obj/file.o obj/arbre.o obj/hash.o obj/pile.o objbis/calcule_deplacement.o obj/erreur.o
+
 
 pile_exec.o: src/pile_exec.c inc/pile_exec.h
 	gcc -Wall src/pile_exec.c inc/pile_exec.h -c
 	mv pile_exec.o objbis/
+
 
 fileBC.o: src/fileBC.c inc/fileBC.h
 	gcc -Wall src/fileBC.c inc/fileBC.h -c
@@ -80,6 +88,8 @@ obj:
 
 bin:
 	mkdir bin
+objbis:
+	mkdir objbis
 
 clean_gch:
 	rm -rf inc/*.gch
@@ -89,7 +99,10 @@ clean_obj:
 
 clean_bin:
 	rm -rf bin
+clean_objbis:
+	rm -rf objbis
+clean_ocea:
+	rm *.ocea
 
 
-clean: clean_bin clean_gch clean_obj
-	rm -rf pile_exec table_prog
+clean: clean_bin clean_gch clean_obj clean_objbis 

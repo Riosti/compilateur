@@ -18,3 +18,4 @@ int taille_param(int nbr_p,int type);
 int taille_tableau(int nbr_p,int type);
 int test(int index,int type,int nbr_param);
 int nbr_param_du_type(int type);
+int deplacement_idf(int num_dec);
