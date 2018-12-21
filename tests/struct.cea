@@ -1,6 +1,6 @@
 Prog
 
-Type s : Struct x:Int; y:Int Fstruct;
+Type s : Struct x:Int; y:Int; Fstruct;
 Var a : s;
 
 {

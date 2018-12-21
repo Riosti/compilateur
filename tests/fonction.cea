@@ -6,7 +6,7 @@ Var y : Int;
 Fonction f (b:Int) Return Int
 {
 	Return (b + 1)*b; 
-}
+};
 
 {
 	x=4;
