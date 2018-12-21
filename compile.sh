@@ -1,4 +1,3 @@
-
 if (( $# != 1 ))
 then
     echo "<nom de fichier a compilier>"

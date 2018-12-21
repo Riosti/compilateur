@@ -49,7 +49,7 @@ void evalue_appel(type_arbre *a){
 	dc++;
     }
     printf("\n");
-    dc--;
+    
     //empiler les paramètres
     type_arbre *b = a->fils->frere;
     while(b != NULL){
@@ -148,7 +148,10 @@ int evalue_condition(type_arbre *a){
 	
 	if(BC != 0){
 	    printf("DECALAGE avec chainage %d\nIndice %d\n", dec, BC+NIScourant-NISdeclaration+dec);
-	    sol = pexec[pexec[BC+NIScourant - NISdeclaration].val+ dec ].val;
+	    if( pexec[BC + NIScourant].val == 0 )
+		sol = pexec[pexec[BC+NIScourant - NISdeclaration].val+ dec +1].val;
+	    else
+		sol = pexec[pexec[BC+NIScourant - NISdeclaration].val+ dec ].val;
 	}
 	else{
 	    printf("DECALAGE  %d\nIndice %d\n", dec, BC+NIScourant-NISdeclaration+dec);
@@ -162,6 +165,131 @@ int evalue_condition(type_arbre *a){
 }
 
 void evalue_arbre(type_arbre *a){//on connait la région
+    if(a == NULL){
+	affiche_pile();
+	printf("\nfin de l'execution\n");
+	return;
+    }
+    
+    printf("je suis dans evalue_arbre\n");
+    int NISdeclaration, NIScourant = table_region[region_courante].nis;
+    switch(a->type){
+    case A_LIRE: //comme une affectation, c'est une procédure donc que des types simples
+	//pour Antho
+	NISdeclaration = table_region[Tab_dec[a->fils->num_dec].region].nis;
+	if( a->fils->type == REEL )
+	    fscanf(stdin, "%f", &pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution].reel);
+	else
+	    fscanf(stdin, "%d", &pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution].val);
+	break;
+	
+    case A_ECRIRE://procedure => des types simples en paramètres
+	NISdeclaration = table_region[Tab_dec[a->fils->num_dec].region].nis;
+	switch(a->fils->type){
+	case CHAR:
+	    printf("##############ECRITURE %c\n", pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution].val);
+	    break;
+	case REEL:
+	    printf("##############ECRITURE %lf\n", pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution].reel);
+	    break;
+	default:
+	    printf("##############ECRITURE %d\n", pexec[pexec[BC+NIScourant-NISdeclaration].val+Tab_dec[a->fils->num_dec].execution].val);
+	}
+	break;
+    case A_LIST:
+	printf("Il s'agit d'une liste\n");
+	evalue_arbre(a->fils);
+	break;
+    case A_RETURN:
+	return;
+    case A_APPEL_P: 
+	printf("Il s'agit d'une procedure\n");
+	
+       	evalue_appel(a);
+	region_courante = Tab_dec[a->num_dec].execution; //on change de region
+	printf("Region courante %d\n", region_courante);
+	type_arbre *bis = table_region[region_courante].a;
+	bis = bis -> fils;
+	while( bis->type != A_LIST )
+	    bis = bis->frere;
+	evalue_procedure(bis);
+	region_courante = Tab_dec[a->num_dec].region;//on revient dans la region englobante
+	break;
+	
+    case A_TQ:
+	printf("Il s'agit d'un A_TQ\n");
+	while( evalue_condition(a->fils) ){
+	    evalue_arbre( a->fils->frere);
+	}
+	break;
+	
+    case A_SI:
+	printf("Il s'agit de A_IF\n");
+	if( evalue_condition(a->fils) )
+	    evalue_arbre(a->frere->fils);//alors
+	else
+	    evalue_arbre(a->frere->frere->fils);
+	break;
+	
+	//LE most important
+    case A_OPAFF: 
+	printf("Il s'agit d'une affectation\n");
+	NISdeclaration = table_region[Tab_dec[a->fils->num_dec].region].nis;
+	printf("     NIS de declaration %d\n", NISdeclaration);
+	printf("     NIS courant %d\n", NIScourant);
+	printf("     BC %d\n", BC);
+	int dec = Tab_dec[a->fils->num_dec].execution;
+	printf("     Decalage %d\n", dec);
+	if( BC != 0)
+	    if( pexec[BC+NIScourant-NISdeclaration].val == 0 )
+		pexec[pexec[BC+NIScourant-NISdeclaration].val +dec] = evalue_expression(a->fils->frere);
+	    else
+		pexec[pexec[BC+NIScourant-NISdeclaration].val+dec+1] = evalue_expression(a->fils->frere);
+	else
+	    pexec[dec] = evalue_expression(a->fils->frere);
+	printf("Affectation done\n");
+	break;
+
+	
+    case A_INCR:
+	printf("Il s'agit d'un ++\n");
+	NISdeclaration = table_region[Tab_dec[a->num_dec].region].nis;
+	switch(pexec[pexec[BC+NIScourant-NISdeclaration].val +
+	    Tab_dec[a->fils->frere->num_dec].execution].type){
+    case INT:
+	pexec[pexec[BC+NIScourant-NISdeclaration].val +
+	    Tab_dec[a->fils->frere->num_dec].execution].val--;
+	break;
+    case REEL:
+	pexec[pexec[BC+NIScourant-NISdeclaration].val +
+	    Tab_dec[a->fils->frere->num_dec].execution].reel--;
+	break;
+    }
+	break;
+	
+    case A_DEC:
+	printf("Il s'agit d'un --\n");
+	NIScourant = table_region[region_courante].nis;
+	NISdeclaration = table_region[Tab_dec[a->num_dec].region].nis;
+	switch(pexec[pexec[BC+NIScourant-NISdeclaration].val +
+	    Tab_dec[a->fils->frere->num_dec].execution].type){
+    case INT:
+	pexec[pexec[BC+NIScourant-NISdeclaration].val +
+	    Tab_dec[a->fils->frere->num_dec].execution].val++;
+	break;
+    case REEL:
+	pexec[pexec[BC+NIScourant-NISdeclaration].val +
+	    Tab_dec[a->fils->frere->num_dec].execution].reel++;
+	break;
+    default:
+	fprintf(stderr, "Le type attendue INT/REEL\nReçu %d\n", pexec[pexec[BC+NIScourant-NISdeclaration].val +Tab_dec[a->fils->frere->num_dec].execution].type);
+    }
+	break;
+    }
+	evalue_arbre(a->frere);
+    
+}
+void evalue_bout(type_arbre *a){//on connait la région
     if(a == NULL){
 	affiche_pile();
 	printf("\nfin de l'execution\n");
@@ -280,34 +408,38 @@ void evalue_arbre(type_arbre *a){//on connait la région
     }
 	break;
     }
-	evalue_arbre(a->frere);
+	
     
-    }
-	cellule evalue_fonction(type_arbre *a){
-	printf("Je suis dans evalue fonction\n");
-	tmpF = BC;
-	type_arbre *bis= a;
-  
+}
+cellule evalue_fonction(type_arbre *a){
+    printf("Je suis dans evalue fonction\n");
+    tmpF = BC;
+    type_arbre *bis= a;
+    cellule rep;
 
-	FileBC p = chainage;
-	free(chainage);
-	chainage = p;
-	for(int i = BC; i <= 10; i++){
-	pexec[i].type = -1;
-	pexec[i].val = -1;
-	pexec[i].reel = -1;
-    }
+    FileBC p = chainage;
+    free(chainage);
+    chainage = p;
     
-	//BC = pexec[tmp].val;
+    
+    //BC = pexec[tmp].val;
 	NIScourant--;
 	affiche_pile();
    
 	while( bis -> type != A_LIST )
 	    bis = bis -> frere;
-	return evalue_expression(bis->fils->fils);
+	//////////ICIIIIIIIIIIIIIIII
+	rep = evalue_expression(bis->fils->fils);
+	BC = pexec[tmpF].val;
+	for(int i = tmpF; i <= 10; i++){
+	pexec[i].type = -1;
+	pexec[i].val = -1;
+	pexec[i].reel = -1;
     }
+	return rep;
+}
 
-	void evalue_procedure(type_arbre *a){
+void evalue_procedure(type_arbre *a){
 	int tmp =  BC;
 	printf("Je suis dans evalue procedure\n");
 	evalue_arbre(a);
@@ -318,19 +450,19 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	chainage = p;
 
 	for(int i = BC; i<= 10; i++){
-	pexec[i].type = -1;
-	pexec[i].val = -1;
-	pexec[i].reel = -1;
-    }
+	    pexec[i].type = -1;
+	    pexec[i].val = -1;
+	    pexec[i].reel = -1;
+	}
 	BC = pexec[tmp].val;
 	NIScourant--;
-    }
+	}
 
-	cellule evalue_expression(type_arbre *a){ //
-	cellule rep;
-	int NIScourant = table_region[region_courante].nis;
-	printf("Dans evalue_expression %d\n", a->type);
-	switch(a->type){
+cellule evalue_expression(type_arbre *a){ //
+    cellule rep;
+    int NIScourant = table_region[region_courante].nis;
+    printf("Dans evalue_expression %d\n", a->type);
+    switch(a->type){
     case A_RETURN:
 	printf("C'est le return d'une fonction\n");
 	rep = evalue_expression(a->fils);
@@ -344,8 +476,11 @@ void evalue_arbre(type_arbre *a){//on connait la région
 	
  	int dec = Tab_dec[a->num_dec].execution;
 	printf("DECALAGE %d\nIndice %d\n", dec, pexec[BC+NIScourant-NISdeclaration].val + dec);
-	if(BC != 0)
-	    rep = pexec[pexec[BC+NIScourant - NISdeclaration].val+dec];//ne fonctionne pas (mauvaise formule???)
+	if(BC != 0)//bc != 0
+	    if(pexec[BC+NIScourant - NISdeclaration].val == 0)
+		rep = pexec[pexec[BC+NIScourant - NISdeclaration].val+dec];//ne fonctionne pas (mauvaise formule???)
+	    else
+		rep = pexec[pexec[BC+NIScourant - NISdeclaration].val+dec+1];
 	else
 	    rep = pexec[dec];
 	printf("I've got %d\n", rep.val);
