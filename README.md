@@ -62,6 +62,7 @@ Contenant des instructions entre { }
 #### Fonction 
 ```
 Fonction f ~( IDF : Type )~ Return TypeR
+<variables>
 {
     
     Return ~~variable ou constante de type TypeR~~;
@@ -71,6 +72,7 @@ Fonction f ~( IDF : Type )~ Return TypeR
 #### Procédure
 ```
 Procedure p ~( IDF : Type )~
+<variables>
 {
 
 };
