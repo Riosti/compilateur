@@ -308,20 +308,20 @@ cellule evalue_fonction(type_arbre *a){
     
     
     //BC = pexec[tmp].val;
-	NIScourant--;
-	affiche_pile();
+    NIScourant--;
+    affiche_pile();
    
-	while( bis -> type != A_LIST )
-	    bis = bis -> frere;
-	//////////ICIIIIIIIIIIIIIIII
-	rep = evalue_expression(bis->fils->fils);
-	BC = pexec[tmpF].val;
-	for(int i = tmpF; i <= 10; i++){
+    while( bis -> type != A_LIST )
+	bis = bis -> frere;
+    //////////ICIIIIIIIIIIIIIIII
+    rep = evalue_expression(bis->fils->fils);
+    BC = pexec[tmpF].val;
+    for(int i = tmpF; i <= 10; i++){
 	pexec[i].type = -1;
 	pexec[i].val = -1;
 	pexec[i].reel = -1;
     }
-	return rep;
+    return rep;
 }
 
 void evalue_procedure(type_arbre *a){
