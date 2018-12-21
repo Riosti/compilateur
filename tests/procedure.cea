@@ -5,7 +5,6 @@ Var x: Int;
 Procedure p (b:Int)
 
 {
-
 	x=x+b;
 };
 
