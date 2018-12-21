@@ -1,0 +1,24 @@
+Prog
+Type s : Struct
+     a:Int;
+     b:Int;
+     c : Int;
+     Fstruct;
+
+Type s2 : Struct
+     v1 : s;
+     v2 : Int;
+     Fstruct;
+
+Var x : s;
+Var y: s2;
+Var z : Int;
+{
+z=5;
+x.a=z+1;
+x.b=z+2;
+x.c=z+3;
+y.v2 =x.a+x.b+x.c;
+y.v1.a=z+5;
+z=y.v1.a+y.v2;
+}
