@@ -1,8 +1,0 @@
-Prog
-
-Type t : Tab [1#5] Of Int;
-Var tab : t;
-
-{
-    t[2]=4;
-}
