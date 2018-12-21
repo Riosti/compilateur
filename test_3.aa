@@ -1,0 +1,18 @@
+Prog
+
+Var x : Int;
+
+Procedure p
+Var z : Int;
+{
+	
+	z = 0;
+	x=0;
+};
+
+{
+	
+	x=2;
+	p();
+}
+

@@ -199,7 +199,10 @@ int test_return_dans_liste_instruction(type_arbre* a, int type_return)
         }
     }
     if (a->type == A_SI) {
-        return test_return_dans_si(a, type_return);
+      if(test_return_dans_si(a, type_return)){
+	return 1 ;
+      }
+      return test_return_dans_liste_instruction(a->frere, type_return);
     }
     return test_return_dans_liste_instruction(a->fils, type_return) || test_return_dans_liste_instruction(a->frere, type_return);
 }

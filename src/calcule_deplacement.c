@@ -60,3 +60,7 @@ int test(int index,int type,int nbr_param){
   return 1;
 }
 
+int deplacement_idf(int num_dec){
+  return Tab_dec[num_dec].execution;
+}
+
